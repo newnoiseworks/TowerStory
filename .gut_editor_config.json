@@ -3,8 +3,7 @@
  "config_file": "res://.gutconfig.json",
  "dirs": [
   "res://test/unit",
-  "res://test/integration",
-  "res://test/panel_demo_scripts"
+  "res://test/integration"
  ],
  "disable_colors": false,
  "double_strategy": "partial",
@@ -13,7 +12,7 @@
  "font_size": 15,
  "hide_orphans": false,
  "ignore_pause": true,
- "include_subdirs": false,
+ "include_subdirs": true,
  "inner_class": null,
  "junit_xml_file": "",
  "junit_xml_timestamp": false,
@@ -36,6 +35,6 @@
  "gut_on_top": true,
  "panel_options": {
   "font_name": "CourierPrime",
-  "font_size": 30
+  "font_size": 15
  }
 }

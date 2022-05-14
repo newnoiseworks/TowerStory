@@ -13,7 +13,7 @@ __meta__ = {
 }
 
 [node name="camera_gimbal" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.69915, 19.9623 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.69915, 23.0529 )
 script = ExtResource( 1 )
 
 [node name="inner_gimbal" type="Spatial" parent="camera_gimbal"]
