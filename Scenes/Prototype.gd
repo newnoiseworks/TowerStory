@@ -1,6 +1,6 @@
 extends Spatial
 
-var towerDataExampleStructure = [ # top level tower
+var tower_data = [ # top level tower
 	[ # first indent level first story -- towers should always be ascending, no floating floors
 		{
 			22: { # first story x (tile)
@@ -12,27 +12,26 @@ var towerDataExampleStructure = [ # top level tower
 	]
 ]
 
-var mouseSelect: Spatial
+var mouse_select: Spatial
 
 
 func _ready():
-	mouseSelect = find_node("mouseSelect")
+	mouse_select = find_node("mouse_select")
 	pass # Replace with function body.
 
 
-func _on_Floor_input_event(_camera, event, position, _normal, _shape_idx):
+func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 	if event is InputEventMouseMotion:
 		var mouse_position = position
-		mouse_position.y = mouseSelect.global_transform.origin.y
+		mouse_position.y = mouse_select.global_transform.origin.y
 
-		var target = mouse_position - mouseSelect.global_transform.origin
+		var adjustment = mouse_position - mouse_select.global_transform.origin
 
-		target.x = _closest_multiple_of_two(int(target.x))
-		target.z = _closest_multiple_of_two(int(target.z))
+		adjustment.x = _closest_multiple_of_two(int(adjustment.x))
+		adjustment.z = _closest_multiple_of_two(int(adjustment.z))
 
-		if target != Vector3.ZERO:
-			print(target)
-			mouseSelect.translate_object_local(target)
+		if adjustment != Vector3.ZERO:
+			mouse_select.translate_object_local(adjustment)
 
 
 func _closest_multiple_of_two(x: int):
