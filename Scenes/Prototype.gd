@@ -21,25 +21,24 @@ func _ready():
 
 
 func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
-	if event is InputEventMouseMotion or InputEventMouseButton:
-		if event is InputEventMouseMotion:
-			var mouse_position = position
-			mouse_position.y = mouse_select.global_transform.origin.y
+	if event is InputEventMouseMotion:
+		var mouse_position = position
+		mouse_position.y = mouse_select.global_transform.origin.y
 
-			var adjustment = mouse_position - mouse_select.global_transform.origin
+		var adjustment = mouse_position - mouse_select.global_transform.origin
 
-			adjustment.x = _closest_multiple_of_two(int(adjustment.x))
-			adjustment.z = _closest_multiple_of_two(int(adjustment.z))
+		adjustment.x = _closest_multiple_of_two(int(adjustment.x))
+		adjustment.z = _closest_multiple_of_two(int(adjustment.z))
 
-			if adjustment != Vector3.ZERO:
-				mouse_select.translate_object_local(adjustment)
+		if adjustment != Vector3.ZERO:
+			mouse_select.translate_object_local(adjustment)
 
-		elif event is InputEventMouseButton and Input.is_action_pressed("ui_accept"):
-			var global_target = mouse_select.global_transform.origin
+	elif event is InputEventMouseButton and Input.is_action_pressed("ui_accept"):
+		var global_target = mouse_select.global_transform.origin
 
-			global_target.y = 0
+		global_target.y = 0
 
-			_add_floor_piece_at(global_target)
+		_add_floor_piece_at(global_target)
 
 
 func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
