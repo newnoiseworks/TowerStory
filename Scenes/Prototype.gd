@@ -6,7 +6,8 @@ var tower_data = [ # top level tower
 	{ # first indent level first story -- towers should always be ascending, no floating floors
 		0: { # first story x (tile)
 			0: { # first story z (tile)
-				"type": "floor"
+				"type": "floor",
+				# "object": godot object
 			}
 		}
 	}
@@ -25,6 +26,10 @@ func _ready():
 	for x in floor_data:
 		for z in floor_data[x]:
 			_add_floor_piece_at(global_transform.origin + Vector3(x, 0, z), true)
+
+	for x in floor_data:
+		for z in floor_data[x]:
+			_add_wall_to_piece_at_edges(x, z)
 
 
 func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
@@ -54,24 +59,50 @@ func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
 	var x = int(target.x)
 	var z = int(target.z)
 
-	if !startup and !_can_add_floor_piece_at(x, z): 
-		return
+	if !startup and !_can_add_floor_piece_at(x, z): return
 
 	if !floor_data.has(x): floor_data[x] = {}
 
-	floor_data[x][z] = { "type": "floor" }
-
 	var floor_piece = floor_piece_packed.instance()
+
+	floor_data[x][z] = {
+		"type": "floor",
+		"object": floor_piece
+	}
 
 	add_child(floor_piece)
 
 	floor_piece.global_transform.origin = target
 
+	_add_wall_to_piece_at_edges(x, z)
+
+	if !startup:
+		var edges = _is_piece_an_edge(x, z)
+
+		if edges[SIDE.XUP] == 0: _add_wall_to_piece_at_edges(x+MULTIPLE, z)
+		if edges[SIDE.XDOWN] == 0: _add_wall_to_piece_at_edges(x-MULTIPLE, z)
+		if edges[SIDE.ZUP] == 0: _add_wall_to_piece_at_edges(x, z+MULTIPLE)
+		if edges[SIDE.ZDOWN] == 0: _add_wall_to_piece_at_edges(x, z-MULTIPLE)
 
 
+func _add_wall_to_piece_at_edges(x: int, z:int):
+	var edges = _is_piece_an_edge(x, z)
+	var floor_piece = floor_data[x][z]["object"]
 
-func _add_wall_to_piece_at_edge():
-	pass
+	floor_piece.call("hide_walls")
+
+	if edges[SIDE.XUP] == 1:
+		floor_piece.call("add_wall_at_edge", SIDE.XUP)
+
+	if edges[SIDE.XDOWN] == 1:
+		floor_piece.call("add_wall_at_edge", SIDE.XDOWN)
+
+	if edges[SIDE.ZUP] == 1:
+		floor_piece.call("add_wall_at_edge", SIDE.ZUP)
+
+	if edges[SIDE.ZDOWN] == 1:
+		floor_piece.call("add_wall_at_edge", SIDE.ZDOWN)
+
 
 func _can_add_floor_piece_at(x: int, z: int)-> bool:
 	if floor_data.has(x) and floor_data[x].has(z):
