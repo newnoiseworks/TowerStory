@@ -16,6 +16,10 @@ onready var mouse_select: Spatial = find_node("mouse_select")
 onready var floor_piece_packed = preload("res://Scenes/bottomFloorPiece.tscn")
 onready var floor_data = tower_data[0]
 
+enum SIDE {
+	XUP, XDOWN, ZUP, ZDOWN
+}
+
 
 func _ready():
 	for x in floor_data:
@@ -64,6 +68,11 @@ func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
 	floor_piece.global_transform.origin = target
 
 
+
+
+func _add_wall_to_piece_at_edge():
+	pass
+
 func _can_add_floor_piece_at(x: int, z: int)-> bool:
 	if floor_data.has(x) and floor_data[x].has(z):
 		print_debug("Can't place a tile where one already exists")
@@ -92,3 +101,14 @@ func _closest_multiple_of_n(x: int, n: int)-> int:
 	var val: int = x / n
 
 	return val * n
+
+
+func _is_piece_an_edge(x: int, z: int)-> PoolIntArray: 
+	var edges: PoolIntArray = [0, 0, 0, 0]
+
+	edges[SIDE.XUP] = 1 if !floor_data.has(x+MULTIPLE) or !floor_data[x+MULTIPLE].has(z) else 0
+	edges[SIDE.XDOWN] = 1 if !floor_data.has(x-MULTIPLE) or !floor_data[x-MULTIPLE].has(z) else 0
+	edges[SIDE.ZUP] = 1 if !floor_data[x].has(z+MULTIPLE) else 0
+	edges[SIDE.ZDOWN] = 1 if !floor_data[x].has(z-MULTIPLE) else 0
+
+	return edges
