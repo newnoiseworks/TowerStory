@@ -17,3 +17,13 @@ The modding opportunity for others would be cool, it would be a neat programming
 I do think Godot offers a neat way to do this all with the editor, or perhaps by adjusting the editor -- which is something that I should find far more approachable now that I've futzed with C++ somewhat. It may be a good idea to start contributing open source aid eventually to Godot etc.
 
 Anyway, the game.
+
+Modding may be a more uphill battle than I'm willing to admit; however, it would be a way to draw a fine line between "universal" and "my own bullshit".
+
+It could just be a whole-ass second game, or, just a box to put my ideas into that are out of scope for game one.
+
+Hmm.
+
+Either way, modding doesn't need to be thought of immediately, but to a light extent.
+
+Maybe. Need to keep researching.
