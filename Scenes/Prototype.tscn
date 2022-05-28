@@ -13,14 +13,14 @@ __meta__ = {
 }
 
 [node name="camera_gimbal" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.69915, 23.0529 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.59013, -0.145342 )
 script = ExtResource( 1 )
 
 [node name="inner_gimbal" type="Spatial" parent="camera_gimbal"]
-transform = Transform( 1, 0, 0, 0, 0.907499, 0.420054, 0, -0.420054, 0.907499, 0, 0, 1.90735e-06 )
+transform = Transform( 1, 0, 0, 0, 0.88003, 0.474918, 0, -0.474918, 0.88003, 0, 0, 1.90735e-06 )
 
 [node name="Camera" type="Camera" parent="camera_gimbal/inner_gimbal"]
-transform = Transform( 1, 0, 0, 0, 1, 1.78814e-07, 0, -1.78814e-07, 1, 0, 2.70556, -13.5193 )
+transform = Transform( 1, 0, 0, 0, 0.969757, 0.244072, 0, -0.244072, 0.969757, 0, -2.91168, 14.7055 )
 current = true
 
 [node name="DirectionalLight" type="DirectionalLight" parent="camera_gimbal/inner_gimbal"]
