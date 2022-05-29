@@ -96,148 +96,69 @@ class Test__is_piece_an_edge:
 		)
 
 
-class Test__can_remove_floor_piece_at:
+
+class Test__is_floor_contiguous:
 	extends GutTest
 	var double_script
-
-	var tower_data_simple_row = [
-		{
-			0: {
-				0: {
-					"type": "floor"
-				},
-				1: {
-					"type": "floor"
-				},
-				2: {
-					"type": "floor"
-				}
-			}
-		}
-	]
-
-	var tower_data_square = [
-		{
-			0: {
-				0: {
-					"type": "floor"
-				},
-				1: {
-					"type": "floor"
-				},
-				2: {
-					"type": "floor"
-				}
-			},
-			1: {
-				0: {
-					"type": "floor"
-				},
-				1: {
-					"type": "floor"
-				},
-				2: {
-					"type": "floor"
-				}
-			},
-			2: {
-				0: {
-					"type": "floor"
-				},
-				1: {
-					"type": "floor"
-				},
-				2: {
-					"type": "floor"
-				}
-			}
-		}
-	]
-
 
 	func before_each():
 		var prototype_script = partial_double("res://Scenes/Prototype.gd")
 		double_script = prototype_script.new()
 
 
-	func test_cannot_remove_center_in_simple_row():
-		double_script.floor_data = tower_data_simple_row[0]
+	func test_simple_is_contiguous():
+		double_script.floor_data = Globals.get_simple_tower_data(double_script.MULTIPLE)[0]
 
 		assert_eq(
-			double_script._can_remove_floor_piece_at(0, 1),
+			double_script._is_floor_contiguous(double_script.floor_data),
+			true,
+			"Simple row reads as contiguous"
+		)
+		
+
+class Test__can_remove_floor_piece_at:
+	extends GutTest
+	var double_script
+
+	func before_each():
+		var prototype_script = partial_double("res://Scenes/Prototype.gd")
+		double_script = prototype_script.new()
+
+
+	func test_can_remove_end_in_simple_row():
+		double_script.floor_data = Globals.get_simple_tower_data(double_script.MULTIPLE)[0]
+
+		assert_eq(
+			double_script._can_remove_floor_piece_at(0, 0),
+			true,
+			"Can remove piece at end of simple three piece row, no islands"
+		)
+
+
+	func test_cannot_remove_center_in_simple_row():
+		double_script.floor_data = Globals.get_simple_tower_data(double_script.MULTIPLE)[0]
+
+		assert_eq(
+			double_script._can_remove_floor_piece_at(0, 1 * double_script.MULTIPLE),
 			false,
 			"Cannot remove piece in center of simple three piece row, no islands"
 		)
 
 
 	func test_can_remove_center_in_square():
-		double_script.floor_data = tower_data_square[0]
+		double_script.floor_data = Globals.get_simple_square_tower_data(double_script.MULTIPLE)[0]
 
 		assert_eq(
-			double_script._can_remove_floor_piece_at(0, 1),
+			double_script._can_remove_floor_piece_at(1 * double_script.MULTIPLE, 1 * double_script.MULTIPLE),
 			true,
 			"Can remove piece in center of 9 piece square"
 		)
 
 
+
 class Test__get_piece_count:
 	extends GutTest
 	var double_script
-
-	var tower_data_simple_row = [
-		{
-			0: {
-				0: {
-					"type": "floor"
-				},
-				1: {
-					"type": "floor"
-				},
-				2: {
-					"type": "floor"
-				}
-			}
-		}
-	]
-
-	var tower_data_square = [
-		{
-			0: {
-				0: {
-					"type": "floor"
-				},
-				1: {
-					"type": "floor"
-				},
-				2: {
-					"type": "floor"
-				}
-			},
-			1: {
-				0: {
-					"type": "floor"
-				},
-				1: {
-					"type": "floor"
-				},
-				2: {
-					"type": "floor"
-				}
-			},
-			2: {
-				0: {
-					"type": "floor"
-				},
-				1: {
-					"type": "floor"
-				},
-				2: {
-					"type": "floor"
-				}
-			}
-		}
-	]
-
 
 	func before_each():
 		var prototype_script = partial_double("res://Scenes/Prototype.gd")
@@ -245,7 +166,7 @@ class Test__get_piece_count:
 
 
 	func test_count_simple():
-		double_script.floor_data = tower_data_simple_row[0]
+		double_script.floor_data = Globals.get_simple_tower_data(double_script.MULTIPLE)[0]
 
 		assert_eq(
 			double_script._get_piece_count(),
@@ -255,10 +176,44 @@ class Test__get_piece_count:
 
 
 	func test_count_square():
-		double_script.floor_data = tower_data_square[0]
+		double_script.floor_data = Globals.get_simple_square_tower_data(double_script.MULTIPLE)[0]
 
 		assert_eq(
 			double_script._get_piece_count(),
 			9,
 			"Square count is 9 pieces"
 		)
+
+
+class Globals:
+	static func get_simple_tower_data(multiple):
+		var tower_data_simple_floor = {}
+
+		tower_data_simple_floor[0] = {}
+
+		tower_data_simple_floor[0][0] = { "type": "floor" }
+		tower_data_simple_floor[0][multiple] = { "type": "floor" }
+		tower_data_simple_floor[0][multiple * 2] = { "type": "floor" }
+
+		return [tower_data_simple_floor]
+
+	static func get_simple_square_tower_data(multiple):
+		var tower_data_simple_floor = {}
+
+		tower_data_simple_floor[0] = {}
+		tower_data_simple_floor[multiple] = {}
+		tower_data_simple_floor[multiple * 2] = {}
+
+		tower_data_simple_floor[0][0] = { "type": "floor" }
+		tower_data_simple_floor[0][multiple] = { "type": "floor" }
+		tower_data_simple_floor[0][multiple * 2] = { "type": "floor" }
+
+		tower_data_simple_floor[multiple][0] = { "type": "floor" }
+		tower_data_simple_floor[multiple][multiple] = { "type": "floor" }
+		tower_data_simple_floor[multiple][multiple * 2] = { "type": "floor" }
+
+		tower_data_simple_floor[multiple * 2][0] = { "type": "floor" }
+		tower_data_simple_floor[multiple * 2][multiple] = { "type": "floor" }
+		tower_data_simple_floor[multiple * 2][multiple * 2] = { "type": "floor" }
+
+		return [tower_data_simple_floor]

@@ -73,18 +73,49 @@ func _can_remove_floor_piece_at(x: int, z:int)-> bool:
 		print_debug("Can't delete a floor piece that doesn't exist")
 		return false
 
+	var floor_copy = floor_data.duplicate(true)
+	floor_copy[x].erase(z)
+
+	if !_is_floor_contiguous(floor_copy):
+		return false
+
 	return true
 
 
-func _is_floor_contiguous()-> bool:
-	return false
+func _get_pieces_contiguous_to(_floor: Dictionary, x: int, z: int, touched: Dictionary) -> Dictionary:
+	touched["%s,%s" % [x, z]] = true
+
+	if _floor[x].has(z-MULTIPLE) && !touched.has("%s,%s" % [x, z-MULTIPLE]):
+		touched = _get_pieces_contiguous_to(_floor, x, z-MULTIPLE, touched)
+
+	if _floor[x].has(z+MULTIPLE) && !touched.has("%s,%s" % [x, z+MULTIPLE]):
+		touched = _get_pieces_contiguous_to(_floor, x, z+MULTIPLE, touched)
+
+	if _floor.has(x-MULTIPLE) and _floor[x-MULTIPLE].has(z) && !touched.has("%s,%s" % [x-MULTIPLE, z]):
+		touched = _get_pieces_contiguous_to(_floor, x-MULTIPLE, z, touched)
+
+	if _floor.has(x+MULTIPLE) and _floor[x+MULTIPLE].has(z) && !touched.has("%s,%s" % [x+MULTIPLE, z]):
+		touched = _get_pieces_contiguous_to(_floor, x+MULTIPLE, z, touched)
+
+	return touched
 
 
-func _get_piece_count()-> int:
+func _is_floor_contiguous(_floor):
+	var x = _floor.keys()[0]
+	var z = _floor[x].keys()[0]
+	var touched = _get_pieces_contiguous_to(_floor, x, z, {}) 
+	var count = touched.keys().size()
+	return count == _get_piece_count(_floor)
+
+
+func _get_piece_count(_floor = null)-> int:
+	if _floor == null:
+		_floor = floor_data
+
 	var piece_count = 0
 
-	for x in floor_data:
-		piece_count += floor_data[x].keys().size()
+	for x in _floor:
+		piece_count += _floor[x].keys().size()
 
 	return piece_count
 
