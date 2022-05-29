@@ -45,12 +45,48 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 		if adjustment != Vector3.ZERO:
 			mouse_select.translate_object_local(adjustment)
 
-	elif event is InputEventMouseButton and Input.is_action_pressed("ui_accept"):
+	elif event is InputEventMouseButton:
 		var global_target = mouse_select.global_transform.origin
-
 		global_target.y = 0
 
-		_add_floor_piece_at(global_target)
+		if Input.is_action_pressed("main_button"):
+			_add_floor_piece_at(global_target)
+		elif Input.is_action_pressed("secondary_button"):
+			_remove_floor_piece_at(global_target)
+
+
+func _remove_floor_piece_at(global_target: Vector3):
+	var target = global_transform.origin + global_target
+
+	var x = int(target.x)
+	var z = int(target.z)
+
+	if _can_remove_floor_piece_at(x, z):
+		floor_data[x][z]["object"].queue_free()
+		floor_data[x].erase(z)
+
+		_add_edges_to_surrouding_pieces(x, z)
+
+
+func _can_remove_floor_piece_at(x: int, z:int)-> bool:
+	if !_has_floor_piece_at(x, z):
+		print_debug("Can't delete a floor piece that doesn't exist")
+		return false
+
+	return true
+
+
+func _is_floor_contiguous()-> bool:
+	return false
+
+
+func _get_piece_count()-> int:
+	var piece_count = 0
+
+	for x in floor_data:
+		piece_count += floor_data[x].keys().size()
+
+	return piece_count
 
 
 func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
@@ -77,12 +113,16 @@ func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
 	_add_wall_to_piece_at_edges(x, z)
 
 	if !startup:
-		var edges = _is_piece_an_edge(x, z)
+		_add_edges_to_surrouding_pieces(x, z)
 
-		if edges[SIDE.XUP] == 0: _add_wall_to_piece_at_edges(x+MULTIPLE, z)
-		if edges[SIDE.XDOWN] == 0: _add_wall_to_piece_at_edges(x-MULTIPLE, z)
-		if edges[SIDE.ZUP] == 0: _add_wall_to_piece_at_edges(x, z+MULTIPLE)
-		if edges[SIDE.ZDOWN] == 0: _add_wall_to_piece_at_edges(x, z-MULTIPLE)
+
+func _add_edges_to_surrouding_pieces(x: int, z: int):
+	var edges = _is_piece_an_edge(x, z)
+
+	if edges[SIDE.XUP] == 0: _add_wall_to_piece_at_edges(x+MULTIPLE, z)
+	if edges[SIDE.XDOWN] == 0: _add_wall_to_piece_at_edges(x-MULTIPLE, z)
+	if edges[SIDE.ZUP] == 0: _add_wall_to_piece_at_edges(x, z+MULTIPLE)
+	if edges[SIDE.ZDOWN] == 0: _add_wall_to_piece_at_edges(x, z-MULTIPLE)
 
 
 func _add_wall_to_piece_at_edges(x: int, z:int):
@@ -105,10 +145,18 @@ func _add_wall_to_piece_at_edges(x: int, z:int):
 
 
 func _can_add_floor_piece_at(x: int, z: int)-> bool:
-	if floor_data.has(x) and floor_data[x].has(z):
+	if _has_floor_piece_at(x, z):
 		print_debug("Can't place a tile where one already exists")
 		return false
 
+	if !_is_connected_at(x, z):
+		print_debug("Can't place a tile unconnected to the building")
+		return false
+
+	return true
+
+
+func _is_connected_at(x: int, z: int)-> bool:
 	if ((
 		floor_data.has(x) and (floor_data[x].has(z-MULTIPLE) or floor_data[x].has(z+MULTIPLE))
 	) or (
@@ -119,6 +167,10 @@ func _can_add_floor_piece_at(x: int, z: int)-> bool:
 		return true
 
 	return false
+
+
+func _has_floor_piece_at(x: int, z: int)-> bool:
+	return floor_data.has(x) and floor_data[x].has(z)
 
 
 func _closest_multiple_of(x: int)-> int:

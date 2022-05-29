@@ -94,3 +94,171 @@ class Test__is_piece_an_edge:
 			[1, 1, 1, 1] as PoolIntArray,
 			"Centerpiece and nothing else has edges on all sides"
 		)
+
+
+class Test__can_remove_floor_piece_at:
+	extends GutTest
+	var double_script
+
+	var tower_data_simple_row = [
+		{
+			0: {
+				0: {
+					"type": "floor"
+				},
+				1: {
+					"type": "floor"
+				},
+				2: {
+					"type": "floor"
+				}
+			}
+		}
+	]
+
+	var tower_data_square = [
+		{
+			0: {
+				0: {
+					"type": "floor"
+				},
+				1: {
+					"type": "floor"
+				},
+				2: {
+					"type": "floor"
+				}
+			},
+			1: {
+				0: {
+					"type": "floor"
+				},
+				1: {
+					"type": "floor"
+				},
+				2: {
+					"type": "floor"
+				}
+			},
+			2: {
+				0: {
+					"type": "floor"
+				},
+				1: {
+					"type": "floor"
+				},
+				2: {
+					"type": "floor"
+				}
+			}
+		}
+	]
+
+
+	func before_each():
+		var prototype_script = partial_double("res://Scenes/Prototype.gd")
+		double_script = prototype_script.new()
+
+
+	func test_cannot_remove_center_in_simple_row():
+		double_script.floor_data = tower_data_simple_row[0]
+
+		assert_eq(
+			double_script._can_remove_floor_piece_at(0, 1),
+			false,
+			"Cannot remove piece in center of simple three piece row, no islands"
+		)
+
+
+	func test_can_remove_center_in_square():
+		double_script.floor_data = tower_data_square[0]
+
+		assert_eq(
+			double_script._can_remove_floor_piece_at(0, 1),
+			true,
+			"Can remove piece in center of 9 piece square"
+		)
+
+
+class Test__get_piece_count:
+	extends GutTest
+	var double_script
+
+	var tower_data_simple_row = [
+		{
+			0: {
+				0: {
+					"type": "floor"
+				},
+				1: {
+					"type": "floor"
+				},
+				2: {
+					"type": "floor"
+				}
+			}
+		}
+	]
+
+	var tower_data_square = [
+		{
+			0: {
+				0: {
+					"type": "floor"
+				},
+				1: {
+					"type": "floor"
+				},
+				2: {
+					"type": "floor"
+				}
+			},
+			1: {
+				0: {
+					"type": "floor"
+				},
+				1: {
+					"type": "floor"
+				},
+				2: {
+					"type": "floor"
+				}
+			},
+			2: {
+				0: {
+					"type": "floor"
+				},
+				1: {
+					"type": "floor"
+				},
+				2: {
+					"type": "floor"
+				}
+			}
+		}
+	]
+
+
+	func before_each():
+		var prototype_script = partial_double("res://Scenes/Prototype.gd")
+		double_script = prototype_script.new()
+
+
+	func test_count_simple():
+		double_script.floor_data = tower_data_simple_row[0]
+
+		assert_eq(
+			double_script._get_piece_count(),
+			3,
+			"Simple count is 3 pieces"
+		)
+
+
+	func test_count_square():
+		double_script.floor_data = tower_data_square[0]
+
+		assert_eq(
+			double_script._get_piece_count(),
+			9,
+			"Square count is 9 pieces"
+		)
