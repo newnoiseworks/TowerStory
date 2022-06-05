@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/mouseSelect.glb-f35d6e9b010ccd7edd0d3e274a123871.scn"
+path="res://.import/bottom_floor_piece.glb-6325163a734e35fb382216c4731737ca.scn"
 
 [deps]
 
-source_file="res://FromBlender/mouseSelect.glb"
-dest_files=[ "res://.import/mouseSelect.glb-f35d6e9b010ccd7edd0d3e274a123871.scn" ]
+source_file="res://from_blender/bottom_floor_piece.glb"
+dest_files=[ "res://.import/bottom_floor_piece.glb-6325163a734e35fb382216c4731737ca.scn" ]
 
 [params]
 

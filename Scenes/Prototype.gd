@@ -14,7 +14,7 @@ var tower_data = [ # top level tower
 ]
 
 onready var mouse_select: Spatial = find_node("mouse_select")
-onready var floor_piece_packed = preload("res://Scenes/bottomFloorPiece.tscn")
+onready var floor_piece_packed = preload("res://scenes/bottom_floor_piece.tscn")
 onready var floor_data = tower_data[0]
 
 enum SIDE {
@@ -55,71 +55,6 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 			_remove_floor_piece_at(global_target)
 
 
-func _remove_floor_piece_at(global_target: Vector3):
-	var target = global_transform.origin + global_target
-
-	var x = int(target.x)
-	var z = int(target.z)
-
-	if _can_remove_floor_piece_at(x, z):
-		floor_data[x][z]["object"].queue_free()
-		floor_data[x].erase(z)
-
-		_add_edges_to_surrouding_pieces(x, z)
-
-
-func _can_remove_floor_piece_at(x: int, z:int)-> bool:
-	if !_has_floor_piece_at(x, z):
-		print_debug("Can't delete a floor piece that doesn't exist")
-		return false
-
-	var floor_copy = floor_data.duplicate(true)
-	floor_copy[x].erase(z)
-
-	if !_is_floor_contiguous(floor_copy):
-		return false
-
-	return true
-
-
-func _get_pieces_contiguous_to(_floor: Dictionary, x: int, z: int, touched: Dictionary) -> Dictionary:
-	touched["%s,%s" % [x, z]] = true
-
-	if _floor[x].has(z-MULTIPLE) && !touched.has("%s,%s" % [x, z-MULTIPLE]):
-		touched = _get_pieces_contiguous_to(_floor, x, z-MULTIPLE, touched)
-
-	if _floor[x].has(z+MULTIPLE) && !touched.has("%s,%s" % [x, z+MULTIPLE]):
-		touched = _get_pieces_contiguous_to(_floor, x, z+MULTIPLE, touched)
-
-	if _floor.has(x-MULTIPLE) and _floor[x-MULTIPLE].has(z) && !touched.has("%s,%s" % [x-MULTIPLE, z]):
-		touched = _get_pieces_contiguous_to(_floor, x-MULTIPLE, z, touched)
-
-	if _floor.has(x+MULTIPLE) and _floor[x+MULTIPLE].has(z) && !touched.has("%s,%s" % [x+MULTIPLE, z]):
-		touched = _get_pieces_contiguous_to(_floor, x+MULTIPLE, z, touched)
-
-	return touched
-
-
-func _is_floor_contiguous(_floor):
-	var x = _floor.keys()[0]
-	var z = _floor[x].keys()[0]
-	var touched = _get_pieces_contiguous_to(_floor, x, z, {}) 
-	var count = touched.keys().size()
-	return count == _get_piece_count(_floor)
-
-
-func _get_piece_count(_floor = null)-> int:
-	if _floor == null:
-		_floor = floor_data
-
-	var piece_count = 0
-
-	for x in _floor:
-		piece_count += _floor[x].keys().size()
-
-	return piece_count
-
-
 func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
 	var target = global_transform.origin + global_target
 
@@ -144,6 +79,19 @@ func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
 	_add_wall_to_piece_at_edges(x, z)
 
 	if !startup:
+		_add_edges_to_surrouding_pieces(x, z)
+
+
+func _remove_floor_piece_at(global_target: Vector3):
+	var target = global_transform.origin + global_target
+
+	var x = int(target.x)
+	var z = int(target.z)
+
+	if _can_remove_floor_piece_at(x, z):
+		floor_data[x][z]["object"].queue_free()
+		floor_data[x].erase(z)
+
 		_add_edges_to_surrouding_pieces(x, z)
 
 
@@ -187,6 +135,67 @@ func _can_add_floor_piece_at(x: int, z: int)-> bool:
 	return true
 
 
+func _can_remove_floor_piece_at(x: int, z:int)-> bool:
+	if !_has_floor_piece_at(x, z):
+		print_debug("Can't delete a floor piece that doesn't exist")
+		return false
+
+	var floor_copy = floor_data.duplicate(true)
+	floor_copy[x].erase(z)
+
+	if !_is_floor_contiguous(floor_copy):
+		return false
+
+	return true
+
+
+func _is_floor_contiguous(_floor):
+	var x = _floor.keys()[0]
+	var z = _floor[x].keys()[0]
+	var touched = _get_pieces_contiguous_to(_floor, x, z, {}) 
+	var count = touched.keys().size()
+	return count == _get_piece_count(_floor)
+
+
+func _is_piece_an_edge(x: int, z: int)-> PoolIntArray: 
+	var edges: PoolIntArray = [0, 0, 0, 0]
+
+	edges[SIDE.XUP] = 1 if !floor_data.has(x+MULTIPLE) or !floor_data[x+MULTIPLE].has(z) else 0
+	edges[SIDE.XDOWN] = 1 if !floor_data.has(x-MULTIPLE) or !floor_data[x-MULTIPLE].has(z) else 0
+	edges[SIDE.ZUP] = 1 if !floor_data[x].has(z+MULTIPLE) else 0
+	edges[SIDE.ZDOWN] = 1 if !floor_data[x].has(z-MULTIPLE) else 0
+
+	return edges
+func _get_piece_count(_floor = null)-> int:
+	if _floor == null:
+		_floor = floor_data
+
+	var piece_count = 0
+
+	for x in _floor:
+		piece_count += _floor[x].keys().size()
+
+	return piece_count
+
+
+func _get_pieces_contiguous_to(_floor: Dictionary, x: int, z: int, touched: Dictionary) -> Dictionary:
+	touched["%s,%s" % [x, z]] = true
+
+	if _floor[x].has(z-MULTIPLE) && !touched.has("%s,%s" % [x, z-MULTIPLE]):
+		touched = _get_pieces_contiguous_to(_floor, x, z-MULTIPLE, touched)
+
+	if _floor[x].has(z+MULTIPLE) && !touched.has("%s,%s" % [x, z+MULTIPLE]):
+		touched = _get_pieces_contiguous_to(_floor, x, z+MULTIPLE, touched)
+
+	if _floor.has(x-MULTIPLE) and _floor[x-MULTIPLE].has(z) && !touched.has("%s,%s" % [x-MULTIPLE, z]):
+		touched = _get_pieces_contiguous_to(_floor, x-MULTIPLE, z, touched)
+
+	if _floor.has(x+MULTIPLE) and _floor[x+MULTIPLE].has(z) && !touched.has("%s,%s" % [x+MULTIPLE, z]):
+		touched = _get_pieces_contiguous_to(_floor, x+MULTIPLE, z, touched)
+
+	return touched
+
+
 func _is_connected_at(x: int, z: int)-> bool:
 	if ((
 		floor_data.has(x) and (floor_data[x].has(z-MULTIPLE) or floor_data[x].has(z+MULTIPLE))
@@ -217,12 +226,3 @@ func _closest_multiple_of_n(x: int, n: int)-> int:
 	return val * n
 
 
-func _is_piece_an_edge(x: int, z: int)-> PoolIntArray: 
-	var edges: PoolIntArray = [0, 0, 0, 0]
-
-	edges[SIDE.XUP] = 1 if !floor_data.has(x+MULTIPLE) or !floor_data[x+MULTIPLE].has(z) else 0
-	edges[SIDE.XDOWN] = 1 if !floor_data.has(x-MULTIPLE) or !floor_data[x-MULTIPLE].has(z) else 0
-	edges[SIDE.ZUP] = 1 if !floor_data[x].has(z+MULTIPLE) else 0
-	edges[SIDE.ZDOWN] = 1 if !floor_data[x].has(z-MULTIPLE) else 0
-
-	return edges

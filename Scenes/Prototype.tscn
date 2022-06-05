@@ -1,38 +1,20 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Scenes/CameraGimbal.gd" type="Script" id=1]
-[ext_resource path="res://Scenes/Prototype.gd" type="Script" id=2]
-[ext_resource path="res://FromBlender/mouseSelect.glb" type="PackedScene" id=4]
+[ext_resource path="res://scenes/prototype.gd" type="Script" id=1]
+[ext_resource path="res://scenes/camera_gimbal.tscn" type="PackedScene" id=2]
+[ext_resource path="res://from_blender/mouse_select.glb" type="PackedScene" id=3]
 
 [sub_resource type="BoxShape" id=1]
 
 [node name="Prototype" type="Spatial"]
-script = ExtResource( 2 )
+script = ExtResource( 1 )
 __meta__ = {
 "_editor_description_": "w"
 }
 
-[node name="camera_gimbal" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.59013, -0.145342 )
-script = ExtResource( 1 )
+[node name="camera_gimbal" parent="." instance=ExtResource( 2 )]
 
-[node name="inner_gimbal" type="Spatial" parent="camera_gimbal"]
-transform = Transform( 1, 0, 0, 0, 0.88003, 0.474918, 0, -0.474918, 0.88003, 0, 0, 1.90735e-06 )
-
-[node name="Camera" type="Camera" parent="camera_gimbal/inner_gimbal"]
-transform = Transform( 1, 0, 0, 0, 0.969757, 0.244072, 0, -0.244072, 0.969757, 0, -2.91168, 14.7055 )
-current = true
-
-[node name="DirectionalLight" type="DirectionalLight" parent="camera_gimbal/inner_gimbal"]
-transform = Transform( 1, 0, 0, 0, 0.819152, 0.573577, 0, -0.573577, 0.819152, 10.7135, 8.6347, 17.2868 )
-light_color = Color( 0.913725, 0.494118, 0.184314, 1 )
-light_energy = 6.675
-light_indirect_energy = 0.379
-light_size = 0.045
-light_specular = 1.7
-light_bake_mode = 2
-
-[node name="mouse_select" parent="." instance=ExtResource( 4 )]
+[node name="mouse_select" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20000, 0.1, -2 )
 
 [node name="floor" type="Area" parent="."]

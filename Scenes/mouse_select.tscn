@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://FromBlender/mouseSelect.glb" type="PackedScene" id=1]
+[ext_resource path="res://from_blender/mouse_select.glb" type="PackedScene" id=1]
 
 [sub_resource type="Skin" id=1]
 
