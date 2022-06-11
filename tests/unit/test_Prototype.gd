@@ -15,7 +15,7 @@ class Test__can_add_floor_piece_at:
 	]
 
 	func before_each():
-		var prototype_script = partial_double("res://Scenes/Prototype.gd")
+		var prototype_script = partial_double("res://scenes/prototype.gd")
 		double_script = prototype_script.new()
 		double_script.floor_data = tower_data[0]
 
@@ -81,7 +81,7 @@ class Test__is_piece_an_edge:
 	]
 
 	func before_each():
-		var prototype_script = partial_double("res://Scenes/Prototype.gd")
+		var prototype_script = partial_double("res://scenes/prototype.gd")
 		double_script = prototype_script.new()
 		double_script.floor_data = tower_data[0]
 
@@ -102,7 +102,7 @@ class Test__is_floor_contiguous:
 	var double_script
 
 	func before_each():
-		var prototype_script = partial_double("res://Scenes/Prototype.gd")
+		var prototype_script = partial_double("res://scenes/prototype.gd")
 		double_script = prototype_script.new()
 
 
@@ -121,7 +121,7 @@ class Test__can_remove_floor_piece_at:
 	var double_script
 
 	func before_each():
-		var prototype_script = partial_double("res://Scenes/Prototype.gd")
+		var prototype_script = partial_double("res://scenes/prototype.gd")
 		double_script = prototype_script.new()
 
 
@@ -161,7 +161,7 @@ class Test__get_piece_count:
 	var double_script
 
 	func before_each():
-		var prototype_script = partial_double("res://Scenes/Prototype.gd")
+		var prototype_script = partial_double("res://scenes/prototype.gd")
 		double_script = prototype_script.new()
 
 

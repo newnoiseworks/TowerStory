@@ -27,3 +27,22 @@ Hmm.
 Either way, modding doesn't need to be thought of immediately, but to a light extent.
 
 Maybe. Need to keep researching.
+
+
+
+
+### 6.5.22 Making basic abstractions
+
+Right now a floor is a prototype basically. What should be the base abstractions containing the basic components of a building? With disrespect to the current contents of the prototype scene.
+
+- Building (this probably just needs to be represented in data, there may be a "city wide" type view"... OR, it could be the main scene, haha)
+- Floor
+- Room... ?
+  - Would have to figure out how to best assemble what's needed here vs. a floor
+    - given everything is dynamic this isn't too hard, maybe the "interior" walls can be drawn by a rooms' definition
+
+Other considerations -- how to format data; probbaly best to be somewhat flat / not get into nested issues early possible.
+
+Separating Floors & Room data makes sense. Currently one set of sets of x,y placements of tiles is fine for reprsenting multiple floor layouts w/n a building. Rooms can be indexed in a separate dictionary against their floors. Given "moving a whole floor" is an unlikely / understandably not supportable feature, this should be safe / with minimal error.
+
+That said it doesn't matter much at first. I can alter the disk / memory storage formats given this is a game pretty easily later on (famous last words).

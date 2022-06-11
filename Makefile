@@ -1,6 +1,9 @@
 play:
 	$(GODOT)
 
+godot:
+	$(GODOT) -e
+
 test:
 	$(GODOT) -s addons/gut/gut_cmdln.gd --path .
 

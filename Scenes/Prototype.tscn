@@ -3,13 +3,12 @@
 [ext_resource path="res://scenes/prototype.gd" type="Script" id=1]
 [ext_resource path="res://scenes/camera_gimbal.tscn" type="PackedScene" id=2]
 [ext_resource path="res://from_blender/mouse_select.glb" type="PackedScene" id=3]
+[ext_resource path="res://scenes/floor.tscn" type="PackedScene" id=4]
 
-[sub_resource type="BoxShape" id=1]
-
-[node name="Prototype" type="Spatial"]
+[node name="prototype" type="Spatial"]
 script = ExtResource( 1 )
 __meta__ = {
-"_editor_description_": "w"
+"_editor_description_": ""
 }
 
 [node name="camera_gimbal" parent="." instance=ExtResource( 2 )]
@@ -17,10 +16,6 @@ __meta__ = {
 [node name="mouse_select" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20000, 0.1, -2 )
 
-[node name="floor" type="Area" parent="."]
-transform = Transform( 8, 0, 0, 0, 0.1, 0, 0, 0, 8, 0, 0, 0 )
-
-[node name="CollisionShape" type="CollisionShape" parent="floor"]
-shape = SubResource( 1 )
+[node name="floor" parent="." instance=ExtResource( 4 )]
 
 [connection signal="input_event" from="floor" to="." method="_on_floor_input_event"]
