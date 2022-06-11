@@ -27,7 +27,7 @@ _global_script_class_icons={
 [application]
 
 config/name="TowerStory"
-run/main_scene="res://scenes/prototype.tscn"
+run/main_scene="res://scenes/building/building.tscn"
 config/icon="res://icon.png"
 
 [debug]

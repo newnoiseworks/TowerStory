@@ -13,8 +13,8 @@ var tower_data = [ # top level tower
 	}
 ]
 
-onready var mouse_select: Spatial = find_node("mouse_select")
-onready var floor_piece_packed = preload("res://scenes/bottom_floor_piece.tscn")
+onready var mouse_select: Spatial = get_parent().find_node("mouse_select")
+onready var floor_piece_packed = preload("res://scenes/floor/bottom_floor_piece.tscn")
 onready var floor_data = tower_data[0]
 
 enum SIDE {
@@ -22,10 +22,10 @@ enum SIDE {
 }
 
 
-func _ready():
+func draw_floor():
 	for x in floor_data:
 		for z in floor_data[x]:
-			_add_floor_piece_at(global_transform.origin + Vector3(x, 0, z), true)
+			_add_floor_piece_at(get_parent().global_transform.origin + Vector3(x, 0, z), true)
 
 	for x in floor_data:
 		for z in floor_data[x]:
@@ -56,7 +56,7 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 
 
 func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
-	var target = global_transform.origin + global_target
+	var target = get_parent().global_transform.origin + global_target
 
 	var x = int(target.x)
 	var z = int(target.z)
@@ -72,18 +72,18 @@ func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
 		"object": floor_piece
 	}
 
-	add_child(floor_piece)
+	get_parent().add_child(floor_piece)
 
 	floor_piece.global_transform.origin = target
 
 	_add_wall_to_piece_at_edges(x, z)
 
 	if !startup:
-		_add_edges_to_surrouding_pieces(x, z)
+		_add_edges_to_surrounding_pieces(x, z)
 
 
 func _remove_floor_piece_at(global_target: Vector3):
-	var target = global_transform.origin + global_target
+	var target = get_parent().global_transform.origin + global_target
 
 	var x = int(target.x)
 	var z = int(target.z)
@@ -92,10 +92,10 @@ func _remove_floor_piece_at(global_target: Vector3):
 		floor_data[x][z]["object"].queue_free()
 		floor_data[x].erase(z)
 
-		_add_edges_to_surrouding_pieces(x, z)
+		_add_edges_to_surrounding_pieces(x, z)
 
 
-func _add_edges_to_surrouding_pieces(x: int, z: int):
+func _add_edges_to_surrounding_pieces(x: int, z: int):
 	var edges = _is_piece_an_edge(x, z)
 
 	if edges[SIDE.XUP] == 0: _add_wall_to_piece_at_edges(x+MULTIPLE, z)

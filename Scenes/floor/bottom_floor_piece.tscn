@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://scenes/bottom_floor_piece.gd" type="Script" id=1]
+[ext_resource path="res://scenes/floor/bottom_floor_piece.gd" type="Script" id=1]
 [ext_resource path="res://from_blender/bottom_floor_piece.glb" type="PackedScene" id=2]
 [ext_resource path="res://scenes/wall.tscn" type="PackedScene" id=3]
 
