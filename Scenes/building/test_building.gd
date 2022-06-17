@@ -70,6 +70,8 @@ class Test__on_floor_input_event:
 			null
 		)
 
+		input.release("main_button")
+
 		gut.simulate(test_building, 2, 2)
 
 		assert_eq(
