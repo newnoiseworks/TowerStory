@@ -189,16 +189,5 @@ func _has_floor_piece_at(x: int, z: int)-> bool:
 	return floor_data.has(x) and floor_data[x].has(z)
 
 
-func _closest_multiple_of(x: int)-> int:
-	return _closest_multiple_of_n(x, MULTIPLE)
-
-
-func _closest_multiple_of_n(x: int, n: int)-> int:
-	if (x % n == 0):
-		return x
-
-	var val: int = x / n
-
-	return val * n
 
 

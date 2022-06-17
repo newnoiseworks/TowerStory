@@ -1,6 +1,6 @@
 extends Spatial
 
-onready var first_floor = find_node("floor")
+onready var current_floor = find_node("floor")
 onready var mouse_select: Spatial = find_node("mouse_select")
 
 var _input = Input
@@ -12,7 +12,7 @@ func _set_input(input):
 
 
 func _ready():
-	first_floor.draw_floor()
+	current_floor.draw_floor()
 
 
 func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
@@ -22,8 +22,8 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 
 		var adjustment = mouse_position - mouse_select.global_transform.origin
 
-		adjustment.x = first_floor._closest_multiple_of(int(adjustment.x))
-		adjustment.z = first_floor._closest_multiple_of(int(adjustment.z))
+		adjustment.x = _closest_multiple_of(int(adjustment.x))
+		adjustment.z = _closest_multiple_of(int(adjustment.z))
 
 		if adjustment != Vector3.ZERO:
 			mouse_select.translate_object_local(adjustment)
@@ -33,8 +33,20 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 		global_target.y = 0
 
 		if _input.is_action_pressed("main_button"):
-			first_floor.add_floor_piece_at(global_target)
+			current_floor.add_floor_piece_at(global_target)
 		elif _input.is_action_pressed("secondary_button"):
-			first_floor.remove_floor_piece_at(global_target)
+			current_floor.remove_floor_piece_at(global_target)
 
+
+func _closest_multiple_of(x: int)-> int:
+	return _closest_multiple_of_n(x, current_floor.MULTIPLE)
+
+
+func _closest_multiple_of_n(x: int, n: int)-> int:
+	if (x % n == 0):
+		return x
+
+	var val: int = x / n
+
+	return val * n
 
