@@ -56,6 +56,10 @@ class Test__on_floor_input_event:
 			null
 		)
 
+		gut.simulate(test_building, 2, 2)
+
+		input.press("main_button")
+
 		test_building._on_floor_input_event(
 			null,
 			InputEventMouseButton.new(),
@@ -66,12 +70,12 @@ class Test__on_floor_input_event:
 			null
 		)
 
-		input.press("main_button")
-
-		var mouse_select = test_building.mouse_select
+		gut.simulate(test_building, 2, 2)
 
 		assert_eq(
-			mouse_select.get_translation(),
+			test_building.get_child(test_building.get_child_count() - 1).get_translation(),
 			Vector3(2, 0, 0),
-			"Moving the mouse moves the mouse select object"
+			"Moving and clicking the mouse adds a piece to the right area"
 		)
+
+
