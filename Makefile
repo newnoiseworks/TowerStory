@@ -7,6 +7,9 @@ godot:
 test:
 	$(GODOT) -s addons/gut/gut_cmdln.gd --path .
 
+test_one:
+	$(GODOT) -s addons/gut/gut_cmdln.gd --path . -gselect=$(FILE)
+
 lsp:
 	$(GODOT) -e --no-window
 
