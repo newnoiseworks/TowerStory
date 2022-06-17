@@ -13,7 +13,6 @@ var tower_data = [ # top level tower
 	}
 ]
 
-onready var mouse_select: Spatial = get_parent().find_node("mouse_select")
 onready var floor_piece_packed = preload("res://scenes/floor/bottom_floor_piece.tscn")
 onready var floor_data = tower_data[0]
 
@@ -25,37 +24,14 @@ enum SIDE {
 func draw_floor():
 	for x in floor_data:
 		for z in floor_data[x]:
-			_add_floor_piece_at(get_parent().global_transform.origin + Vector3(x, 0, z), true)
+			add_floor_piece_at(get_parent().global_transform.origin + Vector3(x, 0, z), true)
 
 	for x in floor_data:
 		for z in floor_data[x]:
 			_add_wall_to_piece_at_edges(x, z)
 
 
-func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
-	if event is InputEventMouseMotion:
-		var mouse_position = position
-		mouse_position.y = mouse_select.global_transform.origin.y
-
-		var adjustment = mouse_position - mouse_select.global_transform.origin
-
-		adjustment.x = _closest_multiple_of(int(adjustment.x))
-		adjustment.z = _closest_multiple_of(int(adjustment.z))
-
-		if adjustment != Vector3.ZERO:
-			mouse_select.translate_object_local(adjustment)
-
-	elif event is InputEventMouseButton:
-		var global_target = mouse_select.global_transform.origin
-		global_target.y = 0
-
-		if Input.is_action_pressed("main_button"):
-			_add_floor_piece_at(global_target)
-		elif Input.is_action_pressed("secondary_button"):
-			_remove_floor_piece_at(global_target)
-
-
-func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
+func add_floor_piece_at(global_target: Vector3, startup: bool = false):
 	var target = get_parent().global_transform.origin + global_target
 
 	var x = int(target.x)
@@ -82,7 +58,7 @@ func _add_floor_piece_at(global_target: Vector3, startup: bool = false):
 		_add_edges_to_surrounding_pieces(x, z)
 
 
-func _remove_floor_piece_at(global_target: Vector3):
+func remove_floor_piece_at(global_target: Vector3):
 	var target = get_parent().global_transform.origin + global_target
 
 	var x = int(target.x)

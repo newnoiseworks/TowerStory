@@ -14,5 +14,8 @@ __meta__ = {
 [node name="camera_gimbal" parent="." instance=ExtResource( 2 )]
 
 [node name="floor" parent="." instance=ExtResource( 1 )]
+transform = Transform( 64, 0, 0, 0, 0.1, 0, 0, 0, 64, 0, 0, 0 )
 
 [node name="mouse_select" parent="." instance=ExtResource( 3 )]
+
+[connection signal="input_event" from="floor" to="." method="_on_floor_input_event"]
