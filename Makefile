@@ -5,10 +5,11 @@ godot:
 	$(GODOT) -e
 
 test:
+ifeq ($(origin FILE),undefined)
 	$(GODOT) -s addons/gut/gut_cmdln.gd --path .
-
-test_one:
+else
 	$(GODOT) -s addons/gut/gut_cmdln.gd --path . -gselect=$(FILE)
+endif
 
 lsp:
 	$(GODOT) -e --no-window
