@@ -2,9 +2,6 @@ extends GutTest
 
 class Test__physics_process:
 	extends GutTest
-	var double_script
-	var _input
-
 
 	class MockInput:
 		var _pressed = []
@@ -17,6 +14,9 @@ class Test__physics_process:
 
 		func is_action_pressed(a):
 			return a in _pressed	
+
+	var double_script
+	var _input
 
 
 	func before_each():
@@ -56,18 +56,18 @@ class Test__physics_process:
 		assert_gt(double_script.get_translation().x, init_position_x, "Can move right")
 
 
-	func test__move_down():
-		var init_position_y = double_script.get_translation().y
-		_input.press("move_down")
-		gut.simulate(double_script, 200, 1)
-		assert_lt(double_script.get_translation().y, init_position_y, "Can move down")
+	# func test__move_down():
+	# 	var init_position_y = double_script.get_translation().y
+	# 	_input.press("move_down")
+	# 	gut.simulate(double_script, 200, 1)
+	# 	assert_lt(double_script.get_translation().y, init_position_y, "Can move down")
 
 
-	func test__move_up():
-		var init_position_y = double_script.get_translation().y
-		_input.press("move_up")
-		gut.simulate(double_script, 200, 1)
-		assert_gt(double_script.get_translation().y, init_position_y, "Can move up")
+	# func test__move_up():
+	# 	var init_position_y = double_script.get_translation().y
+	# 	_input.press("move_up")
+	# 	gut.simulate(double_script, 200, 1)
+	# 	assert_gt(double_script.get_translation().y, init_position_y, "Can move up")
 
 
 	func test__rotate_left():

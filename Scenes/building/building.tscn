@@ -12,6 +12,7 @@ __meta__ = {
 }
 
 [node name="camera_gimbal" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0 )
 
 [node name="floor" parent="." instance=ExtResource( 1 )]
 transform = Transform( 64, 0, 0, 0, 0.1, 0, 0, 0, 64, 0, 0, 0 )

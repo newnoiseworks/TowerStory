@@ -2,17 +2,29 @@ extends Spatial
 
 onready var current_floor = find_node("floor")
 onready var mouse_select: Spatial = find_node("mouse_select")
+onready var camera_gimbal: Spatial = find_node("camera_gimbal")
 
-var _input = Input
+var _inputter = Input
+
+var current_floor_idx = 1
 
 
 # Pass a mock input object for testing
 func _set_input(input):
-	_input = input
+	_inputter = input
 
 
 func _ready():
 	current_floor.draw_floor()
+
+
+func _unhandled_input(event):
+	if event.is_action_released("move_up"):
+		current_floor_idx += 1
+	elif event.is_action_released("move_down"):
+		current_floor_idx -= 1
+
+	camera_gimbal.change_floor(current_floor_idx)
 
 
 func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
@@ -32,9 +44,9 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 		var global_target = mouse_select.global_transform.origin
 		global_target.y = 0
 
-		if _input.is_action_pressed("main_button"):
+		if _inputter.is_action_pressed("main_button"):
 			current_floor.add_floor_piece_at(global_target)
-		elif _input.is_action_pressed("secondary_button"):
+		elif _inputter.is_action_pressed("secondary_button"):
 			current_floor.remove_floor_piece_at(global_target)
 
 
