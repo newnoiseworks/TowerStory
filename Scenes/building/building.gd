@@ -1,8 +1,12 @@
 extends Spatial
 
+onready var floor_packed = preload("res://scenes/floor/floor.tscn")
+
 onready var mouse_select: Spatial = find_node("mouse_select")
 onready var camera_gimbal: Spatial = find_node("camera_gimbal")
 onready var current_level_ui: Label = find_node("current_level")
+onready var floors: Spatial = find_node("floors")
+onready var basement: Spatial = find_node("basement")
 onready var current_floor = get_node("floors/floor%s/floor" % [current_floor_idx])
 
 var _inputter = Input
@@ -20,14 +24,14 @@ func _ready():
 
 
 func _unhandled_input(event):
-	if event.is_action_released("move_up"):
+	if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx:
 		current_floor_idx += 1
 		mouse_select.translate_object_local(Vector3(
 			0,
 			camera_gimbal.camera_y_diff_per_floor,
 			0
 		))
-	elif event.is_action_released("move_down"):
+	elif event.is_action_released("move_down") and basement.get_child_count() < current_floor_idx:
 		current_floor_idx -= 1
 		mouse_select.translate_object_local(Vector3(
 			0,

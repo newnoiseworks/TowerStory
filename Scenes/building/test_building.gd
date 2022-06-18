@@ -92,8 +92,13 @@ class Test__unhandled_input:
 		func press(key):
 			_pressed.append(key)
 
+			if key in _released:
+				_released.remove(key)
+
 		func release(key):
-			_pressed.remove(key)
+			if key in _pressed:
+				_pressed.remove(key)
+
 			_released.append(key)
 
 		func is_action_pressed(a):
@@ -112,6 +117,7 @@ class Test__unhandled_input:
 		input = MockInput.new()
 		test_building._set_input(input)
 		add_child_autofree(test_building)
+		test_building.queue_free()
 
 
 	func test_moves_up_a_floor():
@@ -175,3 +181,46 @@ class Test__unhandled_input:
 		assert_eq(test_building.find_node("current_level").text, "0", "Current level updated in UI")
 		assert_eq(test_building.find_node("mouse_select").get_translation().y, -1.0, "Mouse select icon de-elevated")
 
+
+	func test_cannot_move_up_more_than_one_floor():
+		# move up once...
+		input.press("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 200, 20)
+
+		assert_eq(test_building.current_floor_idx, 2, "Current floor idx goes up one above what exists")
+
+		# move up twice...
+		input.press("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 200, 20)
+
+		assert_eq(test_building.current_floor_idx, 2, "Current floor idx does not go down more than one floor above what exists")
+
+
+	func test_cannot_move_down_more_than_one_floor():
+		# move down once...
+		input.press("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 200, 20)
+
+		assert_eq(test_building.current_floor_idx, 0, "Current floor idx goes down one below what exists")
+
+		# move down twice...
+		input.press("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 200, 20)
+
+		assert_eq(test_building.current_floor_idx, 0, "Current floor idx does not go down more than one floor below what exists")
