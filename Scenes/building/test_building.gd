@@ -141,4 +141,6 @@ class Test__unhandled_input:
 		
 		assert_eq(test_building.current_floor_idx, 2, "Current floor idx gets adjusted")
 
+		assert_eq(test_building.find_node("current_level").text, "2", "Current level updated in UI")
+
 

@@ -19,4 +19,13 @@ transform = Transform( 64, 0, 0, 0, 0.1, 0, 0, 0, 64, 0, 0, 0 )
 
 [node name="mouse_select" parent="." instance=ExtResource( 3 )]
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="current_level" type="Label" parent="CanvasLayer"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 40.0
+margin_bottom = 14.0
+text = "1"
+
 [connection signal="input_event" from="floor" to="." method="_on_floor_input_event"]

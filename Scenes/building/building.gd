@@ -3,6 +3,7 @@ extends Spatial
 onready var current_floor = find_node("floor")
 onready var mouse_select: Spatial = find_node("mouse_select")
 onready var camera_gimbal: Spatial = find_node("camera_gimbal")
+onready var current_level_ui: Label = find_node("current_level")
 
 var _inputter = Input
 
@@ -24,6 +25,7 @@ func _unhandled_input(event):
 	elif event.is_action_released("move_down"):
 		current_floor_idx -= 1
 
+	current_level_ui.text = str(current_floor_idx)
 	camera_gimbal.change_floor(current_floor_idx)
 
 
