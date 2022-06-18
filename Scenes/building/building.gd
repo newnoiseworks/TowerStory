@@ -22,8 +22,18 @@ func _ready():
 func _unhandled_input(event):
 	if event.is_action_released("move_up"):
 		current_floor_idx += 1
+		mouse_select.translate_object_local(Vector3(
+			0,
+			camera_gimbal.camera_y_diff_per_floor,
+			0
+		))
 	elif event.is_action_released("move_down"):
 		current_floor_idx -= 1
+		mouse_select.translate_object_local(Vector3(
+			0,
+			camera_gimbal.camera_y_diff_per_floor * -1,
+			0
+		))
 
 	current_level_ui.text = str(current_floor_idx)
 	camera_gimbal.change_floor(current_floor_idx)

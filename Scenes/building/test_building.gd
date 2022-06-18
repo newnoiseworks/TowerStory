@@ -142,5 +142,38 @@ class Test__unhandled_input:
 		assert_eq(test_building.current_floor_idx, 2, "Current floor idx gets adjusted")
 
 		assert_eq(test_building.find_node("current_level").text, "2", "Current level updated in UI")
+		assert_eq(test_building.find_node("mouse_select").get_translation().y, 1.0, "Mouse select icon elevated")
 
+
+	func test_moves_down_a_floor():
+		input.press("move_down")
+
+		test_building._unhandled_input(input)
+
+		gut.simulate(test_building, 2, 20)
+
+		var initial_camera_y = test_building.find_node("camera_gimbal").get_translation().y
+
+		assert_eq(
+			test_building.find_node("camera_gimbal").get_translation().y,
+			initial_camera_y,
+			"Camera doesn't move until move_down input is released"
+		)
+
+		input.release("move_down")
+
+		test_building._unhandled_input(input)
+
+		gut.simulate(test_building, 200, 20)
+
+		assert_lt(
+			test_building.find_node("camera_gimbal").get_translation().y,
+			initial_camera_y,
+			"Camera moves down upon input move_down release"
+		)
+
+		assert_eq(test_building.current_floor_idx, 0, "Current floor idx gets adjusted")
+
+		assert_eq(test_building.find_node("current_level").text, "0", "Current level updated in UI")
+		assert_eq(test_building.find_node("mouse_select").get_translation().y, -1.0, "Mouse select icon de-elevated")
 
