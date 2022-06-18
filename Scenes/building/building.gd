@@ -1,9 +1,9 @@
 extends Spatial
 
-onready var current_floor = find_node("floor")
 onready var mouse_select: Spatial = find_node("mouse_select")
 onready var camera_gimbal: Spatial = find_node("camera_gimbal")
 onready var current_level_ui: Label = find_node("current_level")
+onready var current_floor = get_node("floors/floor%s/floor" % [current_floor_idx])
 
 var _inputter = Input
 

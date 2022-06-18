@@ -73,8 +73,10 @@ class Test__on_floor_input_event:
 
 		gut.simulate(test_building, 2, 2)
 
+		var current_floor = test_building.get_node("floors/floor1")
+
 		assert_eq(
-			test_building.get_child(test_building.get_child_count() - 1).get_translation(),
+			current_floor.get_child(current_floor.get_child_count() - 1).get_translation(),
 			Vector3(2, 0, 0),
 			"Moving and clicking the mouse adds a piece to the right area"
 		)
@@ -138,9 +140,7 @@ class Test__unhandled_input:
 			initial_camera_y,
 			"Camera moves up upon input move_up release"
 		)
-		
 		assert_eq(test_building.current_floor_idx, 2, "Current floor idx gets adjusted")
-
 		assert_eq(test_building.find_node("current_level").text, "2", "Current level updated in UI")
 		assert_eq(test_building.find_node("mouse_select").get_translation().y, 1.0, "Mouse select icon elevated")
 
@@ -171,9 +171,7 @@ class Test__unhandled_input:
 			initial_camera_y,
 			"Camera moves down upon input move_down release"
 		)
-
 		assert_eq(test_building.current_floor_idx, 0, "Current floor idx gets adjusted")
-
 		assert_eq(test_building.find_node("current_level").text, "0", "Current level updated in UI")
 		assert_eq(test_building.find_node("mouse_select").get_translation().y, -1.0, "Mouse select icon de-elevated")
 
