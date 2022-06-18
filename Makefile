@@ -8,10 +8,11 @@ test:
 ifeq ($(origin FILE),undefined)
 	$(GODOT) -s addons/gut/gut_cmdln.gd --path .
 else
-	$(GODOT) -s addons/gut/gut_cmdln.gd --path . -gselect=$(FILE)
+	$(GODOT) -s addons/gut/gut_cmdln.gd --path . -gselect=$(FILE) -glog=$(GLOG_SINGLE)
 endif
 
 lsp:
 	$(GODOT) -e --no-window
 
 GODOT=/mnt/c/Users/hello/Downloads/Godot_v3.4.4-stable_win64.exe/Godot_v3.4.4-stable_win64.exe
+GLOG_SINGLE=3
