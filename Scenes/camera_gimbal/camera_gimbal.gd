@@ -15,12 +15,12 @@ onready var target_y: int = self.get_translation().y
 onready var y_offset: int = self.get_translation().y
 
 # Pass a mock input object for testing
-func _setinputter(input):
+func _set_input(input):
 	inputter = input
 
 
 func change_floor(target_floor):
-	target_y = target_floor * camera_y_diff_per_floor + y_offset
+	target_y = (target_floor - 1 * camera_y_diff_per_floor) + y_offset
 
 
 func _physics_process(_delta):
@@ -46,12 +46,6 @@ func _physics_process(_delta):
 
 	if (inputter.is_action_pressed("move_right")):
 		camera_transform.origin += self.get_transform().basis.x * camera_speed
-
-	# if (inputter.is_action_pressed("move_down")):
-	# 	camera_transform.origin += -self.get_transform().basis.y * camera_speed
-
-	# if (inputter.is_action_pressed("move_up")):
-	# 	camera_transform.origin += self.get_transform().basis.y * camera_speed
 
 	if (inputter.is_action_pressed("rotate_left")):
 		camera_transform = camera_transform * Transform(Quat(Y_AXIS, -rotate_speed))

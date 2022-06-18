@@ -56,18 +56,6 @@ class Test__physics_process:
 		assert_gt(double_script.get_translation().x, init_position_x, "Can move right")
 
 
-	# func test__move_down():
-	# 	var init_position_y = double_script.get_translation().y
-	# 	_input.press("move_down")
-	# 	gut.simulate(double_script, 200, 1)
-	# 	assert_lt(double_script.get_translation().y, init_position_y, "Can move down")
-
-
-	# func test__move_up():
-	# 	var init_position_y = double_script.get_translation().y
-	# 	_input.press("move_up")
-	# 	gut.simulate(double_script, 200, 1)
-	# 	assert_gt(double_script.get_translation().y, init_position_y, "Can move up")
 
 
 	func test__rotate_left():
@@ -82,5 +70,37 @@ class Test__physics_process:
 		_input.press("rotate_right")
 		gut.simulate(double_script, 200, 1)
 		assert_gt(double_script.get_rotation_degrees().y, init_rotate, "Can rotate right")
+
+
+
+
+class Test_change_floor:
+	extends GutTest
+
+	var double_script
+
+
+	func before_each():
+		var prototype_script = load("res://scenes/camera_gimbal/camera_gimbal.gd")
+		double_script = prototype_script.new()
+		add_child_autofree(double_script)
+
+
+	func test__move_up_a_floor():
+		var init_position_y = double_script.get_translation().y
+
+		double_script.change_floor(2)
+		gut.simulate(double_script, 200, 1)
+
+		assert_gt(double_script.get_translation().y, init_position_y, "Moves up a floor")
+
+
+	func test__move_down_a_floor():
+		var init_position_y = double_script.get_translation().y
+
+		double_script.change_floor(0)
+		gut.simulate(double_script, 200, 1)
+
+		assert_lt(double_script.get_translation().y, init_position_y, "Moves down a floor")
 
 
