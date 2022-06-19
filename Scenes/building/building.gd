@@ -25,7 +25,6 @@ func _ready():
 
 
 func _unhandled_input(event):
-
 	if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx:
 		previous_floor = get_node("floors/floor%s/floor" % [current_floor_idx])
 		current_floor_idx += 1
@@ -80,21 +79,21 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 
 
 func _create_new_current_floor():
-			var new_floor_container = Spatial.new()
-			current_floor = floor_packed.instance()
-			new_floor_container.add_child(current_floor)
-			new_floor_container.name = "floor%s" % [current_floor_idx]
+	var new_floor_container = Spatial.new()
+	current_floor = floor_packed.instance()
+	new_floor_container.add_child(current_floor)
+	new_floor_container.name = "floor%s" % [current_floor_idx]
 
-			if current_floor_idx > 0:
-				floors.add_child(new_floor_container)
-			else:
-				basement.add_child(new_floor_container)
+	if current_floor_idx > 0:
+		floors.add_child(new_floor_container)
+	else:
+		basement.add_child(new_floor_container)
 
-			new_floor_container.translate_object_local(Vector3(
-				0, 1 * (current_floor_idx - 1), 0
-			))
+	new_floor_container.translate_object_local(Vector3(
+		0, 1 * (current_floor_idx - 1), 0
+	))
 
-			current_floor.draw_floor()
+	current_floor.draw_floor()
 
 
 func _closest_multiple_of(x: int)-> int:
