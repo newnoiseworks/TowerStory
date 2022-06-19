@@ -66,6 +66,20 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 		global_target.y = 0
 
 		if current_floor == null:
+			_create_new_current_floor()
+
+		if _inputter.is_action_pressed("main_button"):
+			if (current_floor_idx > 1 and current_floor._get_piece_count() == 0):
+				var floor_under = get_node("floors/floor%s/floor" % [current_floor_idx - 1])
+				if (floor_under.has_floor_piece_at(global_target)):
+					current_floor.add_floor_piece_at(global_target)
+			else:
+				current_floor.add_floor_piece_at(global_target)
+		elif _inputter.is_action_pressed("secondary_button"):
+			current_floor.remove_floor_piece_at(global_target)
+
+
+func _create_new_current_floor():
 			var new_floor_container = Spatial.new()
 			current_floor = floor_packed.instance()
 			new_floor_container.add_child(current_floor)
@@ -81,11 +95,6 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 			))
 
 			current_floor.draw_floor()
-
-		if _inputter.is_action_pressed("main_button"):
-			current_floor.add_floor_piece_at(global_target)
-		elif _inputter.is_action_pressed("secondary_button"):
-			current_floor.remove_floor_piece_at(global_target)
 
 
 func _closest_multiple_of(x: int)-> int:

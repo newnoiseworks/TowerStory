@@ -21,13 +21,22 @@ func draw_floor():
 			_add_wall_to_piece_at_edges(x, z)
 
 
+func has_floor_piece_at(global_target: Vector3)-> bool:
+	var target = get_parent().global_transform.origin + global_target
+
+	var x = int(target.x)
+	var z = int(target.z)
+
+	return _has_floor_piece_at(x, z)
+
+
 func add_floor_piece_at(global_target: Vector3, startup: bool = false):
 	var target = get_parent().global_transform.origin + global_target
 
 	var x = int(target.x)
 	var z = int(target.z)
 
-	if !startup and !can_add_floor_piece_at(x, z): return
+	if !startup and !_can_add_floor_piece_at(x, z): return
 
 	if !floor_data.has(x): floor_data[x] = {}
 
@@ -54,11 +63,20 @@ func remove_floor_piece_at(global_target: Vector3):
 	var x = int(target.x)
 	var z = int(target.z)
 
-	if can_remove_floor_piece_at(x, z):
+	if _can_remove_floor_piece_at(x, z):
 		floor_data[x][z]["object"].queue_free()
 		floor_data[x].erase(z)
 
 		_add_edges_to_surrounding_pieces(x, z)
+
+
+func can_add_floor_piece_at(global_target: Vector3):
+	var target = get_parent().global_transform.origin + global_target
+
+	var x = int(target.x)
+	var z = int(target.z)
+
+	return _can_remove_floor_piece_at(x, z)
 
 
 func _add_edges_to_surrounding_pieces(x: int, z: int):
@@ -89,7 +107,7 @@ func _add_wall_to_piece_at_edges(x: int, z:int):
 		floor_piece.call("add_wall_at_edge", SIDE.ZDOWN)
 
 
-func can_add_floor_piece_at(x: int, z: int)-> bool:
+func _can_add_floor_piece_at(x: int, z: int)-> bool:
 	if _has_floor_piece_at(x, z):
 		return false
 
@@ -99,7 +117,7 @@ func can_add_floor_piece_at(x: int, z: int)-> bool:
 	return true
 
 
-func can_remove_floor_piece_at(x: int, z:int)-> bool:
+func _can_remove_floor_piece_at(x: int, z:int)-> bool:
 	if !_has_floor_piece_at(x, z):
 		print_debug("Can't delete a floor piece that doesn't exist")
 		return false

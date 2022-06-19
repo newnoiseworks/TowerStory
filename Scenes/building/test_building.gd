@@ -293,3 +293,164 @@ class Test_SecondFloorWorkflow:
 			Vector3(2, 0, 0),
 			"Moving and clicking the mouse adds a piece to the right area"
 		)
+
+
+	func test_cannot_add_piece_where_none_exists_on_first_floor_if_first_piece_on_second_floor():
+		# first, make a piece on the first floor
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+
+		# second, move up a floor
+		input.press("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 200, 20)
+
+		# third, make a piece not above the first - should not be ok
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 2.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 2.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+
+		var current_floor = test_building.get_node_or_null("floors/floor2")
+
+		assert_not_null(
+			current_floor,
+			"Second floor is created and added to the tree"
+		)
+
+		assert_ne(
+			current_floor.get_child(current_floor.get_child_count() - 1).get_translation(),
+			Vector3(2, 0, 2),
+			"Cannot add a piece if floor underneath doesnt have one and this is the first piece being added"
+		)
+
+
+	func test_can_add_piece_where_none_exists_on_first_floor_if_contiguous_with_second_floor():
+		# first, make a piece on the first floor
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+
+		# second, move up a floor
+		input.press("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 200, 20)
+
+		# third, make a piece above the first - should be ok
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+
+		# fourth, make a piece not above the first - should be ok
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 2.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 2.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+
+		var current_floor = test_building.get_node_or_null("floors/floor2")
+
+		assert_not_null(
+			current_floor,
+			"Second floor is created and added to the tree"
+		)
+
+		assert_eq(
+			current_floor.get_child(current_floor.get_child_count() - 1).get_translation(),
+			Vector3(2, 0, 2),
+			"Can add a piece if floor underneath doesnt have one and this is not the first piece being added to the second floor"
+		)
