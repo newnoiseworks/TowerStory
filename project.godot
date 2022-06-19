@@ -30,6 +30,10 @@ config/name="TowerStory"
 run/main_scene="res://scenes/building/building.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+TowerGlobals="*res://tower_globals.gd"
+
 [debug]
 
 gdscript/warnings/integer_division=false

@@ -28,41 +28,51 @@ class Test__can_add_floor_piece_at:
 
 	func test_no_unattached_pieces():
 		assert_eq(
-			double_script._can_add_floor_piece_at(1 * double_script.MULTIPLE, 1 * double_script.MULTIPLE),
+			double_script._can_add_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 1 * TowerGlobals.TILE_MULTIPLE),
 			false,
-			"Should not be able to add piece at (1, 1) * MULTIPLE"
+			"Should not be able to add piece at (1, 1) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			double_script._can_add_floor_piece_at(-1 * double_script.MULTIPLE, -1 * double_script.MULTIPLE),
+			double_script._can_add_floor_piece_at(-1 * TowerGlobals.TILE_MULTIPLE, -1 * TowerGlobals.TILE_MULTIPLE),
 			false,
-			"Should not be able to add piece at (-1, -1) * MULTIPLE"
+			"Should not be able to add piece at (-1, -1) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 
 	func test_can_attach_pieces():
 		assert_eq(
-			double_script._can_add_floor_piece_at(-1 * double_script.MULTIPLE, 0),
+			double_script._can_add_floor_piece_at(-1 * TowerGlobals.TILE_MULTIPLE, 0),
 			true,
-			"Should be able to add piece at (-1, 0) * MULTIPLE"
+			"Should be able to add piece at (-1, 0) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			double_script._can_add_floor_piece_at(1 * double_script.MULTIPLE, 0),
+			double_script._can_add_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 0),
 			true,
-			"Should be able to add piece at (1, 0) * MULTIPLE"
+			"Should be able to add piece at (1, 0) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			double_script._can_add_floor_piece_at(0, 1 * double_script.MULTIPLE),
+			double_script._can_add_floor_piece_at(0, 1 * TowerGlobals.TILE_MULTIPLE),
 			true,
-			"Should be able to add piece at (0, 1) * MULTIPLE"
+			"Should be able to add piece at (0, 1) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			double_script._can_add_floor_piece_at(0, -1 * double_script.MULTIPLE),
+			double_script._can_add_floor_piece_at(0, -1 * TowerGlobals.TILE_MULTIPLE),
 			true,
-			"Should be able to add piece at (0, -1) * MULTIPLE"
+			"Should be able to add piece at (0, -1) * TowerGlobals.TILE_MULTIPLE"
+		)
+
+
+	func test_can_add_when_nothing_exists():
+		double_script.floor_data = {}
+
+		assert_eq(
+			double_script._can_add_floor_piece_at(0, 0),
+			true,
+			"Should be able to add piece at (0, 0) when none exists"
 		)
 
 
@@ -107,7 +117,7 @@ class Test__is_floor_contiguous:
 
 
 	func test_simple_is_contiguous():
-		double_script.floor_data = Globals.get_simple_tower_data(double_script.MULTIPLE)[0]
+		double_script.floor_data = Globals.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
 			double_script._is_floor_contiguous(double_script.floor_data),
@@ -126,7 +136,7 @@ class Test__can_remove_floor_piece_at:
 
 
 	func test_can_remove_end_in_simple_row():
-		double_script.floor_data = Globals.get_simple_tower_data(double_script.MULTIPLE)[0]
+		double_script.floor_data = Globals.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
 			double_script._can_remove_floor_piece_at(0, 0),
@@ -136,20 +146,20 @@ class Test__can_remove_floor_piece_at:
 
 
 	func test_cannot_remove_center_in_simple_row():
-		double_script.floor_data = Globals.get_simple_tower_data(double_script.MULTIPLE)[0]
+		double_script.floor_data = Globals.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
-			double_script._can_remove_floor_piece_at(0, 1 * double_script.MULTIPLE),
+			double_script._can_remove_floor_piece_at(0, 1 * TowerGlobals.TILE_MULTIPLE),
 			false,
 			"Cannot remove piece in center of simple three piece row, no islands"
 		)
 
 
 	func test_can_remove_center_in_square():
-		double_script.floor_data = Globals.get_simple_square_tower_data(double_script.MULTIPLE)[0]
+		double_script.floor_data = Globals.get_simple_square_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
-			double_script._can_remove_floor_piece_at(1 * double_script.MULTIPLE, 1 * double_script.MULTIPLE),
+			double_script._can_remove_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 1 * TowerGlobals.TILE_MULTIPLE),
 			true,
 			"Can remove piece in center of 9 piece square"
 		)
@@ -166,7 +176,7 @@ class Test__get_piece_count:
 
 
 	func test_count_simple():
-		double_script.floor_data = Globals.get_simple_tower_data(double_script.MULTIPLE)[0]
+		double_script.floor_data = Globals.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
 			double_script._get_piece_count(),
@@ -176,7 +186,7 @@ class Test__get_piece_count:
 
 
 	func test_count_square():
-		double_script.floor_data = Globals.get_simple_square_tower_data(double_script.MULTIPLE)[0]
+		double_script.floor_data = Globals.get_simple_square_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
 			double_script._get_piece_count(),
@@ -186,6 +196,10 @@ class Test__get_piece_count:
 
 
 class Globals:
+	static func get_empty_tower_data():
+		return {}
+
+
 	static func get_simple_tower_data(multiple):
 		var tower_data_simple_floor = {}
 

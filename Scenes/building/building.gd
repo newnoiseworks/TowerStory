@@ -8,6 +8,7 @@ onready var current_level_ui: Label = find_node("current_level")
 onready var floors: Spatial = find_node("floors")
 onready var basement: Spatial = find_node("basement")
 onready var current_floor = get_node("floors/floor%s/floor" % [current_floor_idx])
+onready var previous_floor = current_floor
 
 var _inputter = Input
 
@@ -24,7 +25,9 @@ func _ready():
 
 
 func _unhandled_input(event):
+
 	if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx:
+		previous_floor = get_node("floors/floor%s/floor" % [current_floor_idx])
 		current_floor_idx += 1
 		mouse_select.translate_object_local(Vector3(
 			0,
@@ -32,6 +35,7 @@ func _unhandled_input(event):
 			0
 		))
 	elif event.is_action_released("move_down") and basement.get_child_count() < current_floor_idx:
+		previous_floor = get_node("floors/floor%s/floor" % [current_floor_idx])
 		current_floor_idx -= 1
 		mouse_select.translate_object_local(Vector3(
 			0,
@@ -39,6 +43,7 @@ func _unhandled_input(event):
 			0
 		))
 
+	current_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
 	current_level_ui.text = str(current_floor_idx)
 	camera_gimbal.change_floor(current_floor_idx)
 
@@ -60,6 +65,23 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 		var global_target = mouse_select.global_transform.origin
 		global_target.y = 0
 
+		if current_floor == null:
+			var new_floor_container = Spatial.new()
+			current_floor = floor_packed.instance()
+			new_floor_container.add_child(current_floor)
+			new_floor_container.name = "floor%s" % [current_floor_idx]
+
+			if current_floor_idx > 0:
+				floors.add_child(new_floor_container)
+			else:
+				basement.add_child(new_floor_container)
+
+			new_floor_container.translate_object_local(Vector3(
+				0, 1 * (current_floor_idx - 1), 0
+			))
+
+			current_floor.draw_floor()
+
 		if _inputter.is_action_pressed("main_button"):
 			current_floor.add_floor_piece_at(global_target)
 		elif _inputter.is_action_pressed("secondary_button"):
@@ -67,7 +89,10 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 
 
 func _closest_multiple_of(x: int)-> int:
-	return _closest_multiple_of_n(x, current_floor.MULTIPLE)
+	return _closest_multiple_of_n(
+		x,
+		TowerGlobals.TILE_MULTIPLE	
+	)
 
 
 func _closest_multiple_of_n(x: int, n: int)-> int:

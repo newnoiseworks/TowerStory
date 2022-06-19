@@ -31,6 +31,7 @@ text = "1"
 
 [node name="floor" parent="floors/floor1" instance=ExtResource( 1 )]
 transform = Transform( 64, 0, 0, 0, 0.1, 0, 0, 0, 64, 0, 0, 0 )
+is_base = true
 
 [node name="basement" type="Spatial" parent="."]
 

@@ -1,20 +1,10 @@
 extends Spatial
 
-const MULTIPLE = 2
+var floor_piece_packed = preload("res://scenes/floor/bottom_floor_piece.tscn")
 
-var tower_data = [ # top level tower
-	{ # first indent level first story -- towers should always be ascending, no floating floors
-		0: { # first story x (tile)
-			0: { # first story z (tile)
-				"type": "floor",
-				# "object": godot object
-			}
-		}
-	}
-]
+var floor_data = {}
 
-onready var floor_piece_packed = preload("res://scenes/floor/bottom_floor_piece.tscn")
-onready var floor_data = tower_data[0]
+export var is_base = false
 
 enum SIDE {
 	XUP, XDOWN, ZUP, ZDOWN
@@ -37,7 +27,7 @@ func add_floor_piece_at(global_target: Vector3, startup: bool = false):
 	var x = int(target.x)
 	var z = int(target.z)
 
-	if !startup and !_can_add_floor_piece_at(x, z): return
+	if !startup and !can_add_floor_piece_at(x, z): return
 
 	if !floor_data.has(x): floor_data[x] = {}
 
@@ -64,7 +54,7 @@ func remove_floor_piece_at(global_target: Vector3):
 	var x = int(target.x)
 	var z = int(target.z)
 
-	if _can_remove_floor_piece_at(x, z):
+	if can_remove_floor_piece_at(x, z):
 		floor_data[x][z]["object"].queue_free()
 		floor_data[x].erase(z)
 
@@ -74,10 +64,10 @@ func remove_floor_piece_at(global_target: Vector3):
 func _add_edges_to_surrounding_pieces(x: int, z: int):
 	var edges = _is_piece_an_edge(x, z)
 
-	if edges[SIDE.XUP] == 0: _add_wall_to_piece_at_edges(x+MULTIPLE, z)
-	if edges[SIDE.XDOWN] == 0: _add_wall_to_piece_at_edges(x-MULTIPLE, z)
-	if edges[SIDE.ZUP] == 0: _add_wall_to_piece_at_edges(x, z+MULTIPLE)
-	if edges[SIDE.ZDOWN] == 0: _add_wall_to_piece_at_edges(x, z-MULTIPLE)
+	if edges[SIDE.XUP] == 0: _add_wall_to_piece_at_edges(x+TowerGlobals.TILE_MULTIPLE, z)
+	if edges[SIDE.XDOWN] == 0: _add_wall_to_piece_at_edges(x-TowerGlobals.TILE_MULTIPLE, z)
+	if edges[SIDE.ZUP] == 0: _add_wall_to_piece_at_edges(x, z+TowerGlobals.TILE_MULTIPLE)
+	if edges[SIDE.ZDOWN] == 0: _add_wall_to_piece_at_edges(x, z-TowerGlobals.TILE_MULTIPLE)
 
 
 func _add_wall_to_piece_at_edges(x: int, z:int):
@@ -99,19 +89,17 @@ func _add_wall_to_piece_at_edges(x: int, z:int):
 		floor_piece.call("add_wall_at_edge", SIDE.ZDOWN)
 
 
-func _can_add_floor_piece_at(x: int, z: int)-> bool:
+func can_add_floor_piece_at(x: int, z: int)-> bool:
 	if _has_floor_piece_at(x, z):
-		print_debug("Can't place a tile where one already exists")
 		return false
 
-	if !_is_connected_at(x, z):
-		print_debug("Can't place a tile unconnected to the building")
+	if _get_piece_count() > 0 and !_is_connected_at(x, z):
 		return false
 
 	return true
 
 
-func _can_remove_floor_piece_at(x: int, z:int)-> bool:
+func can_remove_floor_piece_at(x: int, z:int)-> bool:
 	if !_has_floor_piece_at(x, z):
 		print_debug("Can't delete a floor piece that doesn't exist")
 		return false
@@ -120,6 +108,7 @@ func _can_remove_floor_piece_at(x: int, z:int)-> bool:
 	floor_copy[x].erase(z)
 
 	if !_is_floor_contiguous(floor_copy):
+		print_debug("Can't make a base floor non contiguous")
 		return false
 
 	return true
@@ -136,10 +125,10 @@ func _is_floor_contiguous(_floor):
 func _is_piece_an_edge(x: int, z: int)-> PoolIntArray: 
 	var edges: PoolIntArray = [0, 0, 0, 0]
 
-	edges[SIDE.XUP] = 1 if !floor_data.has(x+MULTIPLE) or !floor_data[x+MULTIPLE].has(z) else 0
-	edges[SIDE.XDOWN] = 1 if !floor_data.has(x-MULTIPLE) or !floor_data[x-MULTIPLE].has(z) else 0
-	edges[SIDE.ZUP] = 1 if !floor_data[x].has(z+MULTIPLE) else 0
-	edges[SIDE.ZDOWN] = 1 if !floor_data[x].has(z-MULTIPLE) else 0
+	edges[SIDE.XUP] = 1 if !floor_data.has(x+TowerGlobals.TILE_MULTIPLE) or !floor_data[x+TowerGlobals.TILE_MULTIPLE].has(z) else 0
+	edges[SIDE.XDOWN] = 1 if !floor_data.has(x-TowerGlobals.TILE_MULTIPLE) or !floor_data[x-TowerGlobals.TILE_MULTIPLE].has(z) else 0
+	edges[SIDE.ZUP] = 1 if !floor_data[x].has(z+TowerGlobals.TILE_MULTIPLE) else 0
+	edges[SIDE.ZDOWN] = 1 if !floor_data[x].has(z-TowerGlobals.TILE_MULTIPLE) else 0
 
 	return edges
 func _get_piece_count(_floor = null)-> int:
@@ -157,28 +146,28 @@ func _get_piece_count(_floor = null)-> int:
 func _get_pieces_contiguous_to(_floor: Dictionary, x: int, z: int, touched: Dictionary) -> Dictionary:
 	touched["%s,%s" % [x, z]] = true
 
-	if _floor[x].has(z-MULTIPLE) && !touched.has("%s,%s" % [x, z-MULTIPLE]):
-		touched = _get_pieces_contiguous_to(_floor, x, z-MULTIPLE, touched)
+	if _floor[x].has(z-TowerGlobals.TILE_MULTIPLE) && !touched.has("%s,%s" % [x, z-TowerGlobals.TILE_MULTIPLE]):
+		touched = _get_pieces_contiguous_to(_floor, x, z-TowerGlobals.TILE_MULTIPLE, touched)
 
-	if _floor[x].has(z+MULTIPLE) && !touched.has("%s,%s" % [x, z+MULTIPLE]):
-		touched = _get_pieces_contiguous_to(_floor, x, z+MULTIPLE, touched)
+	if _floor[x].has(z+TowerGlobals.TILE_MULTIPLE) && !touched.has("%s,%s" % [x, z+TowerGlobals.TILE_MULTIPLE]):
+		touched = _get_pieces_contiguous_to(_floor, x, z+TowerGlobals.TILE_MULTIPLE, touched)
 
-	if _floor.has(x-MULTIPLE) and _floor[x-MULTIPLE].has(z) && !touched.has("%s,%s" % [x-MULTIPLE, z]):
-		touched = _get_pieces_contiguous_to(_floor, x-MULTIPLE, z, touched)
+	if _floor.has(x-TowerGlobals.TILE_MULTIPLE) and _floor[x-TowerGlobals.TILE_MULTIPLE].has(z) && !touched.has("%s,%s" % [x-TowerGlobals.TILE_MULTIPLE, z]):
+		touched = _get_pieces_contiguous_to(_floor, x-TowerGlobals.TILE_MULTIPLE, z, touched)
 
-	if _floor.has(x+MULTIPLE) and _floor[x+MULTIPLE].has(z) && !touched.has("%s,%s" % [x+MULTIPLE, z]):
-		touched = _get_pieces_contiguous_to(_floor, x+MULTIPLE, z, touched)
+	if _floor.has(x+TowerGlobals.TILE_MULTIPLE) and _floor[x+TowerGlobals.TILE_MULTIPLE].has(z) && !touched.has("%s,%s" % [x+TowerGlobals.TILE_MULTIPLE, z]):
+		touched = _get_pieces_contiguous_to(_floor, x+TowerGlobals.TILE_MULTIPLE, z, touched)
 
 	return touched
 
 
 func _is_connected_at(x: int, z: int)-> bool:
 	if ((
-		floor_data.has(x) and (floor_data[x].has(z-MULTIPLE) or floor_data[x].has(z+MULTIPLE))
+		floor_data.has(x) and (floor_data[x].has(z-TowerGlobals.TILE_MULTIPLE) or floor_data[x].has(z+TowerGlobals.TILE_MULTIPLE))
 	) or (
-		floor_data.has(x-MULTIPLE) and floor_data[x-MULTIPLE].has(z)
+		floor_data.has(x-TowerGlobals.TILE_MULTIPLE) and floor_data[x-TowerGlobals.TILE_MULTIPLE].has(z)
 	) or (
-		floor_data.has(x+MULTIPLE) and floor_data[x+MULTIPLE].has(z)
+		floor_data.has(x+TowerGlobals.TILE_MULTIPLE) and floor_data[x+TowerGlobals.TILE_MULTIPLE].has(z)
 	)):
 		return true
 

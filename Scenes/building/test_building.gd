@@ -1,20 +1,30 @@
 extends GutTest
 
-class Test__on_floor_input_event:
-	extends GutTest
+class MockInput:
+	var _pressed = []
+	var _released = []
 
-	class MockInput:
-		var _pressed = []
+	func press(key):
+		_pressed.append(key)
 
-		func press(key):
-			_pressed.append(key)
+		if key in _released:
+			_released.remove(key)
 
-		func release(key):
+	func release(key):
+		if key in _pressed:
 			_pressed.remove(key)
 
-		func is_action_pressed(a):
-			return a in _pressed
+		_released.append(key)
 
+	func is_action_pressed(a):
+		return a in _pressed
+
+	func is_action_released(a):
+		return a in _released
+
+
+class Test__on_floor_input_event:
+	extends GutTest
 
 	var test_building
 	var input
@@ -85,31 +95,8 @@ class Test__on_floor_input_event:
 class Test__unhandled_input:
 	extends GutTest
 
-	class MockInput:
-		var _pressed = []
-		var _released = []
-
-		func press(key):
-			_pressed.append(key)
-
-			if key in _released:
-				_released.remove(key)
-
-		func release(key):
-			if key in _pressed:
-				_pressed.remove(key)
-
-			_released.append(key)
-
-		func is_action_pressed(a):
-			return a in _pressed
-
-		func is_action_released(a):
-			return a in _released
-
 	var test_building
 	var input
-
 
 	func before_each():
 		var prototype_script = load("res://scenes/building/building.tscn")
@@ -224,3 +211,85 @@ class Test__unhandled_input:
 		gut.simulate(test_building, 200, 20)
 
 		assert_eq(test_building.current_floor_idx, 0, "Current floor idx does not go down more than one floor below what exists")
+
+
+class Test_SecondFloorWorkflow:
+	extends GutTest
+
+	var test_building
+	var input
+
+	func before_each():
+		var prototype_script = load("res://scenes/building/building.tscn")
+		test_building = prototype_script.instance()
+		input = MockInput.new()
+		test_building._set_input(input)
+		add_child_autofree(test_building)
+
+	func test_add_piece_where_one_exists():
+		# first, make a piece on the first floor
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+
+		# second, move up a floor
+		input.press("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 200, 20)
+
+		# third, make a piece above the first - should be ok
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		gut.simulate(test_building, 2, 2)
+
+		var current_floor = test_building.get_node_or_null("floors/floor2")
+
+		assert_not_null(
+			current_floor,
+			"Second floor is created and added to the tree"
+		)
+
+		assert_eq(
+			current_floor.get_child(current_floor.get_child_count() - 1).get_translation(),
+			Vector3(2, 0, 0),
+			"Moving and clicking the mouse adds a piece to the right area"
+		)
