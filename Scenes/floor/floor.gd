@@ -21,6 +21,18 @@ func draw_floor():
 			_add_wall_to_piece_at_edges(x, z)
 
 
+func set_transparent():
+	for x in floor_data:
+		for z in floor_data[x]:
+			floor_data[x][z]["object"].set_transparent()
+
+
+func set_opaque():
+	for x in floor_data:
+		for z in floor_data[x]:
+			floor_data[x][z]["object"].set_opaque()
+
+
 func has_floor_piece_at(global_target: Vector3)-> bool:
 	var target = get_parent().global_transform.origin + global_target
 

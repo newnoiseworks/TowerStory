@@ -25,26 +25,31 @@ func _ready():
 
 
 func _unhandled_input(event):
-	if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx:
-		previous_floor = get_node("floors/floor%s/floor" % [current_floor_idx])
-		current_floor_idx += 1
-		mouse_select.translate_object_local(Vector3(
-			0,
-			camera_gimbal.camera_y_diff_per_floor,
-			0
-		))
-	elif event.is_action_released("move_down") and basement.get_child_count() < current_floor_idx:
-		previous_floor = get_node("floors/floor%s/floor" % [current_floor_idx])
-		current_floor_idx -= 1
-		mouse_select.translate_object_local(Vector3(
-			0,
-			camera_gimbal.camera_y_diff_per_floor * -1,
-			0
-		))
+	if event.is_action_released("move_up") or event.is_action_released("move_down"):
+		if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx:
+			previous_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
+			current_floor_idx += 1
+			mouse_select.translate_object_local(Vector3(
+				0,
+				camera_gimbal.camera_y_diff_per_floor,
+				0
+			))
+		elif event.is_action_released("move_down") and basement.get_child_count() < current_floor_idx:
+			previous_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
+			current_floor_idx -= 1
+			mouse_select.translate_object_local(Vector3(
+				0,
+				camera_gimbal.camera_y_diff_per_floor * -1,
+				0
+			))
 
-	current_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
-	current_level_ui.text = str(current_floor_idx)
-	camera_gimbal.change_floor(current_floor_idx)
+		if previous_floor != null: previous_floor.set_transparent()
+
+		current_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
+		if current_floor != null: current_floor.set_opaque()
+
+		current_level_ui.text = str(current_floor_idx)
+		camera_gimbal.change_floor(current_floor_idx)
 
 
 func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
@@ -66,6 +71,7 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 
 		if current_floor == null:
 			_create_new_current_floor()
+			current_floor.set_opaque()
 
 		if _inputter.is_action_pressed("main_button"):
 			if (current_floor_idx > 1 and current_floor._get_piece_count() == 0):
