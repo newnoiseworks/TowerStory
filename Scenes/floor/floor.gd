@@ -42,13 +42,13 @@ func has_floor_piece_at(global_target: Vector3)-> bool:
 	return _has_floor_piece_at(x, z)
 
 
-func add_floor_piece_at(global_target: Vector3, startup: bool = false):
+func add_floor_piece_at(global_target: Vector3, force: bool = false):
 	var target = get_parent().global_transform.origin + global_target
 
 	var x = int(target.x)
 	var z = int(target.z)
 
-	if !startup and !_can_add_floor_piece_at(x, z): return
+	if !force and !_can_add_floor_piece_at(x, z): return
 
 	if !floor_data.has(x): floor_data[x] = {}
 
@@ -63,9 +63,8 @@ func add_floor_piece_at(global_target: Vector3, startup: bool = false):
 
 	floor_piece.global_transform.origin = target
 
-	_add_wall_to_piece_at_edges(x, z)
-
-	if !startup:
+	if !force:
+		_add_wall_to_piece_at_edges(x, z)
 		_add_edges_to_surrounding_pieces(x, z)
 
 

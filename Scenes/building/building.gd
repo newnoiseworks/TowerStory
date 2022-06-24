@@ -11,8 +11,11 @@ onready var current_floor = get_node("floors/floor%s/floor" % [current_floor_idx
 onready var previous_floor = current_floor
 
 var _inputter = Input
+var _main_button_press_target: Vector3
+var _is_main_button_pressed: bool = false
 
 var current_floor_idx = 1
+
 
 
 # Pass a mock input object for testing
@@ -54,35 +57,72 @@ func _unhandled_input(event):
 
 func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 	if event is InputEventMouseMotion:
-		var mouse_position = position
-		mouse_position.y = mouse_select.global_transform.origin.y
+		_on_select_move(position)
 
-		var adjustment = mouse_position - mouse_select.global_transform.origin
+	if event is InputEventMouseButton:
+		_on_button_click()
 
-		adjustment.x = _closest_multiple_of(int(adjustment.x))
-		adjustment.z = _closest_multiple_of(int(adjustment.z))
 
-		if adjustment != Vector3.ZERO:
-			mouse_select.translate_object_local(adjustment)
+func _on_button_click():
+	var target = mouse_select.global_transform.origin
+	target.y = 0
 
-	elif event is InputEventMouseButton:
-		var global_target = mouse_select.global_transform.origin
-		global_target.y = 0
+	if current_floor == null:
+		_create_new_current_floor()
+		current_floor.set_opaque()
 
-		if current_floor == null:
-			_create_new_current_floor()
-			current_floor.set_opaque()
+	if _inputter.is_action_pressed("main_button") and _is_main_button_pressed == false:
+		_is_main_button_pressed = true
+		_main_button_press_target = target
+	elif _inputter.is_action_just_released("main_button"):
+		_add_pieces_as_needed(target)
+		_is_main_button_pressed = false
+	elif _inputter.is_action_just_released("secondary_button"):
+		current_floor.remove_floor_piece_at(target)
 
-		if _inputter.is_action_pressed("main_button"):
-			if (current_floor_idx > 1 and current_floor._get_piece_count() == 0):
-				var floor_under = get_node("floors/floor%s/floor" % [current_floor_idx - 1])
-				if (floor_under.has_floor_piece_at(global_target)):
-					current_floor.add_floor_piece_at(global_target)
-			else:
-				current_floor.add_floor_piece_at(global_target)
-		elif _inputter.is_action_pressed("secondary_button"):
-			current_floor.remove_floor_piece_at(global_target)
 
+# TODO: This code should most likely be pushed into floor.gd
+func _add_pieces_as_needed(target):
+	if (current_floor_idx > 1 and current_floor._get_piece_count() == 0):
+		var floor_under = get_node("floors/floor%s/floor" % [current_floor_idx - 1])
+		if (!floor_under.has_floor_piece_at(_main_button_press_target)):
+			return
+
+	if target == _main_button_press_target:
+		current_floor.add_floor_piece_at(target)
+		return
+
+	current_floor.add_floor_piece_at(_main_button_press_target)
+
+	var greaterx = _main_button_press_target if _main_button_press_target.x > target.x else target
+	var lesserx = target if greaterx == _main_button_press_target else _main_button_press_target
+	var greaterz = _main_button_press_target if _main_button_press_target.z > target.z else target
+	var lesserz = target if greaterz == _main_button_press_target else _main_button_press_target
+
+	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+			if x == _main_button_press_target.x and z == _main_button_press_target.z: 
+				continue
+
+			current_floor.add_floor_piece_at(Vector3(
+				x, 0, z
+			), true)
+
+	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+			current_floor._add_wall_to_piece_at_edges(x, z)
+			current_floor._add_edges_to_surrounding_pieces(x, z)
+
+func _on_select_move(mouse_position: Vector3):
+	mouse_position.y = mouse_select.global_transform.origin.y
+
+	var adjustment = mouse_position - mouse_select.global_transform.origin
+
+	adjustment.x = _closest_multiple_of(int(adjustment.x))
+	adjustment.z = _closest_multiple_of(int(adjustment.z))
+
+	if adjustment != Vector3.ZERO:
+		mouse_select.translate_object_local(adjustment)
 
 func _create_new_current_floor():
 	var new_floor_container = Spatial.new()

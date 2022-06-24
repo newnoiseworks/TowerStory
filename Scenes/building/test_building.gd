@@ -22,6 +22,20 @@ class MockInput:
 	func is_action_released(a):
 		return a in _released
 
+	func is_action_just_released(a):
+		return is_action_released(a)
+
+
+	func _test_mouse_input_event(test_building, input_type, position):
+		test_building._on_floor_input_event(
+			null,
+			input_type,
+			position,
+			null,
+			null
+		)
+
+
 
 class Test__on_floor_input_event:
 	extends GutTest
@@ -81,6 +95,18 @@ class Test__on_floor_input_event:
 			null
 		)
 
+		input.release("main_button")
+
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+
 		gut.simulate(test_building, 2, 2)
 
 		var current_floor = test_building.get_node("floors/floor1")
@@ -90,6 +116,63 @@ class Test__on_floor_input_event:
 			Vector3(2, 0, 0),
 			"Moving and clicking the mouse adds a piece to the right area"
 		)
+
+
+	func test_mouse_click_and_drag_to_add_rectangle():
+		var current_floor = test_building.get_node("floors/floor1")
+		var orig_children_count = current_floor.get_child_count()
+
+		input._test_mouse_input_event(
+			test_building,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			)
+		)
+
+		input.press("main_button")
+
+		input._test_mouse_input_event(
+			test_building,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			)
+		)
+
+		gut.simulate(test_building, 2, 2)
+
+		input._test_mouse_input_event(
+			test_building,
+			InputEventMouseMotion.new(),
+			Vector3(
+				4.076785, 0.100007, 4.179358
+			)
+		)
+
+		input.release("main_button")
+
+		input._test_mouse_input_event(
+			test_building,
+			InputEventMouseButton.new(),
+			Vector3(
+				4.076785, 0.100007, 4.179358
+			)
+		)
+
+		gut.simulate(test_building, 2, 2)
+
+		assert_gt(current_floor.get_child_count(), orig_children_count, "More children have been added")
+		assert_eq(current_floor.get_child_count() - orig_children_count, 6, "Correct number of pieces have been assigned")
+
+		current_floor = current_floor.find_node("floor")
+
+		assert_not_null(current_floor.floor_data[2][0], "Piece set at right spot")
+		assert_not_null(current_floor.floor_data[2][2], "Piece set at right spot")
+		assert_not_null(current_floor.floor_data[2][4], "Piece set at right spot")
+		assert_not_null(current_floor.floor_data[4][0], "Piece set at right spot")
+		assert_not_null(current_floor.floor_data[4][2], "Piece set at right spot")
+		assert_not_null(current_floor.floor_data[4][4], "Piece set at right spot")
 
 
 class Test__unhandled_input:
@@ -248,6 +331,16 @@ class Test_SecondFloorWorkflow:
 			null,
 			null
 		)
+		input.release("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
 		gut.simulate(test_building, 2, 2)
 
 		# second, move up a floor
@@ -270,6 +363,16 @@ class Test_SecondFloorWorkflow:
 		)
 		gut.simulate(test_building, 2, 2)
 		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.release("main_button")
 		test_building._on_floor_input_event(
 			null,
 			InputEventMouseButton.new(),
@@ -317,6 +420,16 @@ class Test_SecondFloorWorkflow:
 			null,
 			null
 		)
+		input.release("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
 		gut.simulate(test_building, 2, 2)
 
 		# second, move up a floor
@@ -339,6 +452,16 @@ class Test_SecondFloorWorkflow:
 		)
 		gut.simulate(test_building, 2, 2)
 		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 2.179358
+			),
+			null,
+			null
+		)
+		input.release("main_button")
 		test_building._on_floor_input_event(
 			null,
 			InputEventMouseButton.new(),
@@ -386,6 +509,16 @@ class Test_SecondFloorWorkflow:
 			null,
 			null
 		)
+		input.release("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
 		gut.simulate(test_building, 2, 2)
 
 		# second, move up a floor
@@ -417,6 +550,16 @@ class Test_SecondFloorWorkflow:
 			null,
 			null
 		)
+		input.release("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
 		gut.simulate(test_building, 2, 2)
 
 		# fourth, make a piece not above the first - should be ok
@@ -431,6 +574,16 @@ class Test_SecondFloorWorkflow:
 		)
 		gut.simulate(test_building, 2, 2)
 		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 2.179358
+			),
+			null,
+			null
+		)
+		input.release("main_button")
 		test_building._on_floor_input_event(
 			null,
 			InputEventMouseButton.new(),
