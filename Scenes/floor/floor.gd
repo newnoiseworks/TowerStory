@@ -5,6 +5,7 @@ var floor_piece_packed = preload("res://scenes/floor/bottom_floor_piece.tscn")
 var floor_data = {}
 
 export var is_base = false
+export var floor_idx = 1
 
 enum SIDE {
 	XUP, XDOWN, ZUP, ZDOWN
@@ -133,12 +134,13 @@ func _can_remove_floor_piece_at(x: int, z:int)-> bool:
 		print_debug("Can't delete a floor piece that doesn't exist")
 		return false
 
-	var floor_copy = floor_data.duplicate(true)
-	floor_copy[x].erase(z)
+	if floor_idx == 1 || _get_piece_count() > 1:
+		var floor_copy = floor_data.duplicate(true)
+		floor_copy[x].erase(z)
 
-	if !_is_floor_contiguous(floor_copy):
-		print_debug("Can't make a base floor non contiguous")
-		return false
+		if !_is_floor_contiguous(floor_copy):
+			print_debug("Can't make a base floor non contiguous")
+			return false
 
 	return true
 

@@ -29,6 +29,11 @@ class MockInput:
 		return is_action_released(a)
 
 
+	func _reset():
+		_pressed = []
+		_released = []
+
+
 	func _test_mouse_input_event(test_building, input_type, position):
 		test_building._on_floor_input_event(
 			null,
@@ -178,10 +183,6 @@ class Test__on_floor_input_event:
 		assert_not_null(current_floor.floor_data[4][4], "Piece set at right spot")
 
 
-
-
-
-
 class Test__unhandled_input:
 	extends GutTest
 
@@ -198,6 +199,36 @@ class Test__unhandled_input:
 
 
 	func test_moves_up_a_floor():
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.release("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+
 		input.press("move_up")
 
 		test_building._unhandled_input(input)
@@ -260,6 +291,36 @@ class Test__unhandled_input:
 
 
 	func test_cannot_move_up_more_than_one_floor():
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.release("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+
 		# move up once...
 		input.press("move_up")
 		test_building._unhandled_input(input)
@@ -613,6 +674,118 @@ class Test_SecondFloorWorkflow:
 			current_floor.get_child(current_floor.get_child_count() - 1).get_translation(),
 			Vector3(2, 0, 2),
 			"Can add a piece if floor underneath doesnt have one and this is not the first piece being added to the second floor"
+		)
+
+
+	func test_cannot_move_to_third_floor_without_piece_on_second_floor():
+		# first, make a piece on the first floor
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.release("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+
+		# second, move up a floor
+		input.press("move_up")
+		input.release("move_up")
+		test_building._unhandled_input(input)
+
+		# third, make a piece above the first - should be ok
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.press("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.release("main_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+
+		input._reset()
+
+		# fourth, remove that piece on the second floor
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.press("secondary_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+		input.release("secondary_button")
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+
+		# fifth, try to go up to third floor -- shouldn't be able to
+		input.press("move_up")
+		input.release("move_up")
+		test_building._unhandled_input(input)
+
+		assert_ne(
+			test_building.current_floor_idx, 3,
+			"Not allowed to go up to third floor w/ no pieces on second"
 		)
 
 
