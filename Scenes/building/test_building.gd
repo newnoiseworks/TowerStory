@@ -1,5 +1,8 @@
 extends GutTest
 
+# TODO: This file feels split between integration / unit tests (or is just integration) -- need to separate and distinguish in filename
+
+# TODO: Make this globally accessible to the test suite somehow
 class MockInput:
 	var _pressed = []
 	var _released = []
@@ -173,6 +176,10 @@ class Test__on_floor_input_event:
 		assert_not_null(current_floor.floor_data[4][0], "Piece set at right spot")
 		assert_not_null(current_floor.floor_data[4][2], "Piece set at right spot")
 		assert_not_null(current_floor.floor_data[4][4], "Piece set at right spot")
+
+
+
+
 
 
 class Test__unhandled_input:
@@ -607,3 +614,105 @@ class Test_SecondFloorWorkflow:
 			Vector3(2, 0, 2),
 			"Can add a piece if floor underneath doesnt have one and this is not the first piece being added to the second floor"
 		)
+
+
+# TODO: Move below into floor.gd
+class Test__add_pieces_as_needed:
+	extends GutTest
+
+	var test_building
+	var input
+
+	func before_each():
+		var prototype_script = load("res://scenes/building/building.tscn")
+		test_building = prototype_script.instance()
+		input = MockInput.new()
+		test_building._set_input(input)
+		add_child_autofree(test_building)
+
+
+	func test_cant_add_non_contiguous_group_to_existing_group():
+		# First, make a block in the center
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseMotion.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+
+		gut.simulate(test_building, 2, 2)
+
+		input.press("main_button")
+
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+
+		input.release("main_button")
+
+		test_building._on_floor_input_event(
+			null,
+			InputEventMouseButton.new(),
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			null,
+			null
+		)
+
+		gut.simulate(test_building, 2, 2)
+
+		# Second, attempt to make 2x2 block off center -- shouldn't allow
+		var current_floor = test_building.get_node("floors/floor1")
+		var orig_children_count = current_floor.get_child_count()
+
+		input._test_mouse_input_event(
+			test_building,
+			InputEventMouseMotion.new(),
+			Vector3(
+				12.076785, 0.100007, 0.179358
+			)
+		)
+
+		input.press("main_button")
+
+		input._test_mouse_input_event(
+			test_building,
+			InputEventMouseButton.new(),
+			Vector3(
+				12.076785, 0.100007, 0.179358
+			)
+		)
+
+		gut.simulate(test_building, 2, 2)
+
+		input._test_mouse_input_event(
+			test_building,
+			InputEventMouseMotion.new(),
+			Vector3(
+				14.076785, 0.100007, 4.179358
+			)
+		)
+
+		input.release("main_button")
+
+		input._test_mouse_input_event(
+			test_building,
+			InputEventMouseButton.new(),
+			Vector3(
+				14.076785, 0.100007, 4.179358
+			)
+		)
+
+		gut.simulate(test_building, 2, 2)
+
+		assert_eq(current_floor.get_child_count(), orig_children_count, "No extra children have been added when not contiguous")

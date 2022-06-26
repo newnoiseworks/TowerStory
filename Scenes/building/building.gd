@@ -17,7 +17,6 @@ var _is_main_button_pressed: bool = false
 var current_floor_idx = 1
 
 
-
 # Pass a mock input object for testing
 func _set_input(input):
 	_inputter = input
@@ -81,6 +80,18 @@ func _on_button_click():
 		current_floor.remove_floor_piece_at(target)
 
 
+func _on_select_move(mouse_position: Vector3):
+	mouse_position.y = mouse_select.global_transform.origin.y
+
+	var adjustment = mouse_position - mouse_select.global_transform.origin
+
+	adjustment.x = _closest_multiple_of(int(adjustment.x))
+	adjustment.z = _closest_multiple_of(int(adjustment.z))
+
+	if adjustment != Vector3.ZERO:
+		mouse_select.translate_object_local(adjustment)
+
+
 # TODO: This code should most likely be pushed into floor.gd
 func _add_pieces_as_needed(target):
 	if (current_floor_idx > 1 and current_floor._get_piece_count() == 0):
@@ -92,18 +103,30 @@ func _add_pieces_as_needed(target):
 		current_floor.add_floor_piece_at(target)
 		return
 
-	current_floor.add_floor_piece_at(_main_button_press_target)
-
 	var greaterx = _main_button_press_target if _main_button_press_target.x > target.x else target
 	var lesserx = target if greaterx == _main_button_press_target else _main_button_press_target
 	var greaterz = _main_button_press_target if _main_button_press_target.z > target.z else target
 	var lesserz = target if greaterz == _main_button_press_target else _main_button_press_target
 
+	_add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz)
+
+
+func _add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz):
+	var has_adjacent_piece = false
+
 	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
-			if x == _main_button_press_target.x and z == _main_button_press_target.z: 
-				continue
+			if current_floor._can_add_floor_piece_at(x, z):
+				has_adjacent_piece = true
+				break
 
+		if has_adjacent_piece:
+			break
+
+	if !has_adjacent_piece: return
+
+	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 			current_floor.add_floor_piece_at(Vector3(
 				x, 0, z
 			), true)
@@ -113,16 +136,6 @@ func _add_pieces_as_needed(target):
 			current_floor._add_wall_to_piece_at_edges(x, z)
 			current_floor._add_edges_to_surrounding_pieces(x, z)
 
-func _on_select_move(mouse_position: Vector3):
-	mouse_position.y = mouse_select.global_transform.origin.y
-
-	var adjustment = mouse_position - mouse_select.global_transform.origin
-
-	adjustment.x = _closest_multiple_of(int(adjustment.x))
-	adjustment.z = _closest_multiple_of(int(adjustment.z))
-
-	if adjustment != Vector3.ZERO:
-		mouse_select.translate_object_local(adjustment)
 
 func _create_new_current_floor():
 	var new_floor_container = Spatial.new()
