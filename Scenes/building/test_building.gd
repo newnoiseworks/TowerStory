@@ -1,6 +1,6 @@
 extends GutTest
 
-# TODO: This file feels split between integration / unit tests (or is just integration) -- need to separate and distinguish in filename
+# TODO: This file feels split between integration / unit tests (or is just integration?) -- need to separate and distinguish in filename
 
 # TODO: Make this globally accessible to the test suite somehow
 class MockInput:
@@ -43,6 +43,35 @@ class MockInput:
 			null
 		)
 
+
+	func _click_and_drag(test_building, start, finish):
+		_test_mouse_input_event(
+			test_building,
+			InputEventMouseMotion.new(),
+			start
+		)
+
+		press("main_button")
+
+		_test_mouse_input_event(
+			test_building,
+			InputEventMouseButton.new(),
+			start
+		)
+
+		_test_mouse_input_event(
+			test_building,
+			InputEventMouseMotion.new(),
+			finish
+		)
+
+		release("main_button")
+
+		_test_mouse_input_event(
+			test_building,
+			InputEventMouseButton.new(),
+			finish
+		)
 
 
 class Test__on_floor_input_event:
@@ -130,45 +159,15 @@ class Test__on_floor_input_event:
 		var current_floor = test_building.get_node("floors/floor1")
 		var orig_children_count = current_floor.get_child_count()
 
-		input._test_mouse_input_event(
+		input._click_and_drag(
 			test_building,
-			InputEventMouseMotion.new(),
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			)
-		)
-
-		input.press("main_button")
-
-		input._test_mouse_input_event(
-			test_building,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			)
-		)
-
-		gut.simulate(test_building, 2, 2)
-
-		input._test_mouse_input_event(
-			test_building,
-			InputEventMouseMotion.new(),
+			),
 			Vector3(
 				4.076785, 0.100007, 4.179358
 			)
 		)
-
-		input.release("main_button")
-
-		input._test_mouse_input_event(
-			test_building,
-			InputEventMouseButton.new(),
-			Vector3(
-				4.076785, 0.100007, 4.179358
-			)
-		)
-
-		gut.simulate(test_building, 2, 2)
 
 		assert_gt(current_floor.get_child_count(), orig_children_count, "More children have been added")
 		assert_eq(current_floor.get_child_count() - orig_children_count, 6, "Correct number of pieces have been assigned")
@@ -362,6 +361,7 @@ class Test__unhandled_input:
 		gut.simulate(test_building, 200, 20)
 
 		assert_eq(test_building.current_floor_idx, 0, "Current floor idx does not go down more than one floor below what exists")
+
 
 
 class Test_SecondFloorWorkflow:
@@ -889,3 +889,53 @@ class Test__add_pieces_as_needed:
 		gut.simulate(test_building, 2, 2)
 
 		assert_eq(current_floor.get_child_count(), orig_children_count, "No extra children have been added when not contiguous")
+
+
+class Test__add_multiple_pieces_if_adjacent:
+	extends GutTest
+
+	var test_building
+	var input
+
+	func before_each():
+		var prototype_script = load("res://scenes/building/building.tscn")
+		test_building = prototype_script.instance()
+		input = MockInput.new()
+		test_building._set_input(input)
+		add_child_autofree(test_building)
+
+
+	func test__can_add_overlapping_pieces():
+		var current_floor = test_building.get_node("floors/floor1/floor")
+
+		input._click_and_drag(
+			test_building,
+			Vector3(
+				0.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				0.076785, 0.100007, 0.179358
+			)
+		)
+
+		gut.simulate(test_building, 5, 15)
+
+		input._click_and_drag(
+			test_building,
+			Vector3(
+				-18.076785, 0.100007, -18.179358
+			),
+			Vector3(
+				18.076785, 0.100007, 18.179358
+			)
+		)
+
+		gut.simulate(test_building, 5, 15)
+
+		var first_piece = current_floor.floor_data[0][0]["object"]
+		var first_node = test_building.get_node("floors/floor1/bottomFloorPiece")
+
+		assert_eq(first_piece, first_node, "First piece is correctly set, no double creation of pieces")
+
+		assert_eq(first_piece.find_node("wall1").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")
+		assert_eq(first_piece.find_node("wall3").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")

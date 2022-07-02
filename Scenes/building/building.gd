@@ -127,7 +127,8 @@ func _add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz):
 
 	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
-			current_floor.add_floor_piece_at(Vector3(x, 0, z), true)
+			if !current_floor._has_floor_piece_at(x, z):
+				current_floor.add_floor_piece_at(Vector3(x, 0, z), true)
 
 	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
