@@ -5,10 +5,12 @@ godot:
 	$(GODOT) -e
 
 test:
-ifeq ($(origin FILE),undefined)
-	$(GODOT) -s addons/gut/gut_cmdln.gd --path .
-else
+ifneq ($(FILE),)
 	$(GODOT) -s addons/gut/gut_cmdln.gd --path . -gselect=$(FILE) -glog=$(GLOG_SINGLE)
+else ifneq ($(TEST),)
+	$(GODOT) -s addons/gut/gut_cmdln.gd --path . -gunit_test_name=$(TEST) -glog=$(GLOG_SINGLE)
+else
+	$(GODOT) -s addons/gut/gut_cmdln.gd --path .
 endif
 
 lsp:
