@@ -7,13 +7,13 @@ onready var camera_gimbal: Spatial = find_node("camera_gimbal")
 onready var current_level_ui: Label = find_node("current_level")
 onready var floors: Spatial = find_node("floors")
 onready var basement: Spatial = find_node("basement")
-onready var current_floor = get_node("floors/floor%s/floor" % [current_floor_idx])
-onready var previous_floor = current_floor
 
 var _inputter = Input
 var _main_button_press_target: Vector3
 var _is_main_button_pressed: bool = false
 
+var previous_floor: Spatial
+var current_floor: Spatial
 var current_floor_idx = 1
 
 
@@ -23,14 +23,13 @@ func _set_input(input):
 
 
 func _ready():
-	current_floor.draw_floor()
+	_create_new_current_floor()
 
 
 func _unhandled_input(event):
 	if event.is_action_released("move_up") or event.is_action_released("move_down"):
 		if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx and (current_floor == null or current_floor._get_piece_count() > 0):
 			previous_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
-
 			current_floor_idx += 1
 			mouse_select.translate_object_local(Vector3(
 				0, camera_gimbal.camera_y_diff_per_floor, 0
@@ -46,10 +45,16 @@ func _unhandled_input(event):
 
 
 func _post_floor_change():
-	if previous_floor != null: previous_floor.set_transparent()
+	if previous_floor != null: 
+		previous_floor.set_transparent()
+		if previous_floor.is_connected("input_event", self, "_on_floor_input_event"):
+			previous_floor.disconnect("input_event", self, "_on_floor_input_event")
 
 	current_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
-	if current_floor != null: current_floor.set_opaque()
+
+	if current_floor == null: _create_new_current_floor()
+		
+	current_floor.set_opaque()
 
 	current_level_ui.text = str(current_floor_idx)
 	camera_gimbal.change_floor(current_floor_idx)
@@ -66,10 +71,6 @@ func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
 func _on_button_click():
 	var target = mouse_select.global_transform.origin
 	target.y = 0
-
-	if current_floor == null:
-		_create_new_current_floor()
-		current_floor.set_opaque()
 
 	if _inputter.is_action_pressed("main_button") and _is_main_button_pressed == false:
 		_is_main_button_pressed = true
@@ -139,6 +140,7 @@ func _add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz):
 func _create_new_current_floor():
 	var new_floor_container = Spatial.new()
 	current_floor = floor_packed.instance()
+	current_floor.scale = Vector3(64, .1, 64)
 	new_floor_container.add_child(current_floor)
 	new_floor_container.name = "floor%s" % [current_floor_idx]
 	current_floor.floor_idx = current_floor_idx
@@ -153,6 +155,7 @@ func _create_new_current_floor():
 	))
 
 	current_floor.draw_floor()
+	var _c = current_floor.connect("input_event", self, "_on_floor_input_event")
 
 
 func _closest_multiple_of(x: int)-> int:
@@ -169,4 +172,3 @@ func _closest_multiple_of_n(x: int, n: int)-> int:
 	var val: int = x / n
 
 	return val * n
-

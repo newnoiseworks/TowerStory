@@ -172,7 +172,7 @@ class Test__on_floor_input_event:
 		assert_gt(current_floor.get_child_count(), orig_children_count, "More children have been added")
 		assert_eq(current_floor.get_child_count() - orig_children_count, 6, "Correct number of pieces have been assigned")
 
-		current_floor = current_floor.find_node("floor")
+		current_floor = test_building.get_node("floors/floor1/floor")
 
 		assert_not_null(current_floor.floor_data[2][0], "Piece set at right spot")
 		assert_not_null(current_floor.floor_data[2][2], "Piece set at right spot")
