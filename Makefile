@@ -2,7 +2,7 @@ play:
 	$(GODOT)
 
 godot:
-	$(GODOT) -e
+	$(GODOT) -e -w --resolution 1920x1080
 
 test:
 ifneq ($(FILE),)
