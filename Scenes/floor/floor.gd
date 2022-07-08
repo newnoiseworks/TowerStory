@@ -162,6 +162,8 @@ func _is_piece_an_edge(x: int, z: int)-> PoolIntArray:
 	edges[SIDE.ZDOWN] = 1 if !floor_data[x].has(z-TowerGlobals.TILE_MULTIPLE) else 0
 
 	return edges
+
+
 func _get_piece_count(_floor = null)-> int:
 	if _floor == null:
 		_floor = floor_data

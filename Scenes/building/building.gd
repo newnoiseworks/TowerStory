@@ -12,8 +12,8 @@ var _inputter = Input
 var _main_button_press_target: Vector3
 var _is_main_button_pressed: bool = false
 
-var previous_floor: Spatial
-var current_floor: Spatial
+var previous_floor: Area
+var current_floor: Area
 var current_floor_idx = 1
 
 
@@ -34,6 +34,8 @@ func _unhandled_input(event):
 			mouse_select.translate_object_local(Vector3(
 				0, camera_gimbal.camera_y_diff_per_floor, 0
 			))
+
+			_post_floor_change()
 		elif event.is_action_released("move_down") and basement.get_child_count() < current_floor_idx:
 			previous_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
 			current_floor_idx -= 1
@@ -41,23 +43,28 @@ func _unhandled_input(event):
 				0, camera_gimbal.camera_y_diff_per_floor * -1, 0
 			))
 
-		_post_floor_change()
+			_post_floor_change()
 
 
 func _post_floor_change():
-	if previous_floor != null: 
-		previous_floor.set_transparent()
-		if previous_floor.is_connected("input_event", self, "_on_floor_input_event"):
-			previous_floor.disconnect("input_event", self, "_on_floor_input_event")
-
 	current_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
-
 	if current_floor == null: _create_new_current_floor()
-		
+
+	if previous_floor.is_connected("input_event", self, "_on_floor_input_event"):
+		previous_floor.disconnect("input_event", self, "_on_floor_input_event")
+
+	if !current_floor.is_connected("input_event", self, "_on_floor_input_event"):
+		var _c = current_floor.connect("input_event", self, "_on_floor_input_event")
+
+	previous_floor.input_ray_pickable = false
+	current_floor.input_ray_pickable = true
+
+	previous_floor.set_transparent()
 	current_floor.set_opaque()
 
 	current_level_ui.text = str(current_floor_idx)
 	camera_gimbal.change_floor(current_floor_idx)
+
 
 
 func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
@@ -156,6 +163,7 @@ func _create_new_current_floor():
 
 	current_floor.draw_floor()
 	var _c = current_floor.connect("input_event", self, "_on_floor_input_event")
+	current_floor.input_ray_pickable = true
 
 
 func _closest_multiple_of(x: int)-> int:
