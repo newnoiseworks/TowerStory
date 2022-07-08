@@ -28,26 +28,34 @@ func _ready():
 
 func _unhandled_input(event):
 	if event.is_action_released("move_up") or event.is_action_released("move_down"):
-		if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx and (current_floor == null or current_floor._get_piece_count() > 0):
-			previous_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
-			current_floor_idx += 1
-			mouse_select.translate_object_local(Vector3(
-				0, camera_gimbal.camera_y_diff_per_floor, 0
-			))
+		_handle_floor_move(event)
 
-			_post_floor_change()
-		elif event.is_action_released("move_down") and basement.get_child_count() < current_floor_idx:
-			previous_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
-			current_floor_idx -= 1
-			mouse_select.translate_object_local(Vector3(
-				0, camera_gimbal.camera_y_diff_per_floor * -1, 0
-			))
 
-			_post_floor_change()
+func _handle_floor_move(event):
+	if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx and (current_floor == null or current_floor._get_piece_count() > 0):
+		previous_floor = _get_current_floor()
+		current_floor_idx += 1
+		mouse_select.translate_object_local(Vector3(
+			0, camera_gimbal.camera_y_diff_per_floor, 0
+		))
+
+		_post_floor_change()
+	elif event.is_action_released("move_down") and (current_floor_idx == 1 or basement.get_child_count() >= abs(current_floor_idx)) and current_floor_idx <= 0 and current_floor._get_piece_count() > 0 or current_floor_idx > 0:
+		previous_floor = _get_current_floor()
+		current_floor_idx -= 1
+		mouse_select.translate_object_local(Vector3(
+			0, camera_gimbal.camera_y_diff_per_floor * -1, 0
+		))
+
+		_post_floor_change()
+
+
+func _get_current_floor():
+	return get_node_or_null("%s/floor%s/floor" % ["floors" if current_floor_idx > 0 else "basement", current_floor_idx])
 
 
 func _post_floor_change():
-	current_floor = get_node_or_null("floors/floor%s/floor" % [current_floor_idx])
+	current_floor = _get_current_floor()
 	if current_floor == null: _create_new_current_floor()
 
 	if previous_floor.is_connected("input_event", self, "_on_floor_input_event"):
