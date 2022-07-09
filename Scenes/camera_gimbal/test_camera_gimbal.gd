@@ -1,23 +1,12 @@
 extends GutTest
 
+const MockInput = preload("res://utils/test/MockInput.gd")
+
 class Test__physics_process:
 	extends GutTest
 
-	class MockInput:
-		var _pressed = []
-
-		func press(key):
-			_pressed.append(key)
-
-		func release(key):
-			_pressed.remove(key)
-
-		func is_action_pressed(a):
-			return a in _pressed	
-
 	var double_script
 	var _input
-
 
 	func before_each():
 		var prototype_script = load("res://scenes/camera_gimbal/camera_gimbal.gd")
@@ -54,8 +43,6 @@ class Test__physics_process:
 		_input.press("move_right")
 		gut.simulate(double_script, 200, 1)
 		assert_gt(double_script.get_translation().x, init_position_x, "Can move right")
-
-
 
 
 	func test__rotate_left():
