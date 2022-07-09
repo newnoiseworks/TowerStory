@@ -18,14 +18,12 @@ class Test__on_floor_input_event:
 
 
 	func test_mouse_move():
-		test_building._on_floor_input_event(
-			null,
+		input._test_mouse_input_event(
+			test_building,
 			InputEventMouseMotion.new(),
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
 
 		var mouse_select = test_building.mouse_select
@@ -37,43 +35,12 @@ class Test__on_floor_input_event:
 		)
 
 	func test_mouse_add_piece():
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
-
-		gut.simulate(test_building, 2, 2)
-
-		input.press("main_button")
-
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-
-		input.release("main_button")
-
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-
-		gut.simulate(test_building, 2, 2)
 
 		var current_floor = test_building.get_node("floors/floor1")
 
@@ -88,7 +55,7 @@ class Test__on_floor_input_event:
 		var current_floor = test_building.get_node("floors/floor1")
 		var orig_children_count = current_floor.get_child_count()
 
-		input._click_and_drag(
+		input._click_and_drag_and_release(
 			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
@@ -127,34 +94,11 @@ class Test__unhandled_input:
 
 
 	func test_moves_up_a_floor():
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
 
 		input.press("move_up")
@@ -219,34 +163,11 @@ class Test__unhandled_input:
 
 
 	func test_cannot_move_up_more_than_one_floor():
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
 
 		# move up once...
@@ -292,7 +213,6 @@ class Test__unhandled_input:
 		assert_eq(test_building.current_floor_idx, 0, "Current floor idx does not go down more than one floor below what exists")
 
 
-
 class Test_SecondFloorWorkflow:
 	extends GutTest
 
@@ -308,35 +228,11 @@ class Test_SecondFloorWorkflow:
 
 	func test_add_piece_where_one_exists():
 		# first, make a piece on the first floor
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		gut.simulate(test_building, 2, 2)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
 		gut.simulate(test_building, 2, 2)
 
@@ -349,37 +245,12 @@ class Test_SecondFloorWorkflow:
 		gut.simulate(test_building, 200, 20)
 
 		# third, make a piece above the first - should be ok
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
-		gut.simulate(test_building, 2, 2)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		gut.simulate(test_building, 2, 2)
 
 		var current_floor = test_building.get_node_or_null("floors/floor2")
 
@@ -397,37 +268,12 @@ class Test_SecondFloorWorkflow:
 
 	func test_cannot_add_piece_where_none_exists_on_first_floor_if_first_piece_on_second_floor():
 		# first, make a piece on the first floor
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
-		gut.simulate(test_building, 2, 2)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		gut.simulate(test_building, 2, 2)
 
 		# second, move up a floor
 		input.press("move_up")
@@ -438,37 +284,12 @@ class Test_SecondFloorWorkflow:
 		gut.simulate(test_building, 200, 20)
 
 		# third, make a piece not above the first - should not be ok
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 2.179358
-			),
-			null,
-			null
+			)
 		)
-		gut.simulate(test_building, 2, 2)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 2.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 2.179358
-			),
-			null,
-			null
-		)
-		gut.simulate(test_building, 2, 2)
 
 		var current_floor = test_building.get_node_or_null("floors/floor2")
 
@@ -486,37 +307,12 @@ class Test_SecondFloorWorkflow:
 
 	func test_can_add_piece_where_none_exists_on_first_floor_if_contiguous_with_second_floor():
 		# first, make a piece on the first floor
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
-		gut.simulate(test_building, 2, 2)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		gut.simulate(test_building, 2, 2)
 
 		# second, move up a floor
 		input.press("move_up")
@@ -527,70 +323,20 @@ class Test_SecondFloorWorkflow:
 		gut.simulate(test_building, 200, 20)
 
 		# third, make a piece above the first - should be ok
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
-		gut.simulate(test_building, 2, 2)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		gut.simulate(test_building, 2, 2)
 
 		# fourth, make a piece not above the first - should be ok
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 2.179358
-			),
-			null,
-			null
+			)
 		)
-		gut.simulate(test_building, 2, 2)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 2.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 2.179358
-			),
-			null,
-			null
-		)
-		gut.simulate(test_building, 2, 2)
 
 		var current_floor = test_building.get_node_or_null("floors/floor2")
 
@@ -608,34 +354,11 @@ class Test_SecondFloorWorkflow:
 
 	func test_cannot_move_to_third_floor_without_piece_on_second_floor():
 		# first, make a piece on the first floor
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
 
 		# second, move up a floor
@@ -644,67 +367,23 @@ class Test_SecondFloorWorkflow:
 		test_building._unhandled_input(input)
 
 		# third, make a piece above the first - should be ok
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.press("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("main_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
 
 		input._reset()
 
 		# fourth, remove that piece on the second floor
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
 			),
-			null,
-			null
-		)
-		input.press("secondary_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-		input.release("secondary_button")
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			true,
+			"secondary_button"
 		)
 
 		# fifth, try to go up to third floor -- shouldn't be able to
@@ -735,87 +414,26 @@ class Test__add_pieces_as_needed:
 
 	func test_cant_add_non_contiguous_group_to_existing_group():
 		# First, make a block in the center
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseMotion.new(),
+		input._click_and_release(
+			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
+			)
 		)
-
-		gut.simulate(test_building, 2, 2)
-
-		input.press("main_button")
-
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-
-		input.release("main_button")
-
-		test_building._on_floor_input_event(
-			null,
-			InputEventMouseButton.new(),
-			Vector3(
-				2.076785, 0.100007, 0.179358
-			),
-			null,
-			null
-		)
-
-		gut.simulate(test_building, 2, 2)
 
 		# Second, attempt to make 2x2 block off center -- shouldn't allow
 		var current_floor = test_building.get_node("floors/floor1")
 		var orig_children_count = current_floor.get_child_count()
 
-		input._test_mouse_input_event(
+		input._click_and_drag_and_release(
 			test_building,
-			InputEventMouseMotion.new(),
 			Vector3(
 				12.076785, 0.100007, 0.179358
-			)
-		)
-
-		input.press("main_button")
-
-		input._test_mouse_input_event(
-			test_building,
-			InputEventMouseButton.new(),
-			Vector3(
-				12.076785, 0.100007, 0.179358
-			)
-		)
-
-		gut.simulate(test_building, 2, 2)
-
-		input._test_mouse_input_event(
-			test_building,
-			InputEventMouseMotion.new(),
+			),
 			Vector3(
 				14.076785, 0.100007, 4.179358
 			)
 		)
-
-		input.release("main_button")
-
-		input._test_mouse_input_event(
-			test_building,
-			InputEventMouseButton.new(),
-			Vector3(
-				14.076785, 0.100007, 4.179358
-			)
-		)
-
-		gut.simulate(test_building, 2, 2)
 
 		assert_eq(current_floor.get_child_count(), orig_children_count, "No extra children have been added when not contiguous")
 
@@ -837,7 +455,7 @@ class Test__add_multiple_pieces_if_adjacent:
 	func test__can_add_overlapping_pieces():
 		var current_floor = test_building.get_node("floors/floor1/floor")
 
-		input._click_and_drag(
+		input._click_and_drag_and_release(
 			test_building,
 			Vector3(
 				0.076785, 0.100007, 0.179358
@@ -849,7 +467,7 @@ class Test__add_multiple_pieces_if_adjacent:
 
 		gut.simulate(test_building, 5, 15)
 
-		input._click_and_drag(
+		input._click_and_drag_and_release(
 			test_building,
 			Vector3(
 				-18.076785, 0.100007, -18.179358

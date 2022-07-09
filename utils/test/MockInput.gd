@@ -1,7 +1,7 @@
-class_name MockInput
-
 var _pressed = []
 var _released = []
+
+var input_method = "_on_floor_input_event"
 
 func press(key):
 	_pressed.append(key)
@@ -30,41 +30,57 @@ func _reset():
 	_released = []
 
 
-func _test_mouse_input_event(test_building, input_type, position):
-	test_building._on_floor_input_event(
-		null,
-		input_type,
-		position,
-		null,
-		null
-	)
+func _test_mouse_input_event(node: Node, input_type, position):
+	var args
+
+	if input_method == "_on_floor_input_event": # presumably from building.gd
+		args = [null, input_type, position, null, null]
+
+	node.callv(input_method, args)
 
 
-func _click_and_drag(test_building, start, finish):
+func _click(node, start, move_in_place=true, button="main_button"):
+	if move_in_place:
+		_test_mouse_input_event(
+			node,
+			InputEventMouseMotion.new(),
+			start
+		)
+
+	press(button)
+
 	_test_mouse_input_event(
-		test_building,
-		InputEventMouseMotion.new(),
-		start
-	)
-
-	press("main_button")
-
-	_test_mouse_input_event(
-		test_building,
+		node,
 		InputEventMouseButton.new(),
 		start
 	)
 
+	
+func _release(node, finish, button="main_button"):
+	release(button)
+
 	_test_mouse_input_event(
-		test_building,
+		node,
+		InputEventMouseButton.new(),
+		finish
+	)
+
+
+func _click_and_release(node, start, move_in_place=true, button="main_button"):
+	_click(node, start, move_in_place, button)
+	_release(node, start, button)
+
+
+func _click_and_drag(node, start, finish, move_in_place=true, button="main_button"):
+	_click(node, start, move_in_place, button)
+
+	_test_mouse_input_event(
+		node,
 		InputEventMouseMotion.new(),
 		finish
 	)
 
-	release("main_button")
 
-	_test_mouse_input_event(
-		test_building,
-		InputEventMouseButton.new(),
-		finish
-	)
+func _click_and_drag_and_release(node, start, finish, move_in_place=true, button="main_button"):
+	_click_and_drag(node, start, finish, move_in_place, button)
+	_release(node, finish, button)

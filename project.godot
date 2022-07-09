@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "GutTest",
 "language": "GDScript",
 "path": "res://addons/gut/test.gd"
+}, {
+"base": "Reference",
+"class": "MockInput",
+"language": "GDScript",
+"path": "res://utils/test/MockInput.gd"
 } ]
 _global_script_class_icons={
 "GutHookScript": "",
-"GutTest": ""
+"GutTest": "",
+"MockInput": ""
 }
 
 [application]
@@ -36,6 +42,7 @@ TowerGlobals="*res://tower_globals.gd"
 
 [debug]
 
+gdscript/warnings/treat_warnings_as_errors=true
 gdscript/warnings/integer_division=false
 
 [display]
