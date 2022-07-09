@@ -110,20 +110,22 @@ func _on_select_move(mouse_position: Vector3):
 
 
 # TODO: This code should most likely be pushed into floor.gd
-func _add_pieces_as_needed(target):
+func _add_pieces_as_needed(target, final_target = null):
+	if final_target == null: final_target  = _main_button_press_target # for tests
+
 	if (current_floor_idx > 1 and current_floor._get_piece_count() == 0):
 		var floor_under = get_node("floors/floor%s/floor" % [current_floor_idx - 1])
-		if (!floor_under.has_floor_piece_at(_main_button_press_target)):
+		if (!floor_under.has_floor_piece_at(final_target)):
 			return
 
-	if target == _main_button_press_target:
+	if target == final_target:
 		current_floor.add_floor_piece_at(target)
 		return
 
-	var greaterx = _main_button_press_target if _main_button_press_target.x > target.x else target
-	var lesserx = target if greaterx == _main_button_press_target else _main_button_press_target
-	var greaterz = _main_button_press_target if _main_button_press_target.z > target.z else target
-	var lesserz = target if greaterz == _main_button_press_target else _main_button_press_target
+	var greaterx = final_target if final_target.x > target.x else target
+	var lesserx = target if greaterx == final_target else final_target
+	var greaterz = final_target if final_target.z > target.z else target
+	var lesserz = target if greaterz == final_target else final_target
 
 	_add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz)
 

@@ -413,9 +413,10 @@ class Test__add_pieces_as_needed:
 
 
 	func test_cant_add_non_contiguous_group_to_existing_group():
-		# First, make a block in the center
-		input._click_and_release(
-			test_building,
+		test_building._add_pieces_as_needed(
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
 			Vector3(
 				2.076785, 0.100007, 0.179358
 			)
@@ -425,8 +426,7 @@ class Test__add_pieces_as_needed:
 		var current_floor = test_building.get_node("floors/floor1")
 		var orig_children_count = current_floor.get_child_count()
 
-		input._click_and_drag_and_release(
-			test_building,
+		test_building._add_pieces_as_needed(
 			Vector3(
 				12.076785, 0.100007, 0.179358
 			),
@@ -455,20 +455,23 @@ class Test__add_multiple_pieces_if_adjacent:
 	func test__can_add_overlapping_pieces():
 		var current_floor = test_building.get_node("floors/floor1/floor")
 
-		input._click_and_drag_and_release(
-			test_building,
+		# adds a piece to start
+		test_building._add_pieces_as_needed(
 			Vector3(
-				0.076785, 0.100007, 0.179358
+				0, 0, 0
 			),
 			Vector3(
-				0.076785, 0.100007, 0.179358
+				0, 0, 0
 			)
 		)
 
-		gut.simulate(test_building, 5, 15)
-
-		input._click_and_drag_and_release(
-			test_building,
+		test_building._add_multiple_pieces_if_adjacent(
+			Vector3(
+				-18.076785, 0.100007, -18.179358
+			),
+			Vector3(
+				18.076785, 0.100007, 18.179358
+			),
 			Vector3(
 				-18.076785, 0.100007, -18.179358
 			),
@@ -476,8 +479,6 @@ class Test__add_multiple_pieces_if_adjacent:
 				18.076785, 0.100007, 18.179358
 			)
 		)
-
-		gut.simulate(test_building, 5, 15)
 
 		var first_piece = current_floor.floor_data[0][0]["object"]
 		var first_node = test_building.get_node("floors/floor1/bottomFloorPiece")
