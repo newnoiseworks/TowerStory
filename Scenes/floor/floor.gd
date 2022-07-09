@@ -4,13 +4,14 @@ var floor_piece_packed = preload("res://scenes/floor/bottom_floor_piece.tscn")
 
 var floor_data = {}
 
+var building
+
 export var is_base = false
-export var floor_idx = 1
+export var floor_idx: int = 1
 
 enum SIDE {
 	XUP, XDOWN, ZUP, ZDOWN
 }
-
 
 func draw_floor():
 	for x in floor_data:
@@ -89,6 +90,48 @@ func can_add_floor_piece_at(global_target: Vector3):
 	var z = int(target.z)
 
 	return _can_remove_floor_piece_at(x, z)
+
+
+func add_pieces_as_needed(target, final_target):
+	if (building != null and floor_idx > 1 and _get_piece_count() == 0):
+		var floor_under = building.get_node("floors/floor%s/floor" % [floor_idx - 1])
+		if (floor_under != null and !floor_under.has_floor_piece_at(final_target)):
+			return
+
+	if target == final_target:
+		add_floor_piece_at(target)
+		return
+
+	var greaterx = final_target if final_target.x > target.x else target
+	var lesserx = target if greaterx == final_target else final_target
+	var greaterz = final_target if final_target.z > target.z else target
+	var lesserz = target if greaterz == final_target else final_target
+
+	_add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz)
+
+
+func _add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz):
+	var has_adjacent_piece = false
+
+	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+			if _can_add_floor_piece_at(x, z):
+				has_adjacent_piece = true
+				break
+
+		if has_adjacent_piece: break
+
+	if !has_adjacent_piece: return
+
+	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+			if !_has_floor_piece_at(x, z):
+				add_floor_piece_at(Vector3(x, 0, z), true)
+
+	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
+			_add_wall_to_piece_at_edges(x, z)
+			_add_edges_to_surrounding_pieces(x, z)
 
 
 func _add_edges_to_surrounding_pieces(x: int, z: int):

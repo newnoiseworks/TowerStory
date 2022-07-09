@@ -22,7 +22,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "MockInput",
 "language": "GDScript",
-"path": "res://utils/test/MockInput.gd"
+"path": "res://utils/test/mock_input.gd"
 } ]
 _global_script_class_icons={
 "GutHookScript": "",

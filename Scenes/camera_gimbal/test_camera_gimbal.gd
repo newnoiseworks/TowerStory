@@ -1,7 +1,5 @@
 extends GutTest
 
-const MockInput = preload("res://utils/test/MockInput.gd")
-
 class Test__physics_process:
 	extends GutTest
 

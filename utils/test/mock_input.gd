@@ -1,3 +1,5 @@
+class_name MockInput
+
 var _pressed = []
 var _released = []
 
