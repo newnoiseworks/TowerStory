@@ -1,18 +1,23 @@
 extends Spatial
 
-export(float) var camera_speed = 0.135
+export(float) var camera_gimbal_speed = 0.135
 export(float) var rotate_speed = 0.035
-export(float) var camera_floor_change_speed = 0.2
+export(float) var camera_gimbal_floor_change_speed = 0.2
+export(float) var camera_zoom_speed = 0.16
+export(int) var camera_y_diff_per_floor = 1
+export(int) var camera_zoom_tick = 1
 
 const X_AXIS = Vector3(1, 0, 0)
 const Y_AXIS = Vector3(0, 1, 0)
 
 var inputter = Input
 
-onready var camera_transform = self.get_transform()
-onready var camera_y_diff_per_floor = 1
+onready var camera_gimbal_transform = self.get_transform()
 onready var target_y: int = self.get_translation().y
 onready var y_offset: int = self.get_translation().y
+onready var camera = find_node("Camera")
+onready var camera_transform = camera.get_transform()
+onready var target_zoom = camera.get_translation().z
 
 # Pass a mock input object for testing
 func _set_input(input):
@@ -23,34 +28,64 @@ func change_floor(target_floor):
 	target_y = (target_floor - 1 * camera_y_diff_per_floor) + y_offset
 
 
-func _physics_process(_delta):
-	var ydiff = abs(abs(camera_transform.origin.y) - abs(target_y))
+func _unhandled_input(_event):
+	if inputter.is_action_just_released("zoom_in"):
+		target_zoom -= camera_zoom_tick
 
-	if (camera_transform.origin.y != target_y):
-		if (ydiff < 0.001):
-			camera_transform.origin.y = target_y
+	if inputter.is_action_just_released("zoom_out"):
+		target_zoom += camera_zoom_tick
+
+
+func _physics_process(_delta):
+	_physics_process_camera()
+	_physics_process_camera_gimbal()
+
+
+func _physics_process_camera():
+	var zdiff = abs(abs(camera_transform.origin.z) - abs(target_zoom))
+
+	if (camera_transform.origin.z != target_zoom):
+		if (zdiff < .1):
+			camera_transform.origin.z = target_zoom
 		else:
-			if (camera_transform.origin.y < target_y):
-				camera_transform.origin += self.get_transform().basis.y * camera_floor_change_speed 
+			if (camera_transform.origin.z < target_zoom):
+				camera_transform.origin += camera.get_transform().basis.z * camera_zoom_speed
 			else:
-				camera_transform.origin += -self.get_transform().basis.y * camera_floor_change_speed
+				camera_transform.origin += -camera.get_transform().basis.z * camera_zoom_speed
+
+	camera.set_transform(camera_transform)
+
+
+func _physics_process_camera_gimbal():
+	var ydiff = abs(abs(camera_gimbal_transform.origin.y) - abs(target_y))
+
+	if (camera_gimbal_transform.origin.y != target_y):
+		if (ydiff < 0.001):
+			camera_gimbal_transform.origin.y = target_y
+		else:
+			if (camera_gimbal_transform.origin.y < target_y):
+				camera_gimbal_transform.origin += self.get_transform().basis.y * camera_gimbal_floor_change_speed 
+			else:
+				camera_gimbal_transform.origin += -self.get_transform().basis.y * camera_gimbal_floor_change_speed
 
 	if (inputter.is_action_pressed("move_forward")):
-		camera_transform.origin += -self.get_transform().basis.z * camera_speed
+		camera_gimbal_transform.origin += -self.get_transform().basis.z * camera_gimbal_speed
 
 	if (inputter.is_action_pressed("move_backward")):
-		camera_transform.origin += self.get_transform().basis.z * camera_speed
+		camera_gimbal_transform.origin += self.get_transform().basis.z * camera_gimbal_speed
 
 	if (inputter.is_action_pressed("move_left")):
-		camera_transform.origin += -self.get_transform().basis.x * camera_speed
+		camera_gimbal_transform.origin += -self.get_transform().basis.x * camera_gimbal_speed
 
 	if (inputter.is_action_pressed("move_right")):
-		camera_transform.origin += self.get_transform().basis.x * camera_speed
+		camera_gimbal_transform.origin += self.get_transform().basis.x * camera_gimbal_speed
 
 	if (inputter.is_action_pressed("rotate_left")):
-		camera_transform = camera_transform * Transform(Quat(Y_AXIS, -rotate_speed))
+		camera_gimbal_transform = camera_gimbal_transform * Transform(Quat(Y_AXIS, -rotate_speed))
 
 	if (inputter.is_action_pressed("rotate_right")):
-		camera_transform = camera_transform * Transform(Quat(Y_AXIS, rotate_speed))
+		camera_gimbal_transform = camera_gimbal_transform * Transform(Quat(Y_AXIS, rotate_speed))
 
-	self.set_transform(camera_transform)
+	self.set_transform(camera_gimbal_transform)
+
+
