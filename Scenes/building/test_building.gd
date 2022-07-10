@@ -6,12 +6,15 @@ class Test__on_floor_input_event:
 
 	var test_building
 	var input
+	var timer
+
 
 	func before_each():
 		var prototype_script = load("res://scenes/building/building.tscn")
 		test_building = prototype_script.instance()
 		input = MockInput.new()
 		test_building._set_input(input)
+
 		add_child_autofree(test_building)
 
 
@@ -63,6 +66,8 @@ class Test__on_floor_input_event:
 			)
 		)
 
+		yield(get_tree().create_timer(0.015), "timeout")
+
 		assert_gt(current_floor.get_child_count(), orig_children_count, "More children have been added")
 		assert_eq(current_floor.get_child_count() - orig_children_count, 6, "Correct number of pieces have been assigned")
 
@@ -74,6 +79,67 @@ class Test__on_floor_input_event:
 		assert_not_null(current_floor.floor_data[4][0], "Piece set at right spot")
 		assert_not_null(current_floor.floor_data[4][2], "Piece set at right spot")
 		assert_not_null(current_floor.floor_data[4][4], "Piece set at right spot")
+
+	func test_mouse_click_and_drag_to_add_rectangle_adds_transparent_pieces():
+		var current_floor = test_building.get_node("floors/floor1")
+		var orig_children_count = current_floor.get_child_count()
+
+		input._click_and_drag(
+			test_building,
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				4.076785, 0.100007, 4.179358
+			)
+		)
+
+		yield(get_tree().create_timer(0.015), "timeout")
+
+		assert_gt(current_floor.get_child_count(), orig_children_count, "More children have been added")
+		assert_eq(current_floor.get_child_count() - orig_children_count, 6, "Correct number of pieces have been assigned")
+
+		current_floor = test_building.get_node("floors/floor1/floor")
+
+		assert_not_null(current_floor.floor_data[2][0], "Piece set at right spot")
+		assert_true(current_floor.floor_data[2][0]["object"].is_transparent, "Piece set to transparent")
+		assert_not_null(current_floor.floor_data[2][2], "Piece set at right spot")
+		assert_true(current_floor.floor_data[2][2]["object"].is_transparent, "Piece set to transparent")
+		assert_not_null(current_floor.floor_data[2][4], "Piece set at right spot")
+		assert_true(current_floor.floor_data[2][4]["object"].is_transparent, "Piece set to transparent")
+		assert_not_null(current_floor.floor_data[4][0], "Piece set at right spot")
+		assert_true(current_floor.floor_data[4][0]["object"].is_transparent, "Piece set to transparent")
+		assert_not_null(current_floor.floor_data[4][2], "Piece set at right spot")
+		assert_true(current_floor.floor_data[4][2]["object"].is_transparent, "Piece set to transparent")
+		assert_not_null(current_floor.floor_data[4][4], "Piece set at right spot")
+		assert_true(current_floor.floor_data[4][4]["object"].is_transparent, "Piece set to transparent")
+
+		input._release(
+			test_building,
+			Vector3(
+				4.076785, 0.100007, 4.179358
+			)
+		)
+
+		yield(get_tree().create_timer(0.02), "timeout")
+
+		assert_not_null(current_floor.floor_data[2][0], "Piece set at right spot")
+		assert_false(current_floor.floor_data[2][0]["object"].is_transparent, "Piece not set to transparent")
+		assert_not_null(current_floor.floor_data[2][2], "Piece set at right spot")
+		assert_false(current_floor.floor_data[2][2]["object"].is_transparent, "Piece not set to transparent")
+		assert_not_null(current_floor.floor_data[2][4], "Piece set at right spot")
+		assert_false(current_floor.floor_data[2][4]["object"].is_transparent, "Piece not set to transparent")
+		assert_not_null(current_floor.floor_data[4][0], "Piece set at right spot")
+		assert_false(current_floor.floor_data[4][0]["object"].is_transparent, "Piece not set to transparent")
+		assert_not_null(current_floor.floor_data[4][2], "Piece set at right spot")
+		assert_false(current_floor.floor_data[4][2]["object"].is_transparent, "Piece not set to transparent")
+		assert_not_null(current_floor.floor_data[4][4], "Piece set at right spot")
+		assert_false(current_floor.floor_data[4][4]["object"].is_transparent, "Piece not set to transparent")
+
+		current_floor = test_building.get_node("floors/floor1")
+
+		assert_gt(current_floor.get_child_count(), orig_children_count, "More children have been added")
+		assert_eq(current_floor.get_child_count() - orig_children_count, 6, "Correct number of pieces have been assigned")
 
 
 class Test__unhandled_input:

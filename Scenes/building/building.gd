@@ -10,6 +10,7 @@ onready var basement: Spatial = find_node("basement")
 
 var _inputter = Input
 var _main_button_press_target: Vector3
+var _pieces_added_at: Vector3
 var _is_main_button_pressed: bool = false
 
 var previous_floor: Area
@@ -76,6 +77,9 @@ func _post_floor_change():
 
 
 func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
+	position.x = TowerGlobals.closest_multiple_of(int(position.x))
+	position.z = TowerGlobals.closest_multiple_of(int(position.z))
+
 	if event is InputEventMouseMotion:
 		_on_select_move(position)
 
@@ -88,9 +92,11 @@ func _on_button_click():
 	target.y = 0
 
 	if _inputter.is_action_pressed("main_button") and _is_main_button_pressed == false:
-		_is_main_button_pressed = true
 		_main_button_press_target = target
-	elif _inputter.is_action_just_released("main_button"):
+		_is_main_button_pressed = true
+		current_floor.add_pieces_as_needed(target, _main_button_press_target, true)
+	elif _inputter.is_action_just_released("main_button") and _is_main_button_pressed:
+		current_floor.remove_pieces_as_needed(target, _main_button_press_target, true)
 		current_floor.add_pieces_as_needed(target, _main_button_press_target)
 		_is_main_button_pressed = false
 	elif _inputter.is_action_just_released("secondary_button"):
@@ -107,6 +113,12 @@ func _on_select_move(mouse_position: Vector3):
 
 	if adjustment != Vector3.ZERO:
 		mouse_select.translate_object_local(adjustment)
+
+		if _is_main_button_pressed:
+			current_floor.remove_pieces_as_needed(_pieces_added_at, _main_button_press_target, true)
+			current_floor.add_pieces_as_needed(mouse_position, _main_button_press_target, true)
+
+			_pieces_added_at = mouse_position
 
 
 func _create_new_current_floor():

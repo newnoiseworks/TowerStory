@@ -1,9 +1,11 @@
 extends Spatial
 
 var transparent_material: ShaderMaterial = load("res://transparent_shader_material.tres")
+var is_transparent = false
 
 
 func set_transparent():
+	is_transparent = true
 	var cube: MeshInstance = find_node("Cube003")
 	cube.material_override = transparent_material
 
@@ -12,6 +14,7 @@ func set_transparent():
 
 
 func set_opaque():
+	is_transparent = false
 	var cube: MeshInstance = find_node("Cube003")
 	cube.material_override = null
 
