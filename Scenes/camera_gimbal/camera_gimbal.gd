@@ -32,13 +32,13 @@ func change_floor(target_floor):
 
 
 func _unhandled_input(event):
-	if event.is_action_just_released("zoom_in"):
+	if inputter.is_action_just_released("zoom_in"):
 		target_zoom -= camera_zoom_tick
 
-	if event.is_action_just_released("zoom_out"):
+	if inputter.is_action_just_released("zoom_out"):
 		target_zoom += camera_zoom_tick
 
-	if event is InputEventMouseMotion and event.is_action_pressed("third_button"):
+	if event is InputEventMouseMotion and inputter.is_action_pressed("third_button"):
 		inner_gimbal.rotate_x(PI * event.relative.y * inner_gimbal_rotate_speed)
 
 
