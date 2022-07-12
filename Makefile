@@ -16,8 +16,5 @@ endif
 lsp:
 	$(GODOT) -e --no-window
 
-ifeq ($(origin GODOT),undefined)
-	GODOT=/mnt/c/Users/hello/Downloads/Godot_v3.4.4-stable_win64.exe/Godot_v3.4.4-stable_win64.exe
-endif
-
-GLOG_SINGLE=3
+GODOT ?= /mnt/c/Users/hello/Downloads/Godot_v3.4.4-stable_win64.exe/Godot_v3.4.4-stable_win64.exe
+GLOG_SINGLE = 3
