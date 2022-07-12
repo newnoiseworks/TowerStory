@@ -33,7 +33,7 @@ func _unhandled_input(event):
 
 
 func _handle_floor_move(event):
-	if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx and (current_floor == null or current_floor._get_piece_count() > 0):
+	if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx and (current_floor_idx < 1 or current_floor._get_piece_count() > 0):
 		previous_floor = _get_current_floor()
 		current_floor_idx += 1
 		mouse_select.translate_object_local(Vector3(
@@ -41,7 +41,7 @@ func _handle_floor_move(event):
 		))
 
 		_post_floor_change()
-	elif event.is_action_released("move_down") and (current_floor_idx == 1 or basement.get_child_count() >= abs(current_floor_idx)) and current_floor_idx <= 0 and current_floor._get_piece_count() > 0 or current_floor_idx > 0:
+	elif event.is_action_released("move_down") and (current_floor_idx == 1 or basement.get_child_count() >= abs(current_floor_idx) and current_floor_idx <= 0 and current_floor._get_piece_count() > 0 or current_floor_idx > 0):
 		previous_floor = _get_current_floor()
 		current_floor_idx -= 1
 		mouse_select.translate_object_local(Vector3(

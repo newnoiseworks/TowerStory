@@ -113,7 +113,10 @@ func add_or_remove_pieces_as_needed(target, final_target, is_transparent = false
 	var greaterz = final_target if final_target.z > target.z else target
 	var lesserz = target if greaterz == final_target else final_target
 
-	_add_or_remove_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent, remove)
+	if remove:
+		_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_transparent)
+	else:
+		_add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent)
 
 
 func _add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent=false):
@@ -129,14 +132,14 @@ func _add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_t
 
 	if !has_adjacent_piece: return
 
-	return _add_or_remove_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent)
+	return _add_or_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_transparent)
 
 
 func _remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_transparent):
-	return _add_or_remove_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent, true)
+	return _add_or_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_transparent, true)
 
 
-func _add_or_remove_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent = false, remove = false):
+func _add_or_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_transparent = false, remove = false):
 	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 			if _has_floor_piece_at(x, z):

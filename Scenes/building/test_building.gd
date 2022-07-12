@@ -234,6 +234,8 @@ class Test__unhandled_input:
 			)
 		)
 
+		assert_eq(test_building.current_floor_idx, 1, "Current floor idx correct")
+
 		# move up once...
 		input.press("move_up")
 		test_building._unhandled_input(input)
@@ -242,6 +244,7 @@ class Test__unhandled_input:
 		test_building._unhandled_input(input)
 		gut.simulate(test_building, 200, 20)
 
+		input._reset()
 		assert_eq(test_building.current_floor_idx, 2, "Current floor idx goes up one above what exists")
 
 		# move up twice...
@@ -252,7 +255,7 @@ class Test__unhandled_input:
 		test_building._unhandled_input(input)
 		gut.simulate(test_building, 200, 20)
 
-		assert_eq(test_building.current_floor_idx, 2, "Current floor idx does not go down more than one floor above what exists")
+		assert_eq(test_building.current_floor_idx, 2, "Current floor idx does not go up more than one floor above what exists")
 
 
 	func test_cannot_move_down_more_than_one_floor():
@@ -275,6 +278,28 @@ class Test__unhandled_input:
 		gut.simulate(test_building, 200, 20)
 
 		assert_eq(test_building.current_floor_idx, 0, "Current floor idx does not go down more than one floor below what exists")
+
+
+	func test_can_leave_basement_without_making_piece():
+		# move down once...
+		input.press("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 200, 20)
+
+		assert_eq(test_building.current_floor_idx, 0, "Current floor idx goes down one below what exists")
+
+		# move back up...
+		input.press("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 200, 20)
+
+		assert_eq(test_building.current_floor_idx, 1, "Current floor idx returns to first floor")
 
 
 class Test_SecondFloorWorkflow:

@@ -199,11 +199,12 @@ class Test_add_pieces_as_needed:
 	extends GutTest
 
 	var test_floor
+	var building
 
 	func before_each():
 		var prototype_script = load("res://scenes/floor/floor.tscn")
 		test_floor = prototype_script.instance()
-		var building = Spatial.new()
+		building = Spatial.new()
 		building.add_child(test_floor)
 		add_child_autofree(building)
 
@@ -211,25 +212,25 @@ class Test_add_pieces_as_needed:
 	func test_cant_add_non_contiguous_group_to_existing_group():
 		test_floor.add_pieces_as_needed(
 			Vector3(
-				2.076785, 0.100007, 0.179358
+				-12.076785, 0.100007, 0.179358
 			),
 			Vector3(
-				2.076785, 0.100007, 0.179358
+				0.076785, 0.100007, 0.179358
 			)
 		)
 
-		var orig_children_count = test_floor.get_child_count()
+		var orig_children_count = building.get_child_count()
 
 		test_floor.add_pieces_as_needed(
 			Vector3(
-				12.076785, 0.100007, 0.179358
+				4.076785, 0.100007, 4.179358
 			),
 			Vector3(
-				14.076785, 0.100007, 4.179358
+				8.076785, 0.100007, 8.179358
 			)
 		)
 
-		assert_eq(test_floor.get_child_count(), orig_children_count, "No extra children have been added when not contiguous")
+		assert_eq(building.get_child_count(), orig_children_count, "No extra children have been added when not contiguous")
 
 
 class Test__add_multiple_pieces_if_adjacent:
@@ -245,7 +246,7 @@ class Test__add_multiple_pieces_if_adjacent:
 		add_child_autofree(building)
 
 
-	func test__can_add_overlapping_pieces():
+	func test_can_add_overlapping_pieces():
 		# adds a piece to start
 		test_floor.add_pieces_as_needed(
 			Vector3(
