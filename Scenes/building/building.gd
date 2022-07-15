@@ -118,7 +118,7 @@ func _on_button_click():
 			current_floor.remove_pieces_as_needed(target, _main_button_press_target, true)
 			current_floor.add_pieces_as_needed(target, _main_button_press_target)
 		elif _current_tool == UI_TOOL.REMOVE_TILE:
-			current_floor.remove_floor_piece_at(target)
+			current_floor.remove_pieces_as_needed(target, _main_button_press_target)
 
 
 func _on_select_move(mouse_position: Vector3):

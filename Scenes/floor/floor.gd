@@ -16,7 +16,7 @@ enum SIDE {
 func draw_floor():
 	for x in floor_data:
 		for z in floor_data[x]:
-			add_floor_piece_at(get_parent().global_transform.origin + Vector3(x, 0, z), true)
+			_add_floor_piece_at(get_parent().global_transform.origin + Vector3(x, 0, z), true)
 
 	for x in floor_data:
 		for z in floor_data[x]:
@@ -44,13 +44,46 @@ func has_floor_piece_at(global_target: Vector3)-> bool:
 	return _has_floor_piece_at(x, z)
 
 
-func add_floor_piece_at(global_target: Vector3, force: bool = false, is_transparent=false):
+func remove_pieces_as_needed(target, final_target, is_transparent = false):
+	return _add_or_remove_pieces_as_needed(target, final_target, is_transparent, true)
+
+
+func add_pieces_as_needed(target, final_target, is_transparent = false):
+	if (building != null and floor_idx > 1 and _get_piece_count() == 0):
+		var floor_under = building.get_node("floors/floor%s/floor" % [floor_idx - 1])
+		if (floor_under != null and !floor_under.has_floor_piece_at(final_target)):
+			return
+
+	return _add_or_remove_pieces_as_needed(target, final_target, is_transparent)
+
+
+func _add_or_remove_pieces_as_needed(target, final_target, is_transparent = false, remove = false):
+	if target == final_target:
+		if remove:
+			_remove_floor_piece_at(target, is_transparent)
+		else:
+			_add_floor_piece_at(target, false, is_transparent)
+
+		return
+
+	var greaterx = final_target if final_target.x > target.x else target
+	var lesserx = target if greaterx == final_target else final_target
+	var greaterz = final_target if final_target.z > target.z else target
+	var lesserz = target if greaterz == final_target else final_target
+
+	if remove:
+		_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_transparent)
+	else:
+		_add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent)
+
+
+func _add_floor_piece_at(global_target: Vector3, force: bool = false, is_transparent=false):
 	var target = get_parent().global_transform.origin + global_target
 
 	var x = int(target.x)
 	var z = int(target.z)
 
-	if !force and !_can_add_floor_piece_at(x, z): return
+	if !force and !_can__add_floor_piece_at(x, z): return
 
 	if !floor_data.has(x): floor_data[x] = {}
 
@@ -73,7 +106,7 @@ func add_floor_piece_at(global_target: Vector3, force: bool = false, is_transpar
 		_add_edges_to_surrounding_pieces(x, z)
 
 
-func remove_floor_piece_at(global_target: Vector3, only_if_transparent=false):
+func _remove_floor_piece_at(global_target: Vector3, only_if_transparent=false):
 	var target = get_parent().global_transform.origin + global_target
 
 	var x = int(target.x)
@@ -86,45 +119,12 @@ func remove_floor_piece_at(global_target: Vector3, only_if_transparent=false):
 		_add_edges_to_surrounding_pieces(x, z)
 
 
-func remove_pieces_as_needed(target, final_target, is_transparent = false):
-	return add_or_remove_pieces_as_needed(target, final_target, is_transparent, true)
-
-
-func add_pieces_as_needed(target, final_target, is_transparent = false):
-	if (building != null and floor_idx > 1 and _get_piece_count() == 0):
-		var floor_under = building.get_node("floors/floor%s/floor" % [floor_idx - 1])
-		if (floor_under != null and !floor_under.has_floor_piece_at(final_target)):
-			return
-
-	return add_or_remove_pieces_as_needed(target, final_target, is_transparent)
-
-
-func add_or_remove_pieces_as_needed(target, final_target, is_transparent = false, remove = false):
-	if target == final_target:
-		if remove:
-			remove_floor_piece_at(target, is_transparent)
-		else:
-			add_floor_piece_at(target, false, is_transparent)
-
-		return
-
-	var greaterx = final_target if final_target.x > target.x else target
-	var lesserx = target if greaterx == final_target else final_target
-	var greaterz = final_target if final_target.z > target.z else target
-	var lesserz = target if greaterz == final_target else final_target
-
-	if remove:
-		_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_transparent)
-	else:
-		_add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent)
-
-
 func _add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent=false):
 	var has_adjacent_piece = false
 
 	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
-			if _can_add_floor_piece_at(x, z):
+			if _can__add_floor_piece_at(x, z):
 				has_adjacent_piece = true
 				break
 
@@ -144,9 +144,9 @@ func _add_or_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_tra
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 			if _has_floor_piece_at(x, z):
 				if remove:
-					remove_floor_piece_at(Vector3(x, 0, z), is_transparent)
+					_remove_floor_piece_at(Vector3(x, 0, z), is_transparent)
 			elif !remove:
-				add_floor_piece_at(Vector3(x, 0, z), true, is_transparent)
+				_add_floor_piece_at(Vector3(x, 0, z), true, is_transparent)
 
 	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
@@ -186,7 +186,7 @@ func _add_wall_to_piece_at_edges(x: int, z:int):
 		floor_piece.call("add_wall_at_edge", SIDE.ZDOWN)
 
 
-func _can_add_floor_piece_at(x: int, z: int)-> bool:
+func _can__add_floor_piece_at(x: int, z: int)-> bool:
 	if _has_floor_piece_at(x, z):
 		return false
 

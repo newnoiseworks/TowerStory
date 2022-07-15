@@ -1,6 +1,6 @@
 extends GutTest
 
-class Test__can_add_floor_piece_at:
+class Test__can__add_floor_piece_at:
 	extends GutTest
 	var double_script
 
@@ -21,20 +21,20 @@ class Test__can_add_floor_piece_at:
 
 
 	func test_no_overlaps():
-		var val: bool = double_script._can_add_floor_piece_at(0, 0)
+		var val: bool = double_script._can__add_floor_piece_at(0, 0)
 
 		assert_eq(val, false, "Should not be able to add piece at 0, 0")
 
 
 	func test_no_unattached_pieces():
 		assert_eq(
-			double_script._can_add_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 1 * TowerGlobals.TILE_MULTIPLE),
+			double_script._can__add_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 1 * TowerGlobals.TILE_MULTIPLE),
 			false,
 			"Should not be able to add piece at (1, 1) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			double_script._can_add_floor_piece_at(-1 * TowerGlobals.TILE_MULTIPLE, -1 * TowerGlobals.TILE_MULTIPLE),
+			double_script._can__add_floor_piece_at(-1 * TowerGlobals.TILE_MULTIPLE, -1 * TowerGlobals.TILE_MULTIPLE),
 			false,
 			"Should not be able to add piece at (-1, -1) * TowerGlobals.TILE_MULTIPLE"
 		)
@@ -42,25 +42,25 @@ class Test__can_add_floor_piece_at:
 
 	func test_can_attach_pieces():
 		assert_eq(
-			double_script._can_add_floor_piece_at(-1 * TowerGlobals.TILE_MULTIPLE, 0),
+			double_script._can__add_floor_piece_at(-1 * TowerGlobals.TILE_MULTIPLE, 0),
 			true,
 			"Should be able to add piece at (-1, 0) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			double_script._can_add_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 0),
+			double_script._can__add_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 0),
 			true,
 			"Should be able to add piece at (1, 0) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			double_script._can_add_floor_piece_at(0, 1 * TowerGlobals.TILE_MULTIPLE),
+			double_script._can__add_floor_piece_at(0, 1 * TowerGlobals.TILE_MULTIPLE),
 			true,
 			"Should be able to add piece at (0, 1) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			double_script._can_add_floor_piece_at(0, -1 * TowerGlobals.TILE_MULTIPLE),
+			double_script._can__add_floor_piece_at(0, -1 * TowerGlobals.TILE_MULTIPLE),
 			true,
 			"Should be able to add piece at (0, -1) * TowerGlobals.TILE_MULTIPLE"
 		)
@@ -70,7 +70,7 @@ class Test__can_add_floor_piece_at:
 		double_script.floor_data = {}
 
 		assert_eq(
-			double_script._can_add_floor_piece_at(0, 0),
+			double_script._can__add_floor_piece_at(0, 0),
 			true,
 			"Should be able to add piece at (0, 0) when none exists"
 		)
