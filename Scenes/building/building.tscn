@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
+[ext_resource path="res://ui_theme.tres" type="Theme" id=1]
 [ext_resource path="res://scenes/camera_gimbal/camera_gimbal.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scenes/mouse_select.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scenes/building/building.gd" type="Script" id=4]
+[ext_resource path="res://scenes/building/building_ui.gd" type="Script" id=5]
 
 [node name="building" type="Spatial"]
 script = ExtResource( 4 )
@@ -15,15 +17,62 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0 )
 
 [node name="mouse_select" parent="." instance=ExtResource( 3 )]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="building_ui" type="CanvasLayer" parent="."]
+script = ExtResource( 5 )
 
-[node name="current_level" type="Label" parent="CanvasLayer"]
-margin_left = 10.0
-margin_top = 10.0
+[node name="GridContainer3" type="GridContainer" parent="building_ui"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 125.0
+margin_bottom = 99.0
+
+[node name="GridContainer" type="GridContainer" parent="building_ui/GridContainer3"]
+margin_right = 125.0
+margin_bottom = 27.0
+columns = 2
+
+[node name="current_level_pretext" type="Label" parent="building_ui/GridContainer3/GridContainer"]
 margin_right = 40.0
-margin_bottom = 14.0
+margin_bottom = 27.0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme = ExtResource( 1 )
+text = "Level"
+
+[node name="current_level" type="Label" parent="building_ui/GridContainer3/GridContainer"]
+margin_left = 44.0
+margin_right = 52.0
+margin_bottom = 27.0
+theme = ExtResource( 1 )
 text = "1"
+
+[node name="GridContainer2" type="GridContainer" parent="building_ui/GridContainer3"]
+margin_top = 31.0
+margin_right = 125.0
+margin_bottom = 99.0
+
+[node name="base_tile_button" type="Button" parent="building_ui/GridContainer3/GridContainer2"]
+margin_right = 125.0
+margin_bottom = 20.0
+text = "Base Facade Tiles"
+align = 0
+
+[node name="remove_tile_button" type="Button" parent="building_ui/GridContainer3/GridContainer2"]
+margin_top = 24.0
+margin_right = 125.0
+margin_bottom = 44.0
+text = "Remove Tile"
+align = 0
+
+[node name="add_room_button" type="OptionButton" parent="building_ui/GridContainer3/GridContainer2"]
+margin_top = 48.0
+margin_right = 125.0
+margin_bottom = 68.0
+text = "Add Room"
 
 [node name="floors" type="Spatial" parent="."]
 
 [node name="basement" type="Spatial" parent="."]
+
+[connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/base_tile_button" to="building_ui" method="_on_tool_change_pressed" binds= [ "BASE_TILE" ]]
+[connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/remove_tile_button" to="building_ui" method="_on_tool_change_pressed" binds= [ "REMOVE_TILE" ]]

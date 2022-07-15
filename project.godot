@@ -52,7 +52,11 @@ window/size/height=1080
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/gut/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/explore-editor-theme/plugin.cfg", "res://addons/gut/plugin.cfg" )
+
+[global]
+
+theme=false
 
 [input]
 

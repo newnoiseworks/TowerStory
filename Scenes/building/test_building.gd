@@ -8,7 +8,6 @@ class Test__on_floor_input_event:
 	var input
 	var timer
 
-
 	func before_each():
 		var prototype_script = load("res://scenes/building/building.tscn")
 		test_building = prototype_script.instance()
@@ -464,6 +463,9 @@ class Test_SecondFloorWorkflow:
 		)
 
 		input._reset()
+
+		var remove_tile_button = test_building.find_node("base_tile_button")
+		remove_tile_button._on_tool_change_pressed("REMOVE_TILE")
 
 		# fourth, remove that piece on the second floor
 		input._click_and_release(

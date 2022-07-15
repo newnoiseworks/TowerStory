@@ -8,15 +8,22 @@ onready var current_level_ui: Label = find_node("current_level")
 onready var floors: Spatial = find_node("floors")
 onready var basement: Spatial = find_node("basement")
 
+enum UI_TOOL {
+	BASE_TILE,
+	REMOVE_TILE,
+	ROOM
+}
+
+
 var _inputter = Input
 var _main_button_press_target: Vector3
 var _pieces_added_at: Vector3
 var _is_main_button_pressed: bool = false
+var _current_tool: int = UI_TOOL.BASE_TILE
 
 var previous_floor: Area
 var current_floor: Area
 var current_floor_idx = 1
-
 
 # Pass a mock input object for testing
 func _set_input(input):
@@ -26,10 +33,16 @@ func _set_input(input):
 func _ready():
 	_create_new_current_floor()
 
+	var _c = find_node("building_ui").connect("tool_change", self, "_on_tool_change_pressed")
+
 
 func _unhandled_input(event):
 	if event.is_action_released("move_up") or event.is_action_released("move_down"):
 		_handle_floor_move(event)
+
+
+func _on_tool_change_pressed(user_tool):
+	_current_tool = UI_TOOL.get(user_tool)
 
 
 func _handle_floor_move(event):
@@ -94,13 +107,18 @@ func _on_button_click():
 	if _inputter.is_action_pressed("main_button") and _is_main_button_pressed == false:
 		_main_button_press_target = target
 		_is_main_button_pressed = true
-		current_floor.add_pieces_as_needed(target, _main_button_press_target, true)
+
+		if _current_tool == UI_TOOL.BASE_TILE:
+			current_floor.add_pieces_as_needed(target, _main_button_press_target, true)
+
 	elif _inputter.is_action_just_released("main_button") and _is_main_button_pressed:
-		current_floor.remove_pieces_as_needed(target, _main_button_press_target, true)
-		current_floor.add_pieces_as_needed(target, _main_button_press_target)
 		_is_main_button_pressed = false
-	elif _inputter.is_action_just_released("secondary_button"):
-		current_floor.remove_floor_piece_at(target)
+
+		if _current_tool == UI_TOOL.BASE_TILE:
+			current_floor.remove_pieces_as_needed(target, _main_button_press_target, true)
+			current_floor.add_pieces_as_needed(target, _main_button_press_target)
+		elif _current_tool == UI_TOOL.REMOVE_TILE:
+			current_floor.remove_floor_piece_at(target)
 
 
 func _on_select_move(mouse_position: Vector3):
@@ -115,10 +133,10 @@ func _on_select_move(mouse_position: Vector3):
 		mouse_select.translate_object_local(adjustment)
 
 		if _is_main_button_pressed:
-			current_floor.remove_pieces_as_needed(_pieces_added_at, _main_button_press_target, true)
-			current_floor.add_pieces_as_needed(mouse_position, _main_button_press_target, true)
-
-			_pieces_added_at = mouse_position
+			if _current_tool == UI_TOOL.BASE_TILE:
+				current_floor.remove_pieces_as_needed(_pieces_added_at, _main_button_press_target, true)
+				current_floor.add_pieces_as_needed(mouse_position, _main_button_press_target, true)
+				_pieces_added_at = mouse_position
 
 
 func _create_new_current_floor():
