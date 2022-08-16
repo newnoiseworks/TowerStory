@@ -20,6 +20,7 @@ var _main_button_press_target: Vector3
 var _pieces_added_at: Vector3
 var _is_main_button_pressed: bool = false
 var _current_tool: int = UI_TOOL.BASE_TILE
+var _is_facade_visible: bool = false
 
 var previous_floor: Area
 var current_floor: Area
@@ -34,6 +35,12 @@ func _ready():
 	_create_new_current_floor()
 
 	var _c = find_node("building_ui").connect("tool_change", self, "_on_tool_change_pressed")
+	_c = find_node("building_ui").connect("facade_swap", self, "_toggle_facade")
+
+
+func _exit_tree():
+	find_node("building_ui").disconnect("tool_change", self, "_on_tool_change_pressed")
+	find_node("building_ui").disconnect("tool_change", self, "_toggle_facade")
 
 
 func _unhandled_input(event):
@@ -41,11 +48,30 @@ func _unhandled_input(event):
 		_handle_floor_move(event)
 
 
+func _toggle_facade():
+	for i in range(len(floors.get_children())):
+		var a_floor = floors.get_node("floor%s/floor" % [i+1])
+
+		if _is_facade_visible:
+			if i != current_floor_idx - 1:
+				a_floor.set_transparent()
+			else:
+				a_floor.set_opaque()
+
+		else:
+			a_floor.set_opaque()
+
+	_is_facade_visible = !_is_facade_visible
+
+
 func _on_tool_change_pressed(user_tool):
 	_current_tool = UI_TOOL.get(user_tool)
 
 
 func _handle_floor_move(event):
+	if _is_facade_visible:
+		_toggle_facade()
+
 	if event.is_action_released("move_up") and floors.get_child_count() >= current_floor_idx and (current_floor_idx < 1 or current_floor._get_piece_count() > 0):
 		previous_floor = _get_current_floor()
 		current_floor_idx += 1
