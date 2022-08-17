@@ -38,11 +38,6 @@ func _ready():
 	_c = find_node("building_ui").connect("facade_swap", self, "_toggle_facade")
 
 
-func _exit_tree():
-	find_node("building_ui").disconnect("tool_change", self, "_on_tool_change_pressed")
-	find_node("building_ui").disconnect("tool_change", self, "_toggle_facade")
-
-
 func _unhandled_input(event):
 	if event.is_action_released("move_up") or event.is_action_released("move_down"):
 		_handle_floor_move(event)
@@ -112,7 +107,6 @@ func _post_floor_change():
 
 	current_level_ui.text = str(current_floor_idx)
 	camera_gimbal.change_floor(current_floor_idx)
-
 
 
 func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):

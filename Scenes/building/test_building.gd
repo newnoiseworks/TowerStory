@@ -301,6 +301,63 @@ class Test__unhandled_input:
 		assert_eq(test_building.current_floor_idx, 1, "Current floor idx returns to first floor")
 
 
+class Test__toggle_facade:
+	extends GutTest
+
+	var test_building
+	var input
+
+	func before_each():
+		var prototype_script = load("res://scenes/building/building.tscn")
+		test_building = prototype_script.instance()
+		input = MockInput.new()
+		test_building._set_input(input)
+
+		add_child_autofree(test_building)
+
+
+	func test_toggles_facade_via_method():
+		input._click_and_drag_and_release(
+			test_building,
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				4.076785, 0.100007, 4.179358
+			)
+		)
+
+		yield(get_tree().create_timer(0.015), "timeout")
+
+		input.release("move_up")
+		test_building._unhandled_input(input)
+
+		yield(get_tree().create_timer(0.015), "timeout")
+
+		input._click_and_drag_and_release(
+			test_building,
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				4.076785, 0.100007, 4.179358
+			)
+		)
+
+		yield(get_tree().create_timer(0.015), "timeout")
+
+		var first_floor = test_building.get_node("floors/floor1")
+		var first_floor_piece = first_floor.get_child(first_floor.get_child_count() - 1)
+
+		assert_eq(test_building.get_node("floors").get_child_count(), 2)
+
+		assert_true(first_floor_piece.is_transparent, "First floor piece is transparent before toggle")
+
+		test_building._toggle_facade()
+
+		assert_false(first_floor_piece.is_transparent, "First floor piece isn't transparent after toggle")
+
+
 class Test_SecondFloorWorkflow:
 	extends GutTest
 
@@ -464,8 +521,7 @@ class Test_SecondFloorWorkflow:
 
 		input._reset()
 
-		var remove_tile_button = test_building.find_node("base_tile_button")
-		remove_tile_button._on_tool_change_pressed("REMOVE_TILE")
+		test_building.find_node("building_ui")._on_tool_change_pressed("REMOVE_TILE")
 
 		# fourth, remove that piece on the second floor
 		input._click_and_release(
@@ -473,8 +529,7 @@ class Test_SecondFloorWorkflow:
 			Vector3(
 				2.076785, 0.100007, 0.179358
 			),
-			true,
-			"secondary_button"
+			true
 		)
 
 		# fifth, try to go up to third floor -- shouldn't be able to
