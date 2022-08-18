@@ -56,12 +56,7 @@ func _toggle_facade():
 			a_floor.hide_ceiling()
 		else:
 			a_floor.set_opaque()
-
-			if i == floors.get_child_count() - 1:
-				if a_floor.get_piece_count() > 0:
-					a_floor.show_ceiling()
-				else:
-					floors.get_node("floor%s/floor" % [i]).show_ceiling()
+			a_floor.show_ceiling()
 
 	_is_facade_visible = !_is_facade_visible
 

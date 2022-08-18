@@ -390,14 +390,18 @@ class Test__toggle_facade:
 
 		test_building._toggle_facade()
 
+		var first_floor = test_building.get_node("floors/floor1")
+		var first_piece = first_floor.get_child(first_floor.get_child_count() - 1)
 		var second_floor = test_building.get_node("floors/floor2")
-		var piece = second_floor.get_child(second_floor.get_child_count() - 1)
+		var second_piece = second_floor.get_child(second_floor.get_child_count() - 1)
 
-		assert_true(piece.ceiling.is_visible(), "Second floor piece's ceiling is visible after toggle")
+		assert_true(first_piece.ceiling.is_visible(), "First floor piece's ceiling is visible after toggle")
+		assert_true(second_piece.ceiling.is_visible(), "Second floor piece's ceiling is visible after toggle")
 
 		test_building._toggle_facade()
 
-		assert_false(piece.ceiling.is_visible(), "Second floor piece's ceiling is invisible after toggle")
+		assert_false(first_piece.ceiling.is_visible(), "First floor piece's ceiling is invisible after toggle")
+		assert_false(second_piece.ceiling.is_visible(), "Second floor piece's ceiling is invisible after toggle")
 
 
 	func test_toggles_facade_adds_ceiling_to_top_floor_only_if_pieces_exist():
