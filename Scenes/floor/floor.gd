@@ -5,6 +5,7 @@ var floor_piece_packed = preload("res://scenes/floor/bottom_floor_piece.tscn")
 var floor_data = {}
 
 var building
+var is_ceiling_visible = false
 
 export var is_base = false
 export var floor_idx: int = 1
@@ -35,6 +36,22 @@ func set_opaque():
 			floor_data[x][z]["object"].set_opaque()
 
 
+func show_ceiling():
+	is_ceiling_visible = true
+
+	for x in floor_data:
+		for z in floor_data[x]:
+			floor_data[x][z]["object"].ceiling.show()
+
+
+func hide_ceiling():
+	is_ceiling_visible = false
+
+	for x in floor_data:
+		for z in floor_data[x]:
+			floor_data[x][z]["object"].ceiling.hide()
+
+
 func has_floor_piece_at(global_target: Vector3)-> bool:
 	var target = get_parent().global_transform.origin + global_target
 
@@ -49,12 +66,24 @@ func remove_pieces_as_needed(target, final_target, is_transparent = false):
 
 
 func add_pieces_as_needed(target, final_target, is_transparent = false):
-	if (building != null and floor_idx > 1 and _get_piece_count() == 0):
+	if (building != null and floor_idx > 1 and get_piece_count() == 0):
 		var floor_under = building.get_node("floors/floor%s/floor" % [floor_idx - 1])
 		if (floor_under != null and !floor_under.has_floor_piece_at(final_target)):
 			return
 
 	return _add_or_remove_pieces_as_needed(target, final_target, is_transparent)
+
+
+func get_piece_count(_floor = null)-> int:
+	if _floor == null:
+		_floor = floor_data
+
+	var piece_count = 0
+
+	for x in _floor:
+		piece_count += _floor[x].keys().size()
+
+	return piece_count
 
 
 func _add_or_remove_pieces_as_needed(target, final_target, is_transparent = false, remove = false):
@@ -190,7 +219,7 @@ func _can__add_floor_piece_at(x: int, z: int)-> bool:
 	if _has_floor_piece_at(x, z):
 		return false
 
-	if _get_piece_count() > 0 and !_is_connected_at(x, z):
+	if get_piece_count() > 0 and !_is_connected_at(x, z):
 		return false
 
 	return true
@@ -201,7 +230,7 @@ func _can_remove_floor_piece_at(x: int, z:int, is_transparent = false)-> bool:
 		print_debug("Can't delete a floor piece that doesn't exist")
 		return false
 
-	if floor_idx == 1 || _get_piece_count() > 1:
+	if floor_idx == 1 || get_piece_count() > 1:
 		var floor_copy = floor_data.duplicate(true)
 		floor_copy[x].erase(z)
 
@@ -220,7 +249,7 @@ func _is_floor_contiguous(_floor):
 	var z = _floor[x].keys()[0]
 	var touched = _get_pieces_contiguous_to(_floor, x, z, {}) 
 	var count = touched.keys().size()
-	return count == _get_piece_count(_floor)
+	return count == get_piece_count(_floor)
 
 
 func _is_piece_an_edge(x: int, z: int)-> PoolIntArray: 
@@ -232,18 +261,6 @@ func _is_piece_an_edge(x: int, z: int)-> PoolIntArray:
 	edges[SIDE.ZDOWN] = 1 if !floor_data[x].has(z-TowerGlobals.TILE_MULTIPLE) else 0
 
 	return edges
-
-
-func _get_piece_count(_floor = null)-> int:
-	if _floor == null:
-		_floor = floor_data
-
-	var piece_count = 0
-
-	for x in _floor:
-		piece_count += _floor[x].keys().size()
-
-	return piece_count
 
 
 func _get_pieces_contiguous_to(_floor: Dictionary, x: int, z: int, touched: Dictionary) -> Dictionary:

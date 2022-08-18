@@ -3,6 +3,7 @@ extends Spatial
 var transparent_material: ShaderMaterial = load("res://transparent_shader_material.tres")
 var is_transparent = false
 
+onready var ceiling = find_node("ceiling")
 
 func set_transparent():
 	is_transparent = true
@@ -29,4 +30,5 @@ func add_wall_at_edge(x: int):
 func hide_walls():
 	for x in range(4):
 		find_node("wall%s" % x).hide()
+
 

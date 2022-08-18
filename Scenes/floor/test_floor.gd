@@ -166,7 +166,7 @@ class Test__can_remove_floor_piece_at:
 
 
 
-class Test__get_piece_count:
+class Test_get_piece_count:
 	extends GutTest
 	var double_script
 
@@ -179,7 +179,7 @@ class Test__get_piece_count:
 		double_script.floor_data = Globals.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
-			double_script._get_piece_count(),
+			double_script.get_piece_count(),
 			3,
 			"Simple count is 3 pieces"
 		)
@@ -189,7 +189,7 @@ class Test__get_piece_count:
 		double_script.floor_data = Globals.get_simple_square_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
-			double_script._get_piece_count(),
+			double_script.get_piece_count(),
 			9,
 			"Square count is 9 pieces"
 		)

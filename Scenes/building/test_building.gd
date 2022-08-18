@@ -358,6 +358,76 @@ class Test__toggle_facade:
 		assert_false(first_floor_piece.is_transparent, "First floor piece isn't transparent after toggle")
 
 
+	func test_toggles_facade_adds_ceiling_to_top_floor():
+		input._click_and_drag_and_release(
+			test_building,
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				4.076785, 0.100007, 4.179358
+			)
+		)
+
+		yield(get_tree().create_timer(0.015), "timeout")
+
+		input.release("move_up")
+		test_building._unhandled_input(input)
+
+		yield(get_tree().create_timer(0.015), "timeout")
+
+		input._click_and_drag_and_release(
+			test_building,
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				4.076785, 0.100007, 4.179358
+			)
+		)
+
+		yield(get_tree().create_timer(0.015), "timeout")
+
+		test_building._toggle_facade()
+
+		var second_floor = test_building.get_node("floors/floor2")
+		var piece = second_floor.get_child(second_floor.get_child_count() - 1)
+
+		assert_true(piece.ceiling.is_visible(), "Second floor piece's ceiling is visible after toggle")
+
+		test_building._toggle_facade()
+
+		assert_false(piece.ceiling.is_visible(), "Second floor piece's ceiling is invisible after toggle")
+
+
+	func test_toggles_facade_adds_ceiling_to_top_floor_only_if_pieces_exist():
+		input._click_and_drag_and_release(
+			test_building,
+			Vector3(
+				2.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				4.076785, 0.100007, 4.179358
+			)
+		)
+
+		yield(get_tree().create_timer(0.015), "timeout")
+
+		input.release("move_up")
+		test_building._unhandled_input(input)
+
+		yield(get_tree().create_timer(0.015), "timeout")
+
+		test_building._toggle_facade()
+
+		var second_floor = test_building.get_node("floors/floor2")
+		var first_floor = test_building.get_node("floors/floor1")
+		var piece = first_floor.get_child(first_floor.get_child_count() - 1)
+
+		assert_eq(second_floor.get_child_count(), 1, "No new pieces created on second floor")
+		assert_true(piece.ceiling.is_visible(), "First floor piece has ceiling after move up")
+
+
 class Test_SecondFloorWorkflow:
 	extends GutTest
 
