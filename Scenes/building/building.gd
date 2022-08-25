@@ -8,18 +8,11 @@ onready var current_level_ui: Label = find_node("current_level")
 onready var floors: Spatial = find_node("floors")
 onready var basement: Spatial = find_node("basement")
 
-enum UI_TOOL {
-	BASE_TILE,
-	REMOVE_TILE,
-	ROOM
-}
-
-
 var _inputter = Input
 var _main_button_press_target: Vector3
 var _pieces_added_at: Vector3
 var _is_main_button_pressed: bool = false
-var _current_tool: int = UI_TOOL.BASE_TILE
+var _current_tool: int = TowerGlobals.UI_TOOL.BASE_TILE
 var _is_facade_visible: bool = false
 
 var previous_floor: Area
@@ -34,8 +27,8 @@ func _set_input(input):
 func _ready():
 	_create_new_current_floor()
 
-	var _c = find_node("building_ui").connect("tool_change", self, "_on_tool_change_pressed")
-	_c = find_node("building_ui").connect("facade_swap", self, "_toggle_facade")
+	var _c = TowerGlobals.connect("tool_change", self, "_on_tool_change_pressed")
+	_c = TowerGlobals.connect("facade_swap", self, "_toggle_facade")
 
 
 func _unhandled_input(event):
@@ -62,7 +55,7 @@ func _toggle_facade():
 
 
 func _on_tool_change_pressed(user_tool):
-	_current_tool = UI_TOOL.get(user_tool)
+	_current_tool = TowerGlobals.UI_TOOL.get(user_tool)
 
 
 func _handle_floor_move(event):
@@ -130,16 +123,16 @@ func _on_button_click():
 		_main_button_press_target = target
 		_is_main_button_pressed = true
 
-		if _current_tool == UI_TOOL.BASE_TILE:
+		if _current_tool == TowerGlobals.UI_TOOL.BASE_TILE:
 			current_floor.add_pieces_as_needed(target, _main_button_press_target, true)
 
 	elif _inputter.is_action_just_released("main_button") and _is_main_button_pressed:
 		_is_main_button_pressed = false
 
-		if _current_tool == UI_TOOL.BASE_TILE:
+		if _current_tool == TowerGlobals.UI_TOOL.BASE_TILE:
 			current_floor.remove_pieces_as_needed(target, _main_button_press_target, true)
 			current_floor.add_pieces_as_needed(target, _main_button_press_target)
-		elif _current_tool == UI_TOOL.REMOVE_TILE:
+		elif _current_tool == TowerGlobals.UI_TOOL.REMOVE_TILE:
 			current_floor.remove_pieces_as_needed(target, _main_button_press_target)
 
 
@@ -155,7 +148,7 @@ func _on_select_move(mouse_position: Vector3):
 		mouse_select.translate_object_local(adjustment)
 
 		if _is_main_button_pressed:
-			if _current_tool == UI_TOOL.BASE_TILE:
+			if _current_tool == TowerGlobals.UI_TOOL.BASE_TILE:
 				current_floor.remove_pieces_as_needed(_pieces_added_at, _main_button_press_target, true)
 				current_floor.add_pieces_as_needed(mouse_position, _main_button_press_target, true)
 				_pieces_added_at = mouse_position
@@ -179,7 +172,11 @@ func _create_new_current_floor():
 	))
 
 	current_floor.draw_floor()
-	var _c = current_floor.connect("input_event", self, "_on_floor_input_event")
+	var _c = current_floor.connect(
+		"input_event",
+		self,
+		"_on_floor_input_event"
+	)
 	current_floor.input_ray_pickable = true
 
 	current_floor.building = self

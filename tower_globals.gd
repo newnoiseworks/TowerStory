@@ -1,5 +1,15 @@
 extends Node
 
+signal tool_change(user_tool)
+signal facade_swap
+
+enum UI_TOOL {
+	BASE_TILE,
+	REMOVE_TILE,
+	SMALL_OFFICE_1x2,
+	SMALL_OFFICE_2x2,
+}
+
 const TILE_MULTIPLE = 2
 
 static func closest_multiple_of(x: int)-> int:
