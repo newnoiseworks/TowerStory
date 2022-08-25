@@ -19,6 +19,16 @@ var previous_floor: Area
 var current_floor: Area
 var current_floor_idx = 1
 
+
+func get_target_pos():
+	var position = mouse_select.global_transform.origin
+
+	position.x = TowerGlobals.closest_multiple_of(int(position.x))
+	position.z = TowerGlobals.closest_multiple_of(int(position.z))
+
+	return position
+
+
 # Pass a mock input object for testing
 func _set_input(input):
 	_inputter = input
@@ -55,7 +65,7 @@ func _toggle_facade():
 
 
 func _on_tool_change_pressed(user_tool):
-	_current_tool = TowerGlobals.UI_TOOL.get(user_tool)
+	_current_tool = user_tool
 
 
 func _handle_floor_move(event):

@@ -49,7 +49,7 @@ text = "1"
 [node name="GridContainer2" type="GridContainer" parent="building_ui/GridContainer3"]
 margin_top = 31.0
 margin_right = 125.0
-margin_bottom = 99.0
+margin_bottom = 123.0
 
 [node name="base_tile_button" type="Button" parent="building_ui/GridContainer3/GridContainer2"]
 margin_right = 125.0
@@ -64,11 +64,19 @@ margin_bottom = 44.0
 text = "Remove Tile"
 align = 0
 
-[node name="add_room_button" type="OptionButton" parent="building_ui/GridContainer3/GridContainer2"]
+[node name="small_office_1x2" type="Button" parent="building_ui/GridContainer3/GridContainer2"]
 margin_top = 48.0
 margin_right = 125.0
 margin_bottom = 68.0
-text = "Add Room"
+text = "Small Office 1x2"
+align = 0
+
+[node name="small_office_2x2" type="Button" parent="building_ui/GridContainer3/GridContainer2"]
+margin_top = 72.0
+margin_right = 125.0
+margin_bottom = 92.0
+text = "Small Office 2x2"
+align = 0
 
 [node name="floors" type="Spatial" parent="."]
 
@@ -76,3 +84,5 @@ text = "Add Room"
 
 [connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/base_tile_button" to="building_ui" method="_on_tool_change_pressed" binds= [ "BASE_TILE" ]]
 [connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/remove_tile_button" to="building_ui" method="_on_tool_change_pressed" binds= [ "REMOVE_TILE" ]]
+[connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/small_office_1x2" to="building_ui" method="_on_tool_change_pressed" binds= [ "SMALL_OFFICE_1x2" ]]
+[connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/small_office_2x2" to="building_ui" method="_on_tool_change_pressed" binds= [ "SMALL_OFFICE_2x2" ]]

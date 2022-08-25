@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 func _on_tool_change_pressed(user_tool):
-	TowerGlobals.emit_signal("tool_change", user_tool)
+	TowerGlobals.emit_signal("tool_change", TowerGlobals.UI_TOOL.get(user_tool))
 
 
 func _unhandled_input(event):
