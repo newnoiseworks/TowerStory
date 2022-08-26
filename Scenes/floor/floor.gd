@@ -1,5 +1,7 @@
 extends Spatial
 
+onready var room_manager = find_node("room_manager")
+
 var floor_piece_packed = preload("res://scenes/floor/bottom_floor_piece.tscn")
 
 var floor_data = {}
@@ -296,7 +298,5 @@ func _is_connected_at(x: int, z: int)-> bool:
 
 func _has_floor_piece_at(x: int, z: int)-> bool:
 	return floor_data.has(x) and floor_data[x].has(z)
-
-
 
 

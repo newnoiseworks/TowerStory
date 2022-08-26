@@ -136,14 +136,17 @@ func _on_button_click():
 		if _current_tool == TowerGlobals.UI_TOOL.BASE_TILE:
 			current_floor.add_pieces_as_needed(target, _main_button_press_target, true)
 
-	elif _inputter.is_action_just_released("main_button") and _is_main_button_pressed:
+	elif _inputter.is_action_just_released("main_button"):
 		_is_main_button_pressed = false
 
-		if _current_tool == TowerGlobals.UI_TOOL.BASE_TILE:
-			current_floor.remove_pieces_as_needed(target, _main_button_press_target, true)
-			current_floor.add_pieces_as_needed(target, _main_button_press_target)
-		elif _current_tool == TowerGlobals.UI_TOOL.REMOVE_TILE:
-			current_floor.remove_pieces_as_needed(target, _main_button_press_target)
+		match _current_tool:
+			TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2, TowerGlobals.UI_TOOL.SMALL_OFFICE_2x2:
+				current_floor.room_manager.place_hover_item()
+			TowerGlobals.UI_TOOL.BASE_TILE:
+				current_floor.remove_pieces_as_needed(target, _main_button_press_target, true)
+				current_floor.add_pieces_as_needed(target, _main_button_press_target)
+			TowerGlobals.UI_TOOL.REMOVE_TILE:
+				current_floor.remove_pieces_as_needed(target, _main_button_press_target)
 
 
 func _on_select_move(mouse_position: Vector3):

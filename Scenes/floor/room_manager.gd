@@ -8,13 +8,21 @@ var _small_office_1x2 = preload("res://scenes/room/office/office_1x2.tscn")
 var _hover_item: Spatial
 
 
+func place_hover_item():
+	if _hover_item != null:
+		_hover_item.set_opaque()
+		_hover_item = null
+
+
 func _ready():
 	var _c = TowerGlobals.connect("tool_change", self, "_on_tool_change_pressed")
 
 
 func _physics_process(_delta):
 	if _hover_item != null:
-		_hover_item.global_transform.origin = floor_container.global_transform.origin + TowerGlobals.get_target_pos()
+		var origin = floor_container.global_transform.origin
+		origin.y = 0
+		_hover_item.global_transform.origin = origin + TowerGlobals.get_target_pos()
 
 
 func _on_tool_change_pressed(user_tool):
