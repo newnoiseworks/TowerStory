@@ -76,7 +76,7 @@ class Test__can__add_floor_piece_at:
 		)
 
 
-class Test__is_piece_an_edge:
+class Test__get_piece_edges:
 	extends GutTest
 	var double_script
 
@@ -97,7 +97,7 @@ class Test__is_piece_an_edge:
 
 
 	func test_is_center_an_edge():
-		var edges = double_script._is_piece_an_edge(0, 0)
+		var edges = double_script._get_piece_edges(0, 0)
 
 		assert_eq(
 			edges,

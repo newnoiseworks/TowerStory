@@ -197,7 +197,7 @@ func _add_or_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_tra
 
 
 func _add_edges_to_surrounding_pieces(x: int, z: int):
-	var edges = _is_piece_an_edge(x, z)
+	var edges = _get_piece_edges(x, z)
 
 	if edges[SIDE.XUP] == 0: _add_wall_to_piece_at_edges(x+TowerGlobals.TILE_MULTIPLE, z)
 	if edges[SIDE.XDOWN] == 0: _add_wall_to_piece_at_edges(x-TowerGlobals.TILE_MULTIPLE, z)
@@ -206,7 +206,7 @@ func _add_edges_to_surrounding_pieces(x: int, z: int):
 
 
 func _add_wall_to_piece_at_edges(x: int, z:int):
-	var edges = _is_piece_an_edge(x, z)
+	var edges = _get_piece_edges(x, z)
 
 	var floor_piece = floor_data[x][z]["object"]
 
@@ -262,7 +262,7 @@ func _is_floor_contiguous(_floor):
 	return count == get_piece_count(_floor)
 
 
-func _is_piece_an_edge(x: int, z: int)-> PoolIntArray: 
+func _get_piece_edges(x: int, z: int)-> PoolIntArray: 
 	var edges: PoolIntArray = [0, 0, 0, 0]
 
 	edges[SIDE.XUP] = 1 if !floor_data.has(x+TowerGlobals.TILE_MULTIPLE) or !floor_data[x+TowerGlobals.TILE_MULTIPLE].has(z) else 0
