@@ -31,11 +31,19 @@ func set_transparent():
 		for z in floor_data[x]:
 			floor_data[x][z]["object"].set_transparent()
 
+	for x in room_manager.room_data:
+		for z in room_manager.room_data[x]:
+			room_manager.room_data[x][z]["object"].set_transparent()
+
 
 func set_opaque():
 	for x in floor_data:
 		for z in floor_data[x]:
 			floor_data[x][z]["object"].set_opaque()
+
+	for x in room_manager.room_data:
+		for z in room_manager.room_data[x]:
+			room_manager.room_data[x][z]["object"].set_opaque()
 
 
 func show_ceiling():

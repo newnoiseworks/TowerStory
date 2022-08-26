@@ -4,6 +4,8 @@ extends Spatial
 # it's trying to access the floor container e.g. "building/floor1/"
 onready var floor_container = get_parent().get_parent()
 
+var room_data = {}
+
 var _small_office_1x2 = preload("res://scenes/room/office/office_1x2.tscn")
 var _hover_item: Spatial
 
@@ -11,6 +13,15 @@ var _hover_item: Spatial
 func place_hover_item():
 	if _hover_item != null:
 		_hover_item.set_opaque()
+		var origin = _hover_item.global_transform.origin
+
+		if !room_data.has(origin.x): room_data[origin.x] = {}
+
+		room_data[origin.x][origin.z] = {
+			"type": "room", # TODO: This should map to the "type" of room -- probably an exported string would do well
+			"object": _hover_item
+		}
+
 		_hover_item = null
 
 
