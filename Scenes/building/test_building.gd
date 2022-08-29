@@ -595,15 +595,14 @@ class Test_SecondFloorWorkflow:
 
 		input._reset()
 
-		test_building.find_node("building_ui")._on_tool_change_pressed("REMOVE_TILE")
+		TowerGlobals.emit_signal("tool_change", TowerGlobals.UI_TOOL.REMOVE_TILE)
 
 		# fourth, remove that piece on the second floor
 		input._click_and_release(
 			test_building,
 			Vector3(
 				2.076785, 0.100007, 0.179358
-			),
-			true
+			)
 		)
 
 		# fifth, try to go up to third floor -- shouldn't be able to
