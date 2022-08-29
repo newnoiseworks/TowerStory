@@ -33,7 +33,12 @@ func _physics_process(_delta):
 	if _hover_item != null:
 		var origin = floor_container.global_transform.origin
 		origin.y = 0
+
+		if _hover_item.global_transform.origin == origin + TowerGlobals.get_target_pos():
+			return
+
 		_hover_item.global_transform.origin = origin + TowerGlobals.get_target_pos()
+		_hover_item.place_walls_where_needed()
 
 
 func _on_tool_change_pressed(user_tool):
