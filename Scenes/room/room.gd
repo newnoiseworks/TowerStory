@@ -6,7 +6,7 @@ var FloorDataDetails = preload("res://utils/floor_data_details.gd")
 
 var floor_data = {}
 
-var _floor_data_details_obj
+var _room_data_details = FloorDataDetails.new(floor_data)
 
 
 func set_transparent():
@@ -19,10 +19,12 @@ func set_opaque():
 		tile.set_opaque()
 
 
-func place_walls_where_needed():
+func place_walls_where_needed(enclosing_floor_data_details: FloorDataDetails):
 	for x in floor_data:
 		for z in floor_data[x]:
-			_floor_data_details().add_edges_to_surrounding_pieces(x, z)
+			_room_data_details.adjust_room_walls_on_piece_at(
+				x, z, enclosing_floor_data_details, global_transform.origin
+			)
 
 
 func _ready():
@@ -43,12 +45,5 @@ func _assemble_floor_data():
 			"type": "base_tile",
 			"object": tile,
 		}
-
-
-func _floor_data_details():
-	if _floor_data_details_obj == null:
-		_floor_data_details_obj = FloorDataDetails.new(floor_data)
-
-	return _floor_data_details_obj
 
 

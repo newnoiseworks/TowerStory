@@ -26,6 +26,26 @@ func get_piece_count(_floor = null)-> int:
 	return piece_count
 
 
+func adjust_room_walls_on_piece_at(
+	x: int,
+	z: int,
+	enclosing_floor_details: FloorDataDetails,
+	position_of_room_in_floor: Vector3 = Vector3.ZERO
+):
+	var room_pos_x = int(position_of_room_in_floor.x)
+	var room_pos_z = int(position_of_room_in_floor.z)
+
+	var floor_edges = enclosing_floor_details._get_piece_edges(room_pos_x + x, room_pos_z + z)
+	var room_edges = _get_piece_edges(x, z)
+	var floor_piece = _floor_data[x][z]["object"]
+
+	add_edges_to_surrounding_pieces(x, z)
+
+	for i in range(4):
+		if floor_edges[i] == 1 or room_edges[i] == 0:
+			floor_piece.call("hide_wall_at_edge", i)
+
+
 func add_edges_to_surrounding_pieces(x: int, z: int):
 	var edges = _get_piece_edges(x, z)
 
