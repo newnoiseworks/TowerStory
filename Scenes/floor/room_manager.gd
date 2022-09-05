@@ -3,6 +3,8 @@ extends Spatial
 # TODO: double get parent call kind of sucks ass, think about a way around it
 # it's trying to access the floor container e.g. "building/floor1/"
 onready var floor_container = get_parent().get_parent()
+# TODO: single get parent call -- also sucks ass in a similar way, see above
+onready var floor_obj = get_parent()
 
 var room_data = {}
 
@@ -36,7 +38,7 @@ func _physics_process(_delta):
 
 		if _hover_item.global_transform.origin != origin + TowerGlobals.get_target_pos():
 			_hover_item.global_transform.origin = origin + TowerGlobals.get_target_pos()
-			_hover_item.place_walls_where_needed(get_parent().floor_data_details) # TODO: See above comment on re: what "sucks ass"
+			_hover_item.place_walls_where_needed(floor_obj.floor_data_details)
 
 
 func _on_tool_change_pressed(user_tool):
