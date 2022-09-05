@@ -36,7 +36,7 @@ func _physics_process(_delta):
 
 		if _hover_item.global_transform.origin != origin + TowerGlobals.get_target_pos():
 			_hover_item.global_transform.origin = origin + TowerGlobals.get_target_pos()
-			_hover_item.place_walls_where_needed(get_parent()._floor_data_details) # TODO: See above comment on re: what "sucks ass"
+			_hover_item.place_walls_where_needed(get_parent().floor_data_details) # TODO: See above comment on re: what "sucks ass"
 
 
 func _on_tool_change_pressed(user_tool):

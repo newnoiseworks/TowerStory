@@ -12,7 +12,7 @@ var floor_data = {}
 var building
 var is_ceiling_visible = false
 
-var _floor_data_details = FloorDataDetails.new(floor_data, floor_idx)
+var floor_data_details = FloorDataDetails.new(floor_data, floor_idx)
 
 func draw_floor():
 	for x in floor_data:
@@ -21,7 +21,7 @@ func draw_floor():
 
 	for x in floor_data:
 		for z in floor_data[x]:
-			_floor_data_details.add_wall_to_piece_at_edges(x, z)
+			floor_data_details.add_wall_to_piece_at_edges(x, z)
 
 
 func set_transparent():
@@ -66,7 +66,7 @@ func has_floor_piece_at(global_target: Vector3)-> bool:
 	var x = int(target.x)
 	var z = int(target.z)
 
-	return _floor_data_details.has_floor_piece_at(x, z)
+	return floor_data_details.has_floor_piece_at(x, z)
 
 
 func remove_pieces_as_needed(target, final_target, is_transparent = false):
@@ -86,7 +86,7 @@ func get_piece_count(_floor = null)-> int:
 	if _floor == null:
 		_floor = floor_data
 
-	return _floor_data_details.get_piece_count(_floor)
+	return floor_data_details.get_piece_count(_floor)
 
 
 func _add_or_remove_pieces_as_needed(target, final_target, is_transparent = false, remove = false):
@@ -115,7 +115,7 @@ func _add_floor_piece_at(global_target: Vector3, force: bool = false, is_transpa
 	var x = int(target.x)
 	var z = int(target.z)
 
-	if !force and !_floor_data_details.can_add_floor_piece_at(x, z): return
+	if !force and !floor_data_details.can_add_floor_piece_at(x, z): return
 
 	if !floor_data.has(x): floor_data[x] = {}
 
@@ -134,8 +134,8 @@ func _add_floor_piece_at(global_target: Vector3, force: bool = false, is_transpa
 	floor_piece.global_transform.origin = target
 
 	if !force:
-		_floor_data_details.add_wall_to_piece_at_edges(x, z)
-		_floor_data_details.add_edges_to_surrounding_pieces(x, z)
+		floor_data_details.add_wall_to_piece_at_edges(x, z)
+		floor_data_details.add_edges_to_surrounding_pieces(x, z)
 
 
 func _remove_floor_piece_at(global_target: Vector3, only_if_transparent=false):
@@ -144,11 +144,11 @@ func _remove_floor_piece_at(global_target: Vector3, only_if_transparent=false):
 	var x = int(target.x)
 	var z = int(target.z)
 
-	if _floor_data_details.can_remove_floor_piece_at(x, z, only_if_transparent):
+	if floor_data_details.can_remove_floor_piece_at(x, z, only_if_transparent):
 		floor_data[x][z]["object"].queue_free()
 		floor_data[x].erase(z)
 
-		_floor_data_details.add_edges_to_surrounding_pieces(x, z)
+		floor_data_details.add_edges_to_surrounding_pieces(x, z)
 
 
 func _add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_transparent=false):
@@ -156,7 +156,7 @@ func _add_multiple_pieces_if_adjacent(lesserx, greaterx, lesserz, greaterz, is_t
 
 	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
-			if _floor_data_details.can_add_floor_piece_at(x, z):
+			if floor_data_details.can_add_floor_piece_at(x, z):
 				has_adjacent_piece = true
 				break
 
@@ -174,7 +174,7 @@ func _remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_transparen
 func _add_or_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_transparent = false, remove = false):
 	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
-			if _floor_data_details.has_floor_piece_at(x, z):
+			if floor_data_details.has_floor_piece_at(x, z):
 				if remove:
 					_remove_floor_piece_at(Vector3(x, 0, z), is_transparent)
 			elif !remove:
@@ -182,10 +182,10 @@ func _add_or_remove_multiple_pieces(lesserx, greaterx, lesserz, greaterz, is_tra
 
 	for x in range(lesserx.x, greaterx.x + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
 		for z in range(lesserz.z, greaterz.z + TowerGlobals.TILE_MULTIPLE, TowerGlobals.TILE_MULTIPLE):
-			if !_floor_data_details.has_floor_piece_at(x, z):
+			if !floor_data_details.has_floor_piece_at(x, z):
 				break
 
-			_floor_data_details.add_wall_to_piece_at_edges(x, z)
-			_floor_data_details.add_edges_to_surrounding_pieces(x, z)
+			floor_data_details.add_wall_to_piece_at_edges(x, z)
+			floor_data_details.add_edges_to_surrounding_pieces(x, z)
 
 
