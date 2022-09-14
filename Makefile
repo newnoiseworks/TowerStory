@@ -16,6 +16,6 @@ endif
 lsp:
 	$(GODOT) -e --no-window
 
-GODOT ?= /mnt/c/Users/hello/Downloads/Godot_v3.4.4-stable_win64.exe/Godot_v3.4.4-stable_win64.exe
+GODOT ?= /mnt/c/Users/hello/Downloads/Godot_v3.5-stable_win64.exe/Godot_v3.5-stable_win64.exe
 GLOG_SINGLE = 3
 GARGS ?=
