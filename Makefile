@@ -6,16 +6,17 @@ godot:
 
 test:
 ifneq ($(FILE),)
-	$(GODOT) -s addons/gut/gut_cmdln.gd --path . -gselect=$(FILE) -glog=$(GLOG_SINGLE) $(GARGS)
+	$(GODOT) -d -s --path . addons/gut/gut_cmdln.gd -gselect=$(FILE) -glog=$(GLOG_SINGLE) $(GARGS)
 else ifneq ($(TEST),)
-	$(GODOT) -s addons/gut/gut_cmdln.gd --path . -gunit_test_name=$(TEST) -glog=$(GLOG_SINGLE) $(GARGS)
+	$(GODOT) -d -s --path . addons/gut/gut_cmdln.gd -gunit_test_name=$(TEST) -glog=$(GLOG_SINGLE) $(GARGS)
 else
-	$(GODOT) -s addons/gut/gut_cmdln.gd --path . $(GARGS)
+	$(GODOT) -d -s --path . addons/gut/gut_cmdln.gd $(GARGS)
 endif
 
 lsp:
 	$(GODOT) -e --no-window
 
-GODOT ?= /mnt/c/Users/hello/Downloads/Godot_v3.5-stable_win64.exe/Godot_v3.5-stable_win64.exe
+GODOT ?= /mnt/c/Users/hello/Downloads/Godot_v3.4.4-stable_win64.exe/Godot_v3.4.4-stable_win64.exe
+# GODOT ?= /mnt/c/Users/hello/Downloads/Godot_v3.5.1-stable_win64.exe/Godot_v3.5.1-stable_win64.exe
 GLOG_SINGLE = 3
 GARGS ?=

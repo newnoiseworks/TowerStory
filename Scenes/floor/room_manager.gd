@@ -5,17 +5,21 @@ extends Spatial
 onready var floor_container = get_parent().get_parent()
 # TODO: single get parent call -- also sucks ass in a similar way, see above
 onready var floor_obj = get_parent()
+onready var floor_data_details = floor_obj.floor_data_details
 
 var room_data = {}
 
 var _small_office_1x2 = preload("res://scenes/room/office/office_1x2.tscn")
+var _small_office_2x2 = preload("res://scenes/room/office/office_2x2.tscn")
 var _hover_item: Spatial
 
 
 func place_hover_item():
 	if _hover_item != null:
 		_hover_item.set_opaque()
-		var origin = _hover_item.global_transform.origin
+		var origin = floor_container.global_transform.origin + _hover_item.global_transform.origin
+
+		if !_can_place_room_at(origin): return
 
 		if !room_data.has(origin.x): room_data[origin.x] = {}
 
@@ -48,6 +52,21 @@ func _on_tool_change_pressed(user_tool):
 			floor_container.add_child(_hover_item)
 			_hover_item.set_transparent()
 		TowerGlobals.UI_TOOL.SMALL_OFFICE_2x2:
-			pass
+			_hover_item = _small_office_2x2.instance()
+			floor_container.add_child(_hover_item)
+			_hover_item.set_transparent()
+
+
+func _can_place_room_at(pos: Vector3) -> bool:
+	for tile in _hover_item.tiles.get_children():
+		var tile_origin = tile.transform.origin
+
+		if !floor_data_details.has_floor_piece_at(
+			pos.x + tile_origin.x,
+			pos.z + tile_origin.z
+		):
+			return false
+
+	return true
 
 

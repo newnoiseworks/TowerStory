@@ -42,6 +42,7 @@ func adjust_room_walls_on_piece_at(
 	add_edges_to_surrounding_pieces(x, z)
 
 	for i in range(4):
+		# if floor_edges.has(i) and floor_edges[i] == 1 or room_edges.has(i) and room_edges[i] == 0:
 		if floor_edges[i] == 1 or room_edges[i] == 0:
 			floor_piece.call("hide_wall_at_edge", i)
 
@@ -122,10 +123,25 @@ func can_remove_floor_piece_at(x: int, z: int, is_transparent = false)-> bool:
 func _get_piece_edges(x: int, z: int)-> PoolIntArray:
 	var edges: PoolIntArray = [0, 0, 0, 0]
 
-	edges[SIDE.XUP] = 1 if !_floor_data.has(x+TowerGlobals.TILE_MULTIPLE) or !_floor_data[x+TowerGlobals.TILE_MULTIPLE].has(z) else 0
-	edges[SIDE.XDOWN] = 1 if !_floor_data.has(x-TowerGlobals.TILE_MULTIPLE) or !_floor_data[x-TowerGlobals.TILE_MULTIPLE].has(z) else 0
-	edges[SIDE.ZUP] = 1 if !_floor_data[x].has(z+TowerGlobals.TILE_MULTIPLE) else 0
-	edges[SIDE.ZDOWN] = 1 if !_floor_data[x].has(z-TowerGlobals.TILE_MULTIPLE) else 0
+	if !_floor_data.has(x+TowerGlobals.TILE_MULTIPLE) or !_floor_data[x+TowerGlobals.TILE_MULTIPLE].has(z):
+		edges[SIDE.XUP] = 1
+	else:
+		edges[SIDE.XUP] = 0
+
+	if !_floor_data.has(x-TowerGlobals.TILE_MULTIPLE) or !_floor_data[x-TowerGlobals.TILE_MULTIPLE].has(z):
+		edges[SIDE.XDOWN] = 1
+	else:
+		edges[SIDE.XDOWN] = 0
+
+	if !_floor_data.has(x) or !_floor_data[x].has(z+TowerGlobals.TILE_MULTIPLE):
+		edges[SIDE.ZUP] = 1
+	else:
+		edges[SIDE.ZUP] = 0
+
+	if !_floor_data.has(x) or !_floor_data[x].has(z-TowerGlobals.TILE_MULTIPLE):
+		edges[SIDE.ZDOWN] = 1 
+	else:
+		edges[SIDE.ZDOWN] = 0
 
 	return edges
 
