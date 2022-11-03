@@ -7,11 +7,16 @@ onready var floor_container = get_parent().get_parent()
 onready var floor_obj = get_parent()
 onready var floor_data_details = floor_obj.floor_data_details
 
+enum ROTATION {
+	ZERO, NINETY, ONEEIGHTY, TWOSEVENTY
+}
+
 var room_data = {}
 
 var _small_office_1x2 = preload("res://scenes/room/office/office_1x2.tscn")
 var _small_office_2x2 = preload("res://scenes/room/office/office_2x2.tscn")
 var _hover_item: Spatial
+var _hover_item_rotation = ROTATION.ZERO
 
 
 func place_hover_item():
@@ -25,14 +30,23 @@ func place_hover_item():
 
 		room_data[origin.x][origin.z] = {
 			"type": "room", # TODO: This should map to the "type" of room -- probably an exported string would do well
-			"object": _hover_item
+			"object": _hover_item,
+			"rotation": _hover_item_rotation
 		}
 
 		_hover_item = null
+		_hover_item_rotation = ROTATION.ZERO
 
 
 func _ready():
 	var _c = TowerGlobals.connect("tool_change", self, "_on_tool_change_pressed")
+
+
+func _input(event):
+	if event.is_action_released("rotate_room_right"):
+		_rotate_hover_item()
+	elif event.is_action_released("rotate_room_left"):
+		_rotate_hover_item(true)
 
 
 func _physics_process(_delta):
@@ -61,12 +75,36 @@ func _can_place_room_at(pos: Vector3) -> bool:
 	for tile in _hover_item.tiles.get_children():
 		var tile_origin = tile.transform.origin
 
-		if !floor_data_details.has_floor_piece_at(
-			pos.x + tile_origin.x,
-			pos.z + tile_origin.z
-		):
+		var x = pos.x + tile_origin.x
+		var z = pos.z + tile_origin.z
+
+		if _hover_item_rotation == ROTATION.NINETY:
+			x = pos.x + tile_origin.z
+			z = pos.z + tile_origin.x
+		elif _hover_item_rotation == ROTATION.ONEEIGHTY:
+			x = pos.x - tile_origin.x
+			z = pos.z - tile_origin.z
+		elif _hover_item_rotation == ROTATION.TWOSEVENTY:
+			x = pos.x - tile_origin.z
+			z = pos.z - tile_origin.x
+
+		if !floor_data_details.has_floor_piece_at(x, z):
 			return false
 
 	return true
+
+
+func _rotate_hover_item(left: bool = false):
+	if left:
+		_hover_item_rotation -= 1
+	else:
+		_hover_item_rotation += 1
+
+	if _hover_item_rotation > ROTATION.TWOSEVENTY:
+		_hover_item_rotation = ROTATION.ZERO
+	elif _hover_item_rotation < ROTATION.ZERO:
+		_hover_item_rotation = ROTATION.TWOSEVENTY
+
+	_hover_item.set_rotation_degrees(Vector3(0, _hover_item_rotation * 90, 0))
 
 
