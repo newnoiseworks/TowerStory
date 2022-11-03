@@ -3,6 +3,10 @@ extends Node
 signal tool_change(user_tool)
 signal facade_swap
 
+enum ROTATION {
+	ZERO, NINETY, ONEEIGHTY, TWOSEVENTY
+}
+
 enum UI_TOOL {
 	BASE_TILE,
 	REMOVE_TILE,

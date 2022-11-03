@@ -7,16 +7,12 @@ onready var floor_container = get_parent().get_parent()
 onready var floor_obj = get_parent()
 onready var floor_data_details = floor_obj.floor_data_details
 
-enum ROTATION {
-	ZERO, NINETY, ONEEIGHTY, TWOSEVENTY
-}
-
 var room_data = {}
 
 var _small_office_1x2 = preload("res://scenes/room/office/office_1x2.tscn")
 var _small_office_2x2 = preload("res://scenes/room/office/office_2x2.tscn")
 var _hover_item: Spatial
-var _hover_item_rotation = ROTATION.ZERO
+var _hover_item_rotation = TowerGlobals.ROTATION.ZERO
 
 
 func place_hover_item():
@@ -35,7 +31,7 @@ func place_hover_item():
 		}
 
 		_hover_item = null
-		_hover_item_rotation = ROTATION.ZERO
+		_hover_item_rotation = TowerGlobals.ROTATION.ZERO
 
 
 func _ready():
@@ -78,13 +74,13 @@ func _can_place_room_at(pos: Vector3) -> bool:
 		var x = pos.x + tile_origin.x
 		var z = pos.z + tile_origin.z
 
-		if _hover_item_rotation == ROTATION.NINETY:
+		if _hover_item_rotation == TowerGlobals.ROTATION.NINETY:
 			x = pos.x + tile_origin.z
 			z = pos.z + tile_origin.x
-		elif _hover_item_rotation == ROTATION.ONEEIGHTY:
+		elif _hover_item_rotation == TowerGlobals.ROTATION.ONEEIGHTY:
 			x = pos.x - tile_origin.x
 			z = pos.z - tile_origin.z
-		elif _hover_item_rotation == ROTATION.TWOSEVENTY:
+		elif _hover_item_rotation == TowerGlobals.ROTATION.TWOSEVENTY:
 			x = pos.x - tile_origin.z
 			z = pos.z - tile_origin.x
 
@@ -100,10 +96,10 @@ func _rotate_hover_item(left: bool = false):
 	else:
 		_hover_item_rotation += 1
 
-	if _hover_item_rotation > ROTATION.TWOSEVENTY:
-		_hover_item_rotation = ROTATION.ZERO
-	elif _hover_item_rotation < ROTATION.ZERO:
-		_hover_item_rotation = ROTATION.TWOSEVENTY
+	if _hover_item_rotation > TowerGlobals.ROTATION.TWOSEVENTY:
+		_hover_item_rotation = TowerGlobals.ROTATION.ZERO
+	elif _hover_item_rotation < TowerGlobals.ROTATION.ZERO:
+		_hover_item_rotation = TowerGlobals.ROTATION.TWOSEVENTY
 
 	_hover_item.set_rotation_degrees(Vector3(0, _hover_item_rotation * 90, 0))
 
