@@ -7,6 +7,7 @@ onready var camera_gimbal: Spatial = find_node("camera_gimbal")
 onready var current_level_ui: Label = find_node("current_level")
 onready var floors: Spatial = find_node("floors")
 onready var basement: Spatial = find_node("basement")
+onready var debug_cursor_label: Label = find_node("cursor_position")
 
 var _inputter = Input
 var _main_button_press_target: Vector3
@@ -159,6 +160,7 @@ func _on_select_move(mouse_position: Vector3):
 
 	if adjustment != Vector3.ZERO:
 		mouse_select.translate_object_local(adjustment)
+		debug_cursor_label.text = "(%s, %s)" % [mouse_select.transform.origin.x, mouse_select.transform.origin.z]
 
 		if _is_main_button_pressed:
 			if _current_tool == TowerGlobals.UI_TOOL.BASE_TILE:
