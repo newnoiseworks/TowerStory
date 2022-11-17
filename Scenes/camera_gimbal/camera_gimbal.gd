@@ -86,10 +86,10 @@ func _physics_process_camera_gimbal():
 	if (inputter.is_action_pressed("move_right")):
 		camera_gimbal_transform.origin += self.get_transform().basis.x * camera_gimbal_speed
 
-	if (inputter.is_action_pressed("rotate_left") and !inputter.is_action_pressed("rotate_room_left")):
+	if (inputter.is_action_pressed("rotate_left")):
 		camera_gimbal_transform = camera_gimbal_transform * Transform(Quat(Y_AXIS, -rotate_speed))
 
-	if (inputter.is_action_pressed("rotate_right") and !inputter.is_action_pressed("rotate_room_right")):
+	if (inputter.is_action_pressed("rotate_right")):
 		camera_gimbal_transform = camera_gimbal_transform * Transform(Quat(Y_AXIS, rotate_speed))
 
 	self.set_transform(camera_gimbal_transform)

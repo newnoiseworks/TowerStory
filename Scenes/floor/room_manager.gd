@@ -39,10 +39,11 @@ func _ready():
 
 
 func _input(event):
-	if event.is_action_released("rotate_room_right"):
-		_rotate_hover_item()
-	elif event.is_action_released("rotate_room_left"):
-		_rotate_hover_item(true)
+	if _hover_item != null:
+		if event.is_action_released("rotate_room_right"):
+			_rotate_hover_item()
+		elif event.is_action_released("rotate_room_left"):
+			_rotate_hover_item(true)
 
 
 func _physics_process(_delta):
