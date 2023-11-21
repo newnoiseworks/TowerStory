@@ -4,28 +4,28 @@ var SpecHelper = preload("res://utils/test/spec_helper.gd")
 
 class Test_get_piece_count:
 	extends GutTest
-	var double_script
+	var script_double
 
 	func before_each():
 		var prototype_script = partial_double("res://scenes/floor/floor.gd")
-		double_script = prototype_script.new()
+		script_double = prototype_script.new()
 
 
 	func test_count_simple():
-		double_script.floor_data = SpecHelper.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
+		script_double.floor_data = SpecHelper.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
-			double_script.get_piece_count(),
+			script_double.get_piece_count(),
 			3,
 			"Simple count is 3 pieces"
 		)
 
 
 	func test_count_square():
-		double_script.floor_data = SpecHelper.get_simple_square_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
+		script_double.floor_data = SpecHelper.get_simple_square_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
-			double_script.get_piece_count(),
+			script_double.get_piece_count(),
 			9,
 			"Square count is 9 pieces"
 		)
