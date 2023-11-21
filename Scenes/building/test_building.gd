@@ -80,6 +80,8 @@ class Test__on_floor_input_event:
 		assert_not_null(current_floor.floor_data[4][4], "Piece set at right spot")
 
 	func test_mouse_click_and_drag_to_add_rectangle_adds_transparent_pieces():
+		await get_tree().create_timer(0.015).timeout
+
 		var current_floor = test_building.get_node("floors/floor1")
 		var orig_children_count = current_floor.get_child_count()
 
