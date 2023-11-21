@@ -8,20 +8,20 @@ var input_method = "_on_floor_input_event"
 func press(key):
 	_pressed.append(key)
 
-	if key in _released:
-		_released.remove(key)
+	if _released.has(key):
+		_released.erase(key)
 
 func release(key):
-	if key in _pressed:
-		_pressed.remove(key)
+	if _pressed.has(key):
+		_pressed.erase(key)
 
 	_released.append(key)
 
 func is_action_pressed(a):
-	return a in _pressed
+	return _pressed.has(a)
 
 func is_action_released(a):
-	return a in _released
+	return _released.has(a)
 
 func is_action_just_released(a):
 	return is_action_released(a)
