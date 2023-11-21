@@ -28,6 +28,10 @@ gdscript/warnings/integer_division=false
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
 [global]
 
 theme=false
