@@ -189,8 +189,10 @@ func _create_new_current_floor():
 	current_floor.draw_floor()
 	var _c = current_floor.connect(
 		"input_event",
-		self,
-		"_on_floor_input_event"
+		Callable(
+			self,
+			"_on_floor_input_event"
+		)
 	)
 	current_floor.input_ray_pickable = true
 
