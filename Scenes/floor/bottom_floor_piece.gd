@@ -7,20 +7,20 @@ var is_transparent = false
 
 func set_transparent():
 	is_transparent = true
-	var cube: MeshInstance3D = find_child("Cube003")
-	cube.material_override = transparent_material
+	var cube: MeshInstance3D = find_child("Cube_003")
+	cube.set_material_override(transparent_material)
 
 	for x in range(4):
-		find_child("wall%s" % x).find_child("Cube003").material_override = transparent_material
+		find_child("wall%s" % x).find_child("Cube_003").set_material_override(transparent_material)
 
 
 func set_opaque():
 	is_transparent = false
-	var cube: MeshInstance3D = find_child("Cube003")
+	var cube: MeshInstance3D = find_child("Cube_003")
 	cube.material_override = null
 
 	for x in range(4):
-		find_child("wall%s" % x).find_child("Cube003").material_override = null
+		find_child("wall%s" % x).find_child("Cube_003").material_override = null
 
 
 func add_wall_at_edge(x: int):

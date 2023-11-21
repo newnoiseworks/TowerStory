@@ -12,6 +12,6 @@ shader = SubResource( 2 )
 
 [node name="mouseSelect" instance=ExtResource( 1 )]
 
-[node name="Cube003" parent="." index="0"]
+[node name="Cube_003" parent="." index="0"]
 skin = SubResource( 1 )
 material/0 = SubResource( 3 )

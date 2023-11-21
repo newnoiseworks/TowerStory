@@ -13,12 +13,12 @@ class Test_set_transparent:
 
 
 	func test_set_transparent():
-		assert_null(test_piece.find_child("Cube003").material_override, "material_override is set to null on the cube itself to begin")
+		assert_null(test_piece.find_child("Cube_003").material_override, "material_override is set to null on the cube itself to begin")
 
 		test_piece.set_transparent()
 
-		assert_eq(test_piece.find_child("Cube003").material_override, test_piece.transparent_material, "material_override is set to transparent after set_transparent is called")
-		assert_eq(test_piece.get_node("wall1/Cube003").material_override, test_piece.transparent_material, "material_override is set to transparent after set_transparent is called on the walls")
+		assert_eq(test_piece.find_child("Cube_003").material_override, test_piece.transparent_material, "material_override is set to transparent after set_transparent is called")
+		assert_eq(test_piece.get_node("wall1/Cube_003").material_override, test_piece.transparent_material, "material_override is set to transparent after set_transparent is called on the walls")
 
 
 	func test_set_opaque():
@@ -26,8 +26,8 @@ class Test_set_transparent:
 
 		test_piece.set_opaque()
 
-		assert_null(test_piece.find_child("Cube003").material_override, "material_override is set to null after set_opaque is called")
-		assert_null(test_piece.get_node("wall1/Cube003").material_override, "material_override is set to null after set_opaque is called on the walls")
+		assert_null(test_piece.find_child("Cube_003").material_override, "material_override is set to null after set_opaque is called")
+		assert_null(test_piece.get_node("wall1/Cube_003").material_override, "material_override is set to null after set_opaque is called on the walls")
 
 
 	func test_add_wall_at_edge():
