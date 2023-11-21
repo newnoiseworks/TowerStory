@@ -7,7 +7,7 @@ class Test_get_piece_count:
 	var script_double
 
 	func before_each():
-		var prototype_script = partial_double("res://scenes/floor/floor.gd")
+		var prototype_script = load("res://scenes/floor/floor.gd")
 		script_double = prototype_script.new()
 
 

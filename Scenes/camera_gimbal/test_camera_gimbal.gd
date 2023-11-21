@@ -8,7 +8,7 @@ class Test__physics_process:
 
 	func before_each():
 		var prototype_script = load("res://scenes/camera_gimbal/camera_gimbal.tscn")
-		camera_instance = prototype_script.new()
+		camera_instance = prototype_script.instantiate()
 		add_child_autofree(camera_instance)
 
 		_input = MockInput.new()
@@ -67,7 +67,7 @@ class Test_change_floor:
 
 	func before_each():
 		var prototype_script = load("res://scenes/camera_gimbal/camera_gimbal.tscn")
-		camera_instance = prototype_script.instance()
+		camera_instance = prototype_script.instantiate()
 		add_child_autofree(camera_instance)
 
 
@@ -97,7 +97,7 @@ class Test__unhandled_input:
 
 	func before_each():
 		var prototype_script = load("res://scenes/camera_gimbal/camera_gimbal.tscn")
-		camera_instance = prototype_script.instance()
+		camera_instance = prototype_script.instantiate()
 		add_child_autofree(camera_instance)
 		input = MockInput.new()
 		camera_instance._set_input(input)
