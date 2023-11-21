@@ -1,17 +1,17 @@
-extends Spatial
+extends Node3D
 
 # TODO: double get parent call kind of sucks ass, think about a way around it
 # it's trying to access the floor container e.g. "building/floor1/"
-onready var floor_container = get_parent().get_parent()
+@onready var floor_container = get_parent().get_parent()
 # TODO: single get parent call -- also sucks ass in a similar way, see above
-onready var floor_obj = get_parent()
-onready var floor_data_details = floor_obj.floor_data_details
+@onready var floor_obj = get_parent()
+@onready var floor_data_details = floor_obj.floor_data_details
 
 var room_data = {}
 
 var _small_office_1x2 = preload("res://scenes/room/office/office_1x2.tscn")
 var _small_office_2x2 = preload("res://scenes/room/office/office_2x2.tscn")
-var _hover_item: Spatial
+var _hover_item: Node3D
 var _hover_item_rotation = TowerGlobals.ROTATION.ZERO
 
 
@@ -35,7 +35,7 @@ func place_hover_item():
 
 
 func _ready():
-	var _c = TowerGlobals.connect("tool_change", self, "_on_tool_change_pressed")
+	var _c = TowerGlobals.connect("tool_change", Callable(self, "_on_tool_change_pressed"))
 
 
 func _input(event):
@@ -59,11 +59,11 @@ func _physics_process(_delta):
 func _on_tool_change_pressed(user_tool):
 	match user_tool:
 		TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2:
-			_hover_item = _small_office_1x2.instance()
+			_hover_item = _small_office_1x2.instantiate()
 			floor_container.add_child(_hover_item)
 			_hover_item.set_transparent()
 		TowerGlobals.UI_TOOL.SMALL_OFFICE_2x2:
-			_hover_item = _small_office_2x2.instance()
+			_hover_item = _small_office_2x2.instantiate()
 			floor_container.add_child(_hover_item)
 			_hover_item.set_transparent()
 

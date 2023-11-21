@@ -52,7 +52,7 @@ class Test__get_piece_edges:
 
 		assert_eq(
 			edges,
-			[1, 1, 1, 1] as PoolIntArray,
+			[1, 1, 1, 1] as PackedInt32Array,
 			"Centerpiece and nothing else has edges on all sides"
 		)
 

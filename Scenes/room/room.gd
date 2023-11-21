@@ -1,6 +1,6 @@
-extends Spatial
+extends Node3D
 
-onready var tiles = find_node("tiles")
+@onready var tiles = find_child("tiles")
 
 var FloorDataDetails = preload("res://utils/floor_data_details.gd")
 

@@ -10,7 +10,7 @@ class Test__on_floor_input_event:
 
 	func before_each():
 		var prototype_script = load("res://scenes/building/building.tscn")
-		test_building = prototype_script.instance()
+		test_building = prototype_script.instantiate()
 		input = MockInput.new()
 		test_building._set_input(input)
 
@@ -29,7 +29,7 @@ class Test__on_floor_input_event:
 		var mouse_select = test_building.mouse_select
 
 		assert_eq(
-			mouse_select.get_translation(),
+			mouse_select.get_position(),
 			Vector3(2, 0, 0),
 			"Moving the mouse moves the mouse select object"
 		)
@@ -45,7 +45,7 @@ class Test__on_floor_input_event:
 		var current_floor = test_building.get_node("floors/floor1")
 
 		assert_eq(
-			current_floor.get_child(current_floor.get_child_count() - 1).get_translation(),
+			current_floor.get_child(current_floor.get_child_count() - 1).get_position(),
 			Vector3(2, 0, 0),
 			"Moving and clicking the mouse adds a piece to the right area"
 		)
@@ -65,7 +65,7 @@ class Test__on_floor_input_event:
 			)
 		)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		assert_gt(current_floor.get_child_count(), orig_children_count, "More children have been added")
 		assert_eq(current_floor.get_child_count() - orig_children_count, 6, "Correct number of pieces have been assigned")
@@ -93,7 +93,7 @@ class Test__on_floor_input_event:
 			)
 		)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		assert_gt(current_floor.get_child_count(), orig_children_count, "More children have been added")
 		assert_eq(current_floor.get_child_count() - orig_children_count, 6, "Correct number of pieces have been assigned")
@@ -120,7 +120,7 @@ class Test__on_floor_input_event:
 			)
 		)
 
-		yield(get_tree().create_timer(0.02), "timeout")
+		await get_tree().create_timer(0.02).timeout
 
 		assert_not_null(current_floor.floor_data[2][0], "Piece set at right spot")
 		assert_false(current_floor.floor_data[2][0]["object"].is_transparent, "Piece not set to transparent")
@@ -149,7 +149,7 @@ class Test__unhandled_input:
 
 	func before_each():
 		var prototype_script = load("res://scenes/building/building.tscn")
-		test_building = prototype_script.instance()
+		test_building = prototype_script.instantiate()
 		input = MockInput.new()
 		test_building._set_input(input)
 		add_child_autofree(test_building)
@@ -170,12 +170,12 @@ class Test__unhandled_input:
 
 		gut.simulate(test_building, 2, 20)
 
-		var initial_camera_y = test_building.find_node("camera_gimbal").get_translation().y
+		var initial_camera_y = test_building.find_child("camera_gimbal").get_position().y
 
 		assert_eq(
-			test_building.find_node("camera_gimbal").get_translation().y,
+			test_building.find_child("camera_gimbal").get_position().y,
 			initial_camera_y,
-			"Camera doesn't move until move_up input is released"
+			"Camera3D doesn't move until move_up input is released"
 		)
 
 		input.release("move_up")
@@ -185,13 +185,13 @@ class Test__unhandled_input:
 		gut.simulate(test_building, 200, 20)
 
 		assert_gt(
-			test_building.find_node("camera_gimbal").get_translation().y,
+			test_building.find_child("camera_gimbal").get_position().y,
 			initial_camera_y,
-			"Camera moves up upon input move_up release"
+			"Camera3D moves up upon input move_up release"
 		)
 		assert_eq(test_building.current_floor_idx, 2, "Current floor idx gets adjusted")
-		assert_eq(test_building.find_node("current_level").text, "2", "Current level updated in UI")
-		assert_eq(test_building.find_node("mouse_select").get_translation().y, 1.0, "Mouse select icon elevated")
+		assert_eq(test_building.find_child("current_level").text, "2", "Current level updated in UI")
+		assert_eq(test_building.find_child("mouse_select").get_position().y, 1.0, "Mouse select icon elevated")
 
 
 	func test_moves_down_a_floor():
@@ -201,12 +201,12 @@ class Test__unhandled_input:
 
 		gut.simulate(test_building, 2, 20)
 
-		var initial_camera_y = test_building.find_node("camera_gimbal").get_translation().y
+		var initial_camera_y = test_building.find_child("camera_gimbal").get_position().y
 
 		assert_eq(
-			test_building.find_node("camera_gimbal").get_translation().y,
+			test_building.find_child("camera_gimbal").get_position().y,
 			initial_camera_y,
-			"Camera doesn't move until move_down input is released"
+			"Camera3D doesn't move until move_down input is released"
 		)
 
 		input.release("move_down")
@@ -216,13 +216,13 @@ class Test__unhandled_input:
 		gut.simulate(test_building, 200, 20)
 
 		assert_lt(
-			test_building.find_node("camera_gimbal").get_translation().y,
+			test_building.find_child("camera_gimbal").get_position().y,
 			initial_camera_y,
-			"Camera moves down upon input move_down release"
+			"Camera3D moves down upon input move_down release"
 		)
 		assert_eq(test_building.current_floor_idx, 0, "Current floor idx gets adjusted")
-		assert_eq(test_building.find_node("current_level").text, "0", "Current level updated in UI")
-		assert_eq(test_building.find_node("mouse_select").get_translation().y, -1.0, "Mouse select icon de-elevated")
+		assert_eq(test_building.find_child("current_level").text, "0", "Current level updated in UI")
+		assert_eq(test_building.find_child("mouse_select").get_position().y, -1.0, "Mouse select icon de-elevated")
 
 
 	func test_cannot_move_up_more_than_one_floor():
@@ -309,7 +309,7 @@ class Test__toggle_facade:
 
 	func before_each():
 		var prototype_script = load("res://scenes/building/building.tscn")
-		test_building = prototype_script.instance()
+		test_building = prototype_script.instantiate()
 		input = MockInput.new()
 		test_building._set_input(input)
 
@@ -327,12 +327,12 @@ class Test__toggle_facade:
 			)
 		)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		input.release("move_up")
 		test_building._unhandled_input(input)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		input._click_and_drag_and_release(
 			test_building,
@@ -344,7 +344,7 @@ class Test__toggle_facade:
 			)
 		)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		var first_floor = test_building.get_node("floors/floor1")
 		var first_floor_piece = first_floor.get_child(first_floor.get_child_count() - 1)
@@ -369,12 +369,12 @@ class Test__toggle_facade:
 			)
 		)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		input.release("move_up")
 		test_building._unhandled_input(input)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		input._click_and_drag_and_release(
 			test_building,
@@ -386,7 +386,7 @@ class Test__toggle_facade:
 			)
 		)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		test_building._toggle_facade()
 
@@ -415,12 +415,12 @@ class Test__toggle_facade:
 			)
 		)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		input.release("move_up")
 		test_building._unhandled_input(input)
 
-		yield(get_tree().create_timer(0.015), "timeout")
+		await get_tree().create_timer(0.015).timeout
 
 		test_building._toggle_facade()
 
@@ -440,7 +440,7 @@ class Test_SecondFloorWorkflow:
 
 	func before_each():
 		var prototype_script = load("res://scenes/building/building.tscn")
-		test_building = prototype_script.instance()
+		test_building = prototype_script.instantiate()
 		input = MockInput.new()
 		test_building._set_input(input)
 		add_child_autofree(test_building)
@@ -479,7 +479,7 @@ class Test_SecondFloorWorkflow:
 		)
 
 		assert_eq(
-			current_floor.get_child(current_floor.get_child_count() - 1).get_translation(),
+			current_floor.get_child(current_floor.get_child_count() - 1).get_position(),
 			Vector3(2, 0, 0),
 			"Moving and clicking the mouse adds a piece to the right area"
 		)
@@ -518,7 +518,7 @@ class Test_SecondFloorWorkflow:
 		)
 
 		assert_ne(
-			current_floor.get_child(current_floor.get_child_count() - 1).get_translation(),
+			current_floor.get_child(current_floor.get_child_count() - 1).get_position(),
 			Vector3(2, 0, 2),
 			"Cannot add a piece if floor underneath doesnt have one and this is the first piece being added"
 		)
@@ -565,7 +565,7 @@ class Test_SecondFloorWorkflow:
 		)
 
 		assert_eq(
-			current_floor.get_child(current_floor.get_child_count() - 1).get_translation(),
+			current_floor.get_child(current_floor.get_child_count() - 1).get_position(),
 			Vector3(2, 0, 2),
 			"Can add a piece if floor underneath doesnt have one and this is not the first piece being added to the second floor"
 		)

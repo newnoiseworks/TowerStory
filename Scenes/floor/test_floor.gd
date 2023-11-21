@@ -39,8 +39,8 @@ class Test_add_pieces_as_needed:
 
 	func before_each():
 		var prototype_script = load("res://scenes/floor/floor.tscn")
-		test_floor = prototype_script.instance()
-		building = Spatial.new()
+		test_floor = prototype_script.instantiate()
+		building = Node3D.new()
 		building.add_child(test_floor)
 		add_child_autofree(building)
 
@@ -76,8 +76,8 @@ class Test__add_multiple_pieces_if_adjacent:
 
 	func before_each():
 		var prototype_script = load("res://scenes/floor/floor.tscn")
-		test_floor = prototype_script.instance()
-		var building = Spatial.new()
+		test_floor = prototype_script.instantiate()
+		var building = Node3D.new()
 		building.add_child(test_floor)
 		add_child_autofree(building)
 
@@ -113,7 +113,7 @@ class Test__add_multiple_pieces_if_adjacent:
 
 		assert_eq(first_piece, first_node, "First piece is correctly set, no double creation of pieces")
 
-		assert_eq(first_piece.find_node("wall1").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")
-		assert_eq(first_piece.find_node("wall3").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")
+		assert_eq(first_piece.find_child("wall1").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")
+		assert_eq(first_piece.find_child("wall3").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")
 
 

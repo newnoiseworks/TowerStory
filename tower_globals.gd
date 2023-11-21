@@ -45,6 +45,6 @@ func _closest_multiple_of_n(x: int, n: int)-> int:
 
 func _set_current_buiding():
 	# if there are more than one "buildings" and there's switching this will get complex
-	current_building = get_parent().find_node("building")
+	current_building = get_parent().find_child("building")
 
 

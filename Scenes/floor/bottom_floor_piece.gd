@@ -1,38 +1,38 @@
-extends Spatial
+extends Node3D
 
 var transparent_material: ShaderMaterial = load("res://transparent_shader_material.tres")
 var is_transparent = false
 
-onready var ceiling = find_node("ceiling")
+@onready var ceiling = find_child("ceiling")
 
 func set_transparent():
 	is_transparent = true
-	var cube: MeshInstance = find_node("Cube003")
+	var cube: MeshInstance3D = find_child("Cube003")
 	cube.material_override = transparent_material
 
 	for x in range(4):
-		find_node("wall%s" % x).find_node("Cube003").material_override = transparent_material
+		find_child("wall%s" % x).find_child("Cube003").material_override = transparent_material
 
 
 func set_opaque():
 	is_transparent = false
-	var cube: MeshInstance = find_node("Cube003")
+	var cube: MeshInstance3D = find_child("Cube003")
 	cube.material_override = null
 
 	for x in range(4):
-		find_node("wall%s" % x).find_node("Cube003").material_override = null
+		find_child("wall%s" % x).find_child("Cube003").material_override = null
 
 
 func add_wall_at_edge(x: int):
-	find_node("wall%s" % x).show()
+	find_child("wall%s" % x).show()
 
 
 func hide_wall_at_edge(x: int):
-	find_node("wall%s" % x).hide()
+	find_child("wall%s" % x).hide()
 
 
 func hide_walls():
 	for x in range(4):
-		find_node("wall%s" % x).hide()
+		find_child("wall%s" % x).hide()
 
 
