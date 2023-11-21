@@ -14,8 +14,8 @@ const Y_AXIS = Vector3(0, 1, 0)
 var inputter = Input
 
 @onready var camera_gimbal_transform = self.get_transform()
-@onready var target_y: int = self.get_position().y
-@onready var y_offset: int = self.get_position().y
+@onready var target_y: float = self.get_position().y
+@onready var y_offset: float = self.get_position().y
 @onready var camera = find_child("Camera3D")
 @onready var camera_transform = camera.get_transform()
 @onready var inner_gimbal = find_child("inner_gimbal")
