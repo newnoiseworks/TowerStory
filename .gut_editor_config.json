@@ -2,8 +2,7 @@
  "background_color": "ff343434",
  "config_file": "res://.gutconfig.json",
  "dirs": [
-  "res://test/unit",
-  "res://test/integration"
+  "res://Scenes"
  ],
  "disable_colors": false,
  "double_strategy": "partial",
