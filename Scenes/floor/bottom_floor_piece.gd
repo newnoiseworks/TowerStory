@@ -24,15 +24,21 @@ func set_opaque():
 
 
 func add_wall_at_edge(x: int):
-	find_child("wall%s" % x).show()
+	var wall = find_child("wall%s" % x)
+
+	if wall != null:
+		wall.show()
 
 
 func hide_wall_at_edge(x: int):
-	find_child("wall%s" % x).hide()
+	var wall = find_child("wall%s" % x)
+
+	if wall != null:
+		wall.hide()
 
 
 func hide_walls():
 	for x in range(4):
-		find_child("wall%s" % x).hide()
+		hide_wall_at_edge(x)
 
 
