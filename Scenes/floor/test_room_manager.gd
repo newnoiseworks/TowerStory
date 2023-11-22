@@ -14,7 +14,7 @@ class Test__can_place_room_at:
 
 		room_manager = prototype_script.new()
 		room_manager_node = Node3D.new()
-		room_manager_node.set_script(room_manager)
+		# room_manager_node.set_script(room_manager)
 
 		var data = {
 			0: {
@@ -75,7 +75,7 @@ class Test__can_place_room_at:
 		var result = room_manager._can_place_room_at(Vector3(0, 0, 0))
 
 		assert_true(result, "Can place room after rotating four times")
-		# assert_true(room_manager.floor_data_details)
+		assert_true(room_manager.floor_data_details != null)
 
 
 class Test__rotate_hover_item:
@@ -90,7 +90,7 @@ class Test__rotate_hover_item:
 
 		room_manager = prototype_script.new()
 		room_manager_node = Node3D.new()
-		room_manager_node.set_script(room_manager)
+		# room_manager_node.set_script(room_manager)
 
 		var data = {
 			0: {
