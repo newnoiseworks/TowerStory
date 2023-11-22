@@ -15,4 +15,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Run tests
-        run: godot -d -s --path . addons/gut/gut_cmdln.gd
+        run: godot -d -s --path --headless . addons/gut/gut_cmdln.gd
