@@ -24,7 +24,6 @@ func get_mouse_target_pos():
 		_set_current_buiding()
 
 	return current_building.get_mouse_target_pos()
-	# return get_tree().get_root().get_node("building").get_target_pos()
 
 
 func closest_multiple_of(x: int)-> int:
