@@ -11,6 +11,10 @@ class Test_get_piece_count:
 		script_double = prototype_script.new()
 
 
+	func after_each():
+		script_double.free()
+
+
 	func test_count_simple():
 		script_double.floor_data = SpecHelper.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
