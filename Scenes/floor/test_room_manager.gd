@@ -130,36 +130,36 @@ class Test__rotate_hover_item:
 	func test_rotate_adjusts_hover_item():
 		room_manager._rotate_hover_item()
 		assert_eq(room_manager._hover_item_rotation, TowerGlobals.ROTATION.NINETY)
-		assert_eq(room_manager._hover_item.rotation_degrees.y, 90)
+		assert_eq(int(room_manager._hover_item.rotation_degrees.y), 90)
 
 		room_manager._rotate_hover_item()
 		assert_eq(room_manager._hover_item_rotation, TowerGlobals.ROTATION.ONEEIGHTY)
-		assert_eq(room_manager._hover_item.rotation_degrees.y, 180)
+		assert_eq(int(room_manager._hover_item.rotation_degrees.y), 180)
 
 		room_manager._rotate_hover_item()
 		assert_eq(room_manager._hover_item_rotation, TowerGlobals.ROTATION.TWOSEVENTY)
-		assert_eq(room_manager._hover_item.rotation_degrees.y, 270)
+		assert_eq(int(room_manager._hover_item.rotation_degrees.y), 270)
 
 		room_manager._rotate_hover_item()
 		assert_eq(room_manager._hover_item_rotation, TowerGlobals.ROTATION.ZERO)
-		assert_eq(room_manager._hover_item.rotation_degrees.y, 0)
+		assert_eq(int(room_manager._hover_item.rotation_degrees.y), 0)
 
 
 	func test_rotate_adjusts_hover_item_backwards():
 		room_manager._rotate_hover_item(true)
 		assert_eq(room_manager._hover_item_rotation, TowerGlobals.ROTATION.TWOSEVENTY)
-		assert_eq(room_manager._hover_item.rotation_degrees.y, 270)
+		assert_eq(int(room_manager._hover_item.rotation_degrees.y), 270)
 
 		room_manager._rotate_hover_item(true)
 		assert_eq(room_manager._hover_item_rotation, TowerGlobals.ROTATION.ONEEIGHTY)
-		assert_eq(room_manager._hover_item.rotation_degrees.y, 180)
+		assert_eq(int(room_manager._hover_item.rotation_degrees.y), 180)
 
 		room_manager._rotate_hover_item(true)
 		assert_eq(room_manager._hover_item_rotation, TowerGlobals.ROTATION.NINETY)
-		assert_eq(room_manager._hover_item.rotation_degrees.y, 90)
+		assert_eq(int(room_manager._hover_item.rotation_degrees.y), 90)
 
 		room_manager._rotate_hover_item(true)
 		assert_eq(room_manager._hover_item_rotation, TowerGlobals.ROTATION.ZERO)
-		assert_eq(room_manager._hover_item.rotation_degrees.y, 0)
+		assert_eq(int(room_manager._hover_item.rotation_degrees.y), 0)
 
 
