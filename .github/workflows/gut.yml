@@ -26,7 +26,7 @@ jobs:
         test-timeout: "60"
         # # the ratio of tests that must pass for this action to pass
         # # e.g. 0.6 means 60% of your tests must pass
-        # minimum-pass: "0.6"
+        minimum-pass: "1.0"
         # # the directory containing Gut tests
         test-dir: "res://"
         # # instead of running GUT's command line tool, 
