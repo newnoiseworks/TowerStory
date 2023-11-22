@@ -39,11 +39,10 @@ func adjust_room_walls_on_piece_at(
 	var room_edges = _get_piece_edges(x, z)
 	var floor_piece = _floor_data[x][z]["object"]
 
-	add_edges_to_surrounding_pieces(x, z)
-
 	for i in range(4):
-		# if floor_edges.has(i) and floor_edges[i] == 1 or room_edges.has(i) and room_edges[i] == 0:
-		if floor_edges[i] == 1 or room_edges[i] == 0:
+		floor_piece.call("add_wall_at_edge", i)
+
+		if floor_edges[i] == room_edges[i]:
 			floor_piece.call("hide_wall_at_edge", i)
 
 
