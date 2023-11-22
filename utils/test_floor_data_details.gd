@@ -185,57 +185,64 @@ class Test_can_remove_floor_piece_at:
 class Test_adjust_room_walls_on_piece_at:
 	extends GutTest
 	var room_data_script
-	var floor_piece_script
 	var prototype_script
+	var floor_pieces = []
 
-	func _create_floor_piece():
-		return {
-			"type": "floor",
-			"object": floor_piece_script.new()
-		}
 
 	func before_each():
 		prototype_script = load("res://utils/floor_data_details.gd")
-		floor_piece_script = double("res://scenes/floor/bottom_floor_piece.gd")
 
 		var data = {}
 		data[0] = {}
-		data[0][0 * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+		data[0][0] = _create_floor_piece()
 		data[0][1 * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
 
 		room_data_script = prototype_script.new(data)
+
+	func after_each():
+		for fp in floor_pieces:
+			fp["object"].free()
+
+		floor_pieces = []
+
+
+	func _create_floor_piece():
+		var floor_piece = load("res://scenes/floor/bottom_floor_piece.tscn")
+
+		var obj = {
+			"type": "floor",
+			"object": floor_piece.instantiate()
+		}
+
+		floor_pieces.append(obj)
+
+		return obj
 
 
 	func test_hides_wall_in_middle_of_room_and_edges_in_one_by_two_floor():
 		var data = {}
 
 		data[0] = {}
-		data[0][0 * TowerGlobals.TILE_MULTIPLE] = {
-			"type": "floor",
-			"object": floor_piece_script.new()
-		}
-		data[0][1 * TowerGlobals.TILE_MULTIPLE] = {
-			"type": "floor",
-			"object": floor_piece_script.new()
-		}
+		data[0][0 * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+		data[0][1 * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
 
 		var floor_data_script = prototype_script.new(data)
 
 		room_data_script.adjust_room_walls_on_piece_at(0, 0, floor_data_script)
 		var first_object = room_data_script._floor_data[0][0]["object"]
 
-		assert_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XUP])
-		assert_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XDOWN])
-		assert_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZUP])
-		assert_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZDOWN])
+		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
+		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
 
 		room_data_script.adjust_room_walls_on_piece_at(0, 1 * TowerGlobals.TILE_MULTIPLE, floor_data_script)
 		var second_object = room_data_script._floor_data[0][1 * TowerGlobals.TILE_MULTIPLE]["object"]
 
-		assert_called(second_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XUP])
-		assert_called(second_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XDOWN])
-		assert_called(second_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZUP])
-		assert_called(second_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZDOWN])
+		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
+		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
+		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
+		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
 
 
 	func test_hides_wall_in_middle_of_room_and_appropriate_edges_in_bigger_floor_at_edge():
@@ -253,10 +260,10 @@ class Test_adjust_room_walls_on_piece_at:
 
 		var first_object = room_data_script._floor_data[0][0]["object"]
 
-		assert_not_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XUP])
-		assert_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XDOWN])
-		assert_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZUP])
-		assert_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZDOWN])
+		assert_true(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
+		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
 
 
 	func test_hides_wall_in_middle_of_room_and_appropriate_edges_in_bigger_floor_at_center():
@@ -282,14 +289,14 @@ class Test_adjust_room_walls_on_piece_at:
 		var first_object = room_data_script._floor_data[0][0]["object"]
 		var second_object = room_data_script._floor_data[0][1 * TowerGlobals.TILE_MULTIPLE]["object"]
 
-		assert_not_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XUP])
-		assert_not_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XDOWN])
-		assert_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZUP])
-		assert_not_called(first_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZDOWN])
+		assert_true(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
+		assert_true(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
+		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
+		assert_true(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
 
-		assert_not_called(second_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XUP])
-		assert_not_called(second_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.XDOWN])
-		assert_not_called(second_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZUP])
-		assert_called(second_object, "hide_wall_at_edge", [FloorDataDetails.SIDE.ZDOWN])
+		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
+		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
+		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
+		assert_true(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
 
 
