@@ -1,13 +1,13 @@
-extends Spatial
+extends Node3D
 
-onready var floor_packed = preload("res://scenes/floor/floor.tscn")
+@onready var floor_packed = preload("res://scenes/floor/floor.tscn")
 
-onready var mouse_select: Spatial = find_node("mouse_select")
-onready var camera_gimbal: Spatial = find_node("camera_gimbal")
-onready var current_level_ui: Label = find_node("current_level")
-onready var floors: Spatial = find_node("floors")
-onready var basement: Spatial = find_node("basement")
-onready var debug_cursor_label: Label = find_node("cursor_position")
+@onready var mouse_select: Node3D = find_child("mouse_select")
+@onready var camera_gimbal: Node3D = find_child("camera_gimbal")
+@onready var current_level_ui: Label = find_child("current_level")
+@onready var floors: Node3D = find_child("floors")
+@onready var basement: Node3D = find_child("basement")
+@onready var debug_cursor_label: Label = find_child("cursor_position")
 
 var _inputter = Input
 var _main_button_press_target: Vector3
@@ -16,8 +16,8 @@ var _is_main_button_pressed: bool = false
 var _current_tool: int = TowerGlobals.UI_TOOL.BASE_TILE
 var _is_facade_visible: bool = false
 
-var previous_floor: Area
-var current_floor: Area
+var previous_floor: Area3D
+var current_floor: Area3D
 var current_floor_idx = 1
 
 
@@ -38,8 +38,8 @@ func _set_input(input):
 func _ready():
 	_create_new_current_floor()
 
-	var _c = TowerGlobals.connect("tool_change", self, "_on_tool_change_pressed")
-	_c = TowerGlobals.connect("facade_swap", self, "_toggle_facade")
+	var _c = TowerGlobals.connect("tool_change", Callable(self, "_on_tool_change_pressed"))
+	_c = TowerGlobals.connect("facade_swap", Callable(self, "_toggle_facade"))
 
 
 func _unhandled_input(event):
@@ -99,11 +99,11 @@ func _post_floor_change():
 	current_floor = _get_current_floor()
 	if current_floor == null: _create_new_current_floor()
 
-	if previous_floor.is_connected("input_event", self, "_on_floor_input_event"):
-		previous_floor.disconnect("input_event", self, "_on_floor_input_event")
+	if previous_floor.is_connected("input_event", Callable(self, "_on_floor_input_event")):
+		previous_floor.disconnect("input_event", Callable(self, "_on_floor_input_event"))
 
-	if !current_floor.is_connected("input_event", self, "_on_floor_input_event"):
-		var _c = current_floor.connect("input_event", self, "_on_floor_input_event")
+	if !current_floor.is_connected("input_event", Callable(self, "_on_floor_input_event")):
+		var _c = current_floor.connect("input_event", Callable(self, "_on_floor_input_event"))
 
 	previous_floor.input_ray_pickable = false
 	current_floor.input_ray_pickable = true
@@ -170,8 +170,8 @@ func _on_select_move(mouse_position: Vector3):
 
 
 func _create_new_current_floor():
-	var new_floor_container = Spatial.new()
-	current_floor = floor_packed.instance()
+	var new_floor_container = Node3D.new()
+	current_floor = floor_packed.instantiate()
 	current_floor.scale = Vector3(64, .1, 64)
 	new_floor_container.add_child(current_floor)
 	new_floor_container.name = "floor%s" % [current_floor_idx]
@@ -189,8 +189,10 @@ func _create_new_current_floor():
 	current_floor.draw_floor()
 	var _c = current_floor.connect(
 		"input_event",
-		self,
-		"_on_floor_input_event"
+		Callable(
+			self,
+			"_on_floor_input_event"
+		)
 	)
 	current_floor.input_ray_pickable = true
 

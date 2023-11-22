@@ -1,23 +1,21 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=2 format=3 uid="uid://cjv8e2swwmjt1"]
 
-[ext_resource path="res://scenes/camera_gimbal/camera_gimbal.gd" type="Script" id=1]
+[ext_resource type="Script" path="res://scenes/camera_gimbal/camera_gimbal.gd" id="1"]
 
-[node name="camera_gimbal" type="Spatial"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.59013, -0.145342 )
-script = ExtResource( 1 )
+[node name="camera_gimbal" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.59013, -0.145342)
+script = ExtResource("1")
 
-[node name="inner_gimbal" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.88003, 0.474918, 0, -0.474918, 0.88003, 0, 0, 1.90735e-06 )
+[node name="inner_gimbal" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.88003, 0.474918, 0, -0.474918, 0.88003, 0, 0, 1.90735e-06)
 
-[node name="Camera" type="Camera" parent="inner_gimbal"]
-transform = Transform( 1, 0, 0, 0, 0.969757, 0.244072, 0, -0.244072, 0.969757, 0, -2.91168, 14.7055 )
+[node name="Camera3D" type="Camera3D" parent="inner_gimbal"]
+transform = Transform3D(1, 0, 0, 0, 0.969757, 0.244072, 0, -0.244072, 0.969757, 0, -2.91168, 14.7055)
 current = true
 
-[node name="DirectionalLight" type="DirectionalLight" parent="inner_gimbal"]
-transform = Transform( 1, 0, 0, 0, 0.819152, 0.573577, 0, -0.573577, 0.819152, 10.7135, 8.6347, 17.2868 )
-light_color = Color( 0.913725, 0.494118, 0.184314, 1 )
-light_energy = 6.675
-light_indirect_energy = 0.379
-light_size = 0.045
-light_specular = 1.7
-light_bake_mode = 2
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="inner_gimbal"]
+transform = Transform3D(1, -5.48843e-16, 2.8571e-16, 2.85709e-16, 0.819152, 0.573577, -5.48843e-16, -0.573577, 0.819152, 10.7135, 8.6347, 17.2868)
+light_color = Color(0.913725, 0.494118, 0.184314, 1)
+light_energy = 9.665
+light_indirect_energy = 2.803
+light_angular_distance = 0.045

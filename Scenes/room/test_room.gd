@@ -8,7 +8,7 @@ class Test_place_walls_where_needed:
 
 	func before_each():
 		var prototype_script = load("res://scenes/room/room_1x2.tscn")
-		test_room = prototype_script.instance()
+		test_room = prototype_script.instantiate()
 		add_child_autofree(test_room)
 
 
@@ -52,11 +52,11 @@ class Test_place_walls_where_needed:
 		test_room.place_walls_where_needed(fdd)
 
 		assert_false(
-			test_room.floor_data[0][0]["object"].find_node("wall0").is_visible()
+			test_room.floor_data[0][0]["object"].find_child("wall0").is_visible()
 		)
 
 		assert_true(
-			test_room.floor_data[0][0]["object"].find_node("wall1").is_visible()
+			test_room.floor_data[0][0]["object"].find_child("wall1").is_visible()
 		)
 
 

@@ -4,28 +4,28 @@ var SpecHelper = preload("res://utils/test/spec_helper.gd")
 
 class Test_get_piece_count:
 	extends GutTest
-	var double_script
+	var script_double
 
 	func before_each():
-		var prototype_script = partial_double("res://scenes/floor/floor.gd")
-		double_script = prototype_script.new()
+		var prototype_script = load("res://scenes/floor/floor.gd")
+		script_double = prototype_script.new()
 
 
 	func test_count_simple():
-		double_script.floor_data = SpecHelper.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
+		script_double.floor_data = SpecHelper.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
-			double_script.get_piece_count(),
+			script_double.get_piece_count(),
 			3,
 			"Simple count is 3 pieces"
 		)
 
 
 	func test_count_square():
-		double_script.floor_data = SpecHelper.get_simple_square_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
+		script_double.floor_data = SpecHelper.get_simple_square_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
 
 		assert_eq(
-			double_script.get_piece_count(),
+			script_double.get_piece_count(),
 			9,
 			"Square count is 9 pieces"
 		)
@@ -39,8 +39,8 @@ class Test_add_pieces_as_needed:
 
 	func before_each():
 		var prototype_script = load("res://scenes/floor/floor.tscn")
-		test_floor = prototype_script.instance()
-		building = Spatial.new()
+		test_floor = prototype_script.instantiate()
+		building = Node3D.new()
 		building.add_child(test_floor)
 		add_child_autofree(building)
 
@@ -76,8 +76,8 @@ class Test__add_multiple_pieces_if_adjacent:
 
 	func before_each():
 		var prototype_script = load("res://scenes/floor/floor.tscn")
-		test_floor = prototype_script.instance()
-		var building = Spatial.new()
+		test_floor = prototype_script.instantiate()
+		var building = Node3D.new()
 		building.add_child(test_floor)
 		add_child_autofree(building)
 
@@ -113,7 +113,7 @@ class Test__add_multiple_pieces_if_adjacent:
 
 		assert_eq(first_piece, first_node, "First piece is correctly set, no double creation of pieces")
 
-		assert_eq(first_piece.find_node("wall1").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")
-		assert_eq(first_piece.find_node("wall3").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")
+		assert_eq(first_piece.find_child("wall1").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")
+		assert_eq(first_piece.find_child("wall3").is_visible(), false, "Walls turned off in appropriate area of overlapping pieces")
 
 

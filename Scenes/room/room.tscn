@@ -3,9 +3,9 @@
 [ext_resource path="res://scenes/floor/bottom_floor_piece.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/room/room.gd" type="Script" id=2]
 
-[node name="room" type="Spatial"]
+[node name="room" type="Node3D"]
 script = ExtResource( 2 )
 
-[node name="tiles" type="Spatial" parent="."]
+[node name="tiles" type="Node3D" parent="."]
 
 [node name="bottomFloorPiece" parent="tiles" instance=ExtResource( 1 )]

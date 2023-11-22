@@ -13,8 +13,8 @@ class Test__can_place_room_at:
 		var fdd_script = load("res://utils/floor_data_details.gd")
 
 		room_manager = prototype_script.new()
-		room_manager_node = Spatial.new()
-		room_manager_node.set_script(room_manager)
+		room_manager_node = Node3D.new()
+		# room_manager_node.set_script(room_manager)
 
 		var data = {
 			0: {
@@ -31,7 +31,7 @@ class Test__can_place_room_at:
 
 		room_manager.floor_data_details = fdd_script.new(data)
 
-		room_manager._hover_item = room_manager._small_office_1x2.instance()
+		room_manager._hover_item = room_manager._small_office_1x2.instantiate()
 		room_manager_node.add_child(room_manager._hover_item)
 
 		add_child_autofree(room_manager_node)
@@ -75,7 +75,7 @@ class Test__can_place_room_at:
 		var result = room_manager._can_place_room_at(Vector3(0, 0, 0))
 
 		assert_true(result, "Can place room after rotating four times")
-		# assert_true(room_manager.floor_data_details)
+		assert_true(room_manager.floor_data_details != null)
 
 
 class Test__rotate_hover_item:
@@ -89,8 +89,8 @@ class Test__rotate_hover_item:
 		var fdd_script = load("res://utils/floor_data_details.gd")
 
 		room_manager = prototype_script.new()
-		room_manager_node = Spatial.new()
-		room_manager_node.set_script(room_manager)
+		room_manager_node = Node3D.new()
+		# room_manager_node.set_script(room_manager)
 
 		var data = {
 			0: {
@@ -116,7 +116,7 @@ class Test__rotate_hover_item:
 
 		room_manager.floor_data_details = fdd_script.new(data)
 
-		room_manager._hover_item = room_manager._small_office_1x2.instance()
+		room_manager._hover_item = room_manager._small_office_1x2.instantiate()
 		room_manager_node.add_child(room_manager._hover_item)
 
 		add_child_autofree(room_manager_node)

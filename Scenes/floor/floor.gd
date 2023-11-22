@@ -1,9 +1,9 @@
-extends Spatial
+extends Node3D
 
-export var is_base = false
-export var floor_idx: int = 1
+@export var is_base = false
+@export var floor_idx: int = 1
 
-onready var room_manager = find_node("room_manager")
+@onready var room_manager = find_child("room_manager")
 
 var floor_piece_packed = preload("res://scenes/floor/bottom_floor_piece.tscn")
 var FloorDataDetails = preload("res://utils/floor_data_details.gd")
@@ -119,7 +119,7 @@ func _add_floor_piece_at(global_target: Vector3, force: bool = false, is_transpa
 
 	if !floor_data.has(x): floor_data[x] = {}
 
-	var floor_piece = floor_piece_packed.instance()
+	var floor_piece = floor_piece_packed.instantiate()
 
 	if is_transparent:
 		floor_piece.set_transparent()

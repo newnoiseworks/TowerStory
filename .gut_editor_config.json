@@ -1,14 +1,17 @@
 {
  "background_color": "ff343434",
+ "compact_mode": false,
  "config_file": "res://.gutconfig.json",
  "dirs": [
-  "res://Scenes"
+  "res://"
  ],
  "disable_colors": false,
- "double_strategy": "partial",
+ "double_strategy": 1,
+ "errors_do_not_cause_failure": false,
  "font_color": "ffc1bfce",
  "font_name": "CourierPrime",
  "font_size": 18,
+ "gut_on_top": true,
  "hide_orphans": false,
  "ignore_pause": true,
  "include_subdirs": true,
@@ -17,6 +20,17 @@
  "junit_xml_timestamp": false,
  "log_level": 3,
  "opacity": 100,
+ "paint_after": 0.1,
+ "panel_options": {
+  "font_name": "CourierPrime",
+  "font_size": 30,
+  "hide_output_text": false,
+  "hide_result_tree": false,
+  "hide_settings": false,
+  "output_font_name": "CourierPrime",
+  "output_font_size": 30,
+  "use_colors": false
+ },
  "post_run_script": "",
  "pre_run_script": "",
  "prefix": "test_",
@@ -24,16 +38,8 @@
  "should_exit": false,
  "should_exit_on_success": false,
  "should_maximize": true,
- "compact_mode": false,
  "show_help": false,
  "suffix": ".gd",
- "tests": [
-
- ],
- "unit_test_name": null,
- "gut_on_top": true,
- "panel_options": {
-  "font_name": "CourierPrime",
-  "font_size": 15
- }
+ "tests": [],
+ "unit_test_name": null
 }

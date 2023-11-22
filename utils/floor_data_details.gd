@@ -120,8 +120,8 @@ func can_remove_floor_piece_at(x: int, z: int, is_transparent = false)-> bool:
 	return true
 
 
-func _get_piece_edges(x: int, z: int)-> PoolIntArray:
-	var edges: PoolIntArray = [0, 0, 0, 0]
+func _get_piece_edges(x: int, z: int)-> PackedInt32Array:
+	var edges: PackedInt32Array = [0, 0, 0, 0]
 
 	if !_floor_data.has(x+TowerGlobals.TILE_MULTIPLE) or !_floor_data[x+TowerGlobals.TILE_MULTIPLE].has(z):
 		edges[SIDE.XUP] = 1
