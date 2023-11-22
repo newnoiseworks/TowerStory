@@ -39,7 +39,7 @@ class Test__can_place_room_at:
 
 	func after_each():
 		room_manager._hover_item.free()
-		room_manager.queue_free()
+		room_manager.free()
 
 
 	func test_places_item_in_appropriate_spot():
@@ -124,7 +124,7 @@ class Test__rotate_hover_item:
 
 	func after_each():
 		room_manager._hover_item.free()
-		room_manager.queue_free()
+		room_manager.free()
 
 
 	func test_rotate_adjusts_hover_item():
