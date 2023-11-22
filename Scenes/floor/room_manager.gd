@@ -93,9 +93,9 @@ func _can_place_room_at(pos: Vector3) -> bool:
 
 func _rotate_hover_item(left: bool = false):
 	if left:
-		_hover_item_rotation -= 1
+		_hover_item_rotation = (_hover_item_rotation - 1) as TowerGlobals.ROTATION
 	else:
-		_hover_item_rotation += 1
+		_hover_item_rotation = (_hover_item_rotation + 1) as TowerGlobals.ROTATION
 
 	if _hover_item_rotation > TowerGlobals.ROTATION.TWOSEVENTY:
 		_hover_item_rotation = TowerGlobals.ROTATION.ZERO
