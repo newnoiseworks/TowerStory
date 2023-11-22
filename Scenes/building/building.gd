@@ -21,13 +21,13 @@ var current_floor: Area3D
 var current_floor_idx = 1
 
 
-func get_target_pos():
-	var position = mouse_select.global_transform.origin
+func get_mouse_target_pos():
+	var target = mouse_select.global_transform.origin
 
-	position.x = TowerGlobals.closest_multiple_of(int(position.x))
-	position.z = TowerGlobals.closest_multiple_of(int(position.z))
+	target.x = TowerGlobals.closest_multiple_of(int(target.x))
+	target.z = TowerGlobals.closest_multiple_of(int(target.z))
 
-	return position
+	return target
 
 
 # Pass a mock input object for testing
@@ -115,12 +115,12 @@ func _post_floor_change():
 	camera_gimbal.change_floor(current_floor_idx)
 
 
-func _on_floor_input_event(_camera, event, position, _normal, _shape_idx):
-	position.x = TowerGlobals.closest_multiple_of(int(position.x))
-	position.z = TowerGlobals.closest_multiple_of(int(position.z))
+func _on_floor_input_event(_camera, event, target_pos, _normal, _shape_idx):
+	target_pos.x = TowerGlobals.closest_multiple_of(int(target_pos.x))
+	target_pos.z = TowerGlobals.closest_multiple_of(int(target_pos.z))
 
 	if event is InputEventMouseMotion:
-		_on_select_move(position)
+		_on_select_move(target_pos)
 
 	if event is InputEventMouseButton:
 		_on_button_click()

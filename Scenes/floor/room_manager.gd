@@ -51,8 +51,8 @@ func _physics_process(_delta):
 		var origin = floor_container.global_transform.origin
 		origin.y = 0
 
-		if _hover_item.global_transform.origin != origin + TowerGlobals.get_target_pos():
-			_hover_item.global_transform.origin = origin + TowerGlobals.get_target_pos()
+		if _hover_item.global_transform.origin != origin + TowerGlobals.get_mouse_target_pos():
+			_hover_item.global_transform.origin = origin + TowerGlobals.get_mouse_target_pos()
 			_hover_item.place_walls_where_needed(floor_obj.floor_data_details)
 
 

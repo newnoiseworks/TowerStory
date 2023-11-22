@@ -19,12 +19,12 @@ const TILE_MULTIPLE = 2
 var current_building
 
 
-func get_target_pos():
-	# if current_building == null:
-		# _set_current_buiding()
+func get_mouse_target_pos():
+	if current_building == null:
+		_set_current_buiding()
 
-	# return current_building.get_target_pos()
-	return get_tree().get_root().get_node("building").get_target_pos()
+	return current_building.get_mouse_target_pos()
+	# return get_tree().get_root().get_node("building").get_target_pos()
 
 
 func closest_multiple_of(x: int)-> int:
@@ -45,6 +45,4 @@ func _closest_multiple_of_n(x: int, n: int)-> int:
 
 func _set_current_buiding():
 	# if there are more than one "buildings" and there's switching this will get complex
-	current_building = get_parent().find_child("building")
-
-
+	current_building = get_tree().get_root().get_node("building")
