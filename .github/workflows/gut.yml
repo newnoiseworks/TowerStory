@@ -1,10 +1,10 @@
 name: Godot testing
 
 on:
-	push:
-		branches: [ "8-automated-gut-tests" ]
-	pull_request:
-		branches: [ "main" ]
+  push:
+    branches: [ "8-automated-gut-tests" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
