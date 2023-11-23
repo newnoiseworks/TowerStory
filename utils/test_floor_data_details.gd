@@ -234,18 +234,18 @@ class Test_adjust_room_walls_on_piece_at:
 		room_data_script.adjust_room_walls_on_piece_at(0, 0, floor_data_script)
 		var first_object = room_data_script._floor_data[0][0]["object"]
 
-		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
-		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
-		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
-		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
 		room_data_script.adjust_room_walls_on_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 0, floor_data_script)
 		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
-		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
-		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
-		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
-		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 		return
 
 
@@ -263,18 +263,18 @@ class Test_adjust_room_walls_on_piece_at:
 		room_data_script.adjust_room_walls_on_piece_at(0, 0, floor_data_script)
 		var first_object = room_data_script._floor_data[0][0]["object"]
 
-		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
-		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
-		assert_true(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
-		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
+		assert_true(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
 		room_data_script.adjust_room_walls_on_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 0, floor_data_script)
 		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
-		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
-		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
-		assert_true(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
-		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
+		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
 
 	func test_hides_wall_in_middle_of_room_and_appropriate_edges_in_bigger_floor_at_center():
@@ -295,18 +295,18 @@ class Test_adjust_room_walls_on_piece_at:
 		)
 		var first_object = room_data_script._floor_data[0][0]["object"]
 
-		assert_false(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
-		assert_true(first_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
-		assert_true(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
-		assert_true(first_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
+		assert_true(first_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
+		assert_true(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
+		assert_true(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
 		room_data_script.adjust_room_walls_on_piece_at(
 			1 * TowerGlobals.TILE_MULTIPLE, 0, floor_data_script, room_pos
 		)
 		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
-		assert_true(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XUP).is_visible())
-		assert_false(second_object.find_child("wall%s" % FloorDataDetails.SIDE.XDOWN).is_visible())
-		assert_true(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZUP).is_visible())
-		assert_true(second_object.find_child("wall%s" % FloorDataDetails.SIDE.ZDOWN).is_visible())
+		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
+		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
+		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
