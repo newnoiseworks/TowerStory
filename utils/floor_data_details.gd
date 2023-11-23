@@ -2,10 +2,6 @@ extends Resource
 
 class_name FloorDataDetails
 
-enum SIDE {
-	XUP, XDOWN, ZUP, ZDOWN
-}
-
 var _floor_data = {}
 var _floor_idx
 
@@ -49,10 +45,10 @@ func adjust_room_walls_on_piece_at(
 func add_edges_to_surrounding_pieces(x: int, z: int):
 	var edges = _get_piece_edges(x, z)
 
-	if edges[SIDE.XUP] == 0: add_wall_to_piece_at_edges(x+TowerGlobals.TILE_MULTIPLE, z)
-	if edges[SIDE.XDOWN] == 0: add_wall_to_piece_at_edges(x-TowerGlobals.TILE_MULTIPLE, z)
-	if edges[SIDE.ZUP] == 0: add_wall_to_piece_at_edges(x, z+TowerGlobals.TILE_MULTIPLE)
-	if edges[SIDE.ZDOWN] == 0: add_wall_to_piece_at_edges(x, z-TowerGlobals.TILE_MULTIPLE)
+	if edges[TowerGlobals.SIDE.XUP] == 0: add_wall_to_piece_at_edges(x+TowerGlobals.TILE_MULTIPLE, z)
+	if edges[TowerGlobals.SIDE.XDOWN] == 0: add_wall_to_piece_at_edges(x-TowerGlobals.TILE_MULTIPLE, z)
+	if edges[TowerGlobals.SIDE.ZUP] == 0: add_wall_to_piece_at_edges(x, z+TowerGlobals.TILE_MULTIPLE)
+	if edges[TowerGlobals.SIDE.ZDOWN] == 0: add_wall_to_piece_at_edges(x, z-TowerGlobals.TILE_MULTIPLE)
 
 
 func add_wall_to_piece_at_edges(x: int, z:int):
@@ -62,17 +58,17 @@ func add_wall_to_piece_at_edges(x: int, z:int):
 
 	floor_piece.call("hide_walls")
 
-	if edges[SIDE.XUP] == 1:
-		floor_piece.call("add_wall_at_edge", SIDE.XUP)
+	if edges[TowerGlobals.SIDE.XUP] == 1:
+		floor_piece.call("add_wall_at_edge", TowerGlobals.SIDE.XUP)
 
-	if edges[SIDE.XDOWN] == 1:
-		floor_piece.call("add_wall_at_edge", SIDE.XDOWN)
+	if edges[TowerGlobals.SIDE.XDOWN] == 1:
+		floor_piece.call("add_wall_at_edge", TowerGlobals.SIDE.XDOWN)
 
-	if edges[SIDE.ZUP] == 1:
-		floor_piece.call("add_wall_at_edge", SIDE.ZUP)
+	if edges[TowerGlobals.SIDE.ZUP] == 1:
+		floor_piece.call("add_wall_at_edge", TowerGlobals.SIDE.ZUP)
 
-	if edges[SIDE.ZDOWN] == 1:
-		floor_piece.call("add_wall_at_edge", SIDE.ZDOWN)
+	if edges[TowerGlobals.SIDE.ZDOWN] == 1:
+		floor_piece.call("add_wall_at_edge", TowerGlobals.SIDE.ZDOWN)
 
 
 func is_floor_contiguous(_floor = null)-> bool:
@@ -123,24 +119,24 @@ func _get_piece_edges(x: int, z: int)-> PackedInt32Array:
 	var edges: PackedInt32Array = [0, 0, 0, 0]
 
 	if !_floor_data.has(x+TowerGlobals.TILE_MULTIPLE) or !_floor_data[x+TowerGlobals.TILE_MULTIPLE].has(z):
-		edges[SIDE.XUP] = 1
+		edges[TowerGlobals.SIDE.XUP] = 1
 	else:
-		edges[SIDE.XUP] = 0
+		edges[TowerGlobals.SIDE.XUP] = 0
 
 	if !_floor_data.has(x-TowerGlobals.TILE_MULTIPLE) or !_floor_data[x-TowerGlobals.TILE_MULTIPLE].has(z):
-		edges[SIDE.XDOWN] = 1
+		edges[TowerGlobals.SIDE.XDOWN] = 1
 	else:
-		edges[SIDE.XDOWN] = 0
+		edges[TowerGlobals.SIDE.XDOWN] = 0
 
 	if !_floor_data.has(x) or !_floor_data[x].has(z+TowerGlobals.TILE_MULTIPLE):
-		edges[SIDE.ZUP] = 1
+		edges[TowerGlobals.SIDE.ZUP] = 1
 	else:
-		edges[SIDE.ZUP] = 0
+		edges[TowerGlobals.SIDE.ZUP] = 0
 
 	if !_floor_data.has(x) or !_floor_data[x].has(z-TowerGlobals.TILE_MULTIPLE):
-		edges[SIDE.ZDOWN] = 1 
+		edges[TowerGlobals.SIDE.ZDOWN] = 1 
 	else:
-		edges[SIDE.ZDOWN] = 0
+		edges[TowerGlobals.SIDE.ZDOWN] = 0
 
 	return edges
 
