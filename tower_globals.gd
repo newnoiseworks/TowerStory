@@ -22,6 +22,14 @@ const TILE_MULTIPLE = 2
 
 var current_building
 
+func get_rotated_side(side: SIDE, rotation: ROTATION) -> SIDE:
+	if rotation == ROTATION.ZERO:
+		return side
+
+	return (
+		(int(side) + int(rotation)) % ROTATION.size()
+	) as SIDE
+
 
 func get_mouse_target_pos():
 	if current_building == null:
