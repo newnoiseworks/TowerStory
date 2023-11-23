@@ -17,10 +17,11 @@ var _hover_item_rotation = TowerGlobals.ROTATION.ZERO
 
 func place_hover_item():
 	if _hover_item != null:
-		_hover_item.set_opaque()
 		var origin = floor_container.global_transform.origin + _hover_item.global_transform.origin
 
 		if !_can_place_room_at(origin): return
+
+		_hover_item.set_opaque()
 
 		if !room_data.has(origin.x): room_data[origin.x] = {}
 
