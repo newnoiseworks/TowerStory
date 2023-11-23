@@ -3,7 +3,7 @@ extends Resource
 class_name FloorDataDetails
 
 enum SIDE {
-	XUP, XDOWN, ZUP, ZDOWN
+	XUP, ZUP, XDOWN, ZDOWN
 }
 
 var _floor_data = {}
