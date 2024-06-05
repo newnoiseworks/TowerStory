@@ -23,21 +23,20 @@ func get_piece_count(_floor = null)-> int:
 
 
 func adjust_room_walls_on_piece_at(
-	x: int,
-	z: int,
+	room_tile_position: Vector3i,
 	enclosing_floor_details: FloorDataDetails,
 	position_of_room_in_floor: Vector3 = Vector3.ZERO,
 	rotation: TowerGlobals.ROTATION = TowerGlobals.ROTATION.ZERO
 ):
 	var floor_pos = TowerGlobals.adjust_position_based_on_room_rotation(
-		Vector3i(x, 0, z),
+		room_tile_position,
 		position_of_room_in_floor,
 		rotation
 	)
 
 	var floor_edges = enclosing_floor_details._get_piece_edges(floor_pos.x, floor_pos.z)
-	var room_edges = _get_piece_edges(x, z)
-	var floor_piece = _floor_data[x][z]["object"]
+	var room_edges = _get_piece_edges(room_tile_position.x, room_tile_position.z)
+	var floor_piece = _floor_data[room_tile_position.x][room_tile_position.z]["object"]
 
 	for i in range(4):
 		var room_edge_idx = TowerGlobals.get_rotated_side(i as TowerGlobals.SIDE, rotation)

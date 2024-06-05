@@ -23,8 +23,7 @@ func place_walls_where_needed(enclosing_floor_data_details: FloorDataDetails, ro
 	for x in floor_data:
 		for z in floor_data[x]:
 			_room_data_details.adjust_room_walls_on_piece_at(
-				x,
-				z,
+				Vector3i(x, 0, z),
 				enclosing_floor_data_details,
 				Vector3(
 					TowerGlobals.closest_multiple_of(
