@@ -73,20 +73,13 @@ func _can_place_room_at(pos: Vector3) -> bool:
 	for tile in _hover_item.tiles.get_children():
 		var tile_origin = tile.transform.origin
 
-		var x = pos.x + tile_origin.x
-		var z = pos.z + tile_origin.z
+		var floor_pos = TowerGlobals.adjust_position_based_on_room_rotation(
+			tile_origin,
+			pos,
+			_hover_item_rotation
+		)
 
-		if _hover_item_rotation == TowerGlobals.ROTATION.NINETY:
-			x = pos.x - tile_origin.z
-			z = pos.z - tile_origin.x
-		elif _hover_item_rotation == TowerGlobals.ROTATION.ONEEIGHTY:
-			x = pos.x - tile_origin.x
-			z = pos.z - tile_origin.z
-		elif _hover_item_rotation == TowerGlobals.ROTATION.TWOSEVENTY:
-			x = pos.x + tile_origin.z
-			z = pos.z + tile_origin.x
-
-		if !floor_data_details.has_floor_piece_at(x, z):
+		if !floor_data_details.has_floor_piece_at(floor_pos.x, floor_pos.z):
 			return false
 
 	return true
