@@ -17,10 +17,11 @@ var _hover_item_rotation = TowerGlobals.ROTATION.ZERO
 
 func place_hover_item():
 	if _hover_item != null:
-		_hover_item.set_opaque()
 		var origin = floor_container.global_transform.origin + _hover_item.global_transform.origin
 
 		if !_can_place_room_at(origin): return
+
+		_hover_item.set_opaque()
 
 		if !room_data.has(origin.x): room_data[origin.x] = {}
 
@@ -53,7 +54,7 @@ func _physics_process(_delta):
 
 		if _hover_item.global_transform.origin != origin + TowerGlobals.get_mouse_target_pos():
 			_hover_item.global_transform.origin = origin + TowerGlobals.get_mouse_target_pos()
-			_hover_item.place_walls_where_needed(floor_obj.floor_data_details)
+			_hover_item.place_walls_where_needed(floor_obj.floor_data_details, _hover_item_rotation)
 
 
 func _on_tool_change_pressed(user_tool):
@@ -72,20 +73,13 @@ func _can_place_room_at(pos: Vector3) -> bool:
 	for tile in _hover_item.tiles.get_children():
 		var tile_origin = tile.transform.origin
 
-		var x = pos.x + tile_origin.x
-		var z = pos.z + tile_origin.z
+		var floor_pos = TowerGlobals.adjust_position_based_on_room_rotation(
+			tile_origin,
+			pos,
+			_hover_item_rotation
+		)
 
-		if _hover_item_rotation == TowerGlobals.ROTATION.NINETY:
-			x = pos.x + tile_origin.z
-			z = pos.z + tile_origin.x
-		elif _hover_item_rotation == TowerGlobals.ROTATION.ONEEIGHTY:
-			x = pos.x - tile_origin.x
-			z = pos.z - tile_origin.z
-		elif _hover_item_rotation == TowerGlobals.ROTATION.TWOSEVENTY:
-			x = pos.x - tile_origin.z
-			z = pos.z - tile_origin.x
-
-		if !floor_data_details.has_floor_piece_at(x, z):
+		if !floor_data_details.has_floor_piece_at(floor_pos.x, floor_pos.z):
 			return false
 
 	return true
@@ -102,6 +96,9 @@ func _rotate_hover_item(left: bool = false):
 	elif _hover_item_rotation < TowerGlobals.ROTATION.ZERO:
 		_hover_item_rotation = TowerGlobals.ROTATION.TWOSEVENTY
 
+	print_debug(TowerGlobals.ROTATION.keys()[_hover_item_rotation])
+
 	_hover_item.set_rotation_degrees(Vector3(0, _hover_item_rotation * 90, 0))
+	_hover_item.place_walls_where_needed(floor_data_details, _hover_item_rotation)
 
 

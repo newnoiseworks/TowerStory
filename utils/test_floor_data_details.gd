@@ -181,7 +181,6 @@ class Test_can_remove_floor_piece_at:
 		)
 
 
-
 class Test_adjust_room_walls_on_piece_at:
 	extends GutTest
 	var room_data_script
@@ -231,7 +230,7 @@ class Test_adjust_room_walls_on_piece_at:
 
 		var floor_data_script = prototype_script.new(data)
 
-		room_data_script.adjust_room_walls_on_piece_at(0, 0, floor_data_script)
+		room_data_script.adjust_room_walls_on_piece_at(Vector3i.ZERO, floor_data_script)
 		var first_object = room_data_script._floor_data[0][0]["object"]
 
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
@@ -239,7 +238,7 @@ class Test_adjust_room_walls_on_piece_at:
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
-		room_data_script.adjust_room_walls_on_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 0, floor_data_script)
+		room_data_script.adjust_room_walls_on_piece_at(Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 0), floor_data_script)
 		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
 		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
@@ -260,7 +259,7 @@ class Test_adjust_room_walls_on_piece_at:
 
 		var floor_data_script = prototype_script.new(data)
 
-		room_data_script.adjust_room_walls_on_piece_at(0, 0, floor_data_script)
+		room_data_script.adjust_room_walls_on_piece_at(Vector3i.ZERO, floor_data_script)
 		var first_object = room_data_script._floor_data[0][0]["object"]
 
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
@@ -268,7 +267,7 @@ class Test_adjust_room_walls_on_piece_at:
 		assert_true(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
-		room_data_script.adjust_room_walls_on_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 0, floor_data_script)
+		room_data_script.adjust_room_walls_on_piece_at(Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 0), floor_data_script)
 		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
 		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
@@ -291,7 +290,7 @@ class Test_adjust_room_walls_on_piece_at:
 		var room_pos = Vector3(1 * TowerGlobals.TILE_MULTIPLE, 0, 1 * TowerGlobals.TILE_MULTIPLE)
 
 		room_data_script.adjust_room_walls_on_piece_at(
-			0, 0, floor_data_script, room_pos
+			Vector3i.ZERO, floor_data_script, room_pos
 		)
 		var first_object = room_data_script._floor_data[0][0]["object"]
 
@@ -301,7 +300,7 @@ class Test_adjust_room_walls_on_piece_at:
 		assert_true(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
 		room_data_script.adjust_room_walls_on_piece_at(
-			1 * TowerGlobals.TILE_MULTIPLE, 0, floor_data_script, room_pos
+			Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 0), floor_data_script, room_pos
 		)
 		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
@@ -310,3 +309,38 @@ class Test_adjust_room_walls_on_piece_at:
 		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
 		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
+
+	func test_hides_walls_correctly_given_270_rotation():
+		var data = {}
+
+		for x in range(3):
+			data[x * TowerGlobals.TILE_MULTIPLE] = {}
+
+			for z in range(3):
+				data[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+
+		var floor_data_script = prototype_script.new(data)
+
+		room_data_script.adjust_room_walls_on_piece_at(
+			Vector3i.ZERO, floor_data_script, Vector3.ZERO, TowerGlobals.ROTATION.TWOSEVENTY
+		)
+		var first_object = room_data_script._floor_data[0][0]["object"]
+
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
+		assert_true(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
+
+		room_data_script.adjust_room_walls_on_piece_at(
+			Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 0), floor_data_script, Vector3.ZERO, TowerGlobals.ROTATION.TWOSEVENTY
+		)
+		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
+
+		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible()) #F
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
+		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
+
+		# TODO: Write tests for different room positions
+
+	# TODO: Write tests for each rotation

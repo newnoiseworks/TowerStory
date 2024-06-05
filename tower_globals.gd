@@ -22,12 +22,47 @@ const TILE_MULTIPLE = 2
 
 var current_building
 
+func get_rotated_side(side: SIDE, rotation: ROTATION) -> SIDE:
+	if rotation == ROTATION.ZERO:
+		return side
+
+	return (
+		(int(side) + int(rotation)) % ROTATION.size()
+	) as SIDE
+
 
 func get_mouse_target_pos():
 	if current_building == null:
 		_set_current_buiding()
 
 	return current_building.get_mouse_target_pos()
+
+
+func adjust_position_based_on_room_rotation(
+	tile_position: Vector3i,
+	room_position: Vector3i,
+	rotation: TowerGlobals.ROTATION = TowerGlobals.ROTATION.ZERO
+) -> Vector3i:
+	var floor_pos_x = int(room_position.x)
+	var floor_pos_z = int(room_position.z)
+
+	match rotation:
+		TowerGlobals.ROTATION.ZERO:
+			floor_pos_x += tile_position.x
+			floor_pos_z += tile_position.z
+		TowerGlobals.ROTATION.NINETY:
+			floor_pos_x -= tile_position.z
+			floor_pos_z -= tile_position.x
+		TowerGlobals.ROTATION.ONEEIGHTY:
+			floor_pos_x -= tile_position.x
+			floor_pos_z += tile_position.z
+		TowerGlobals.ROTATION.TWOSEVENTY:
+			floor_pos_x += tile_position.z
+			floor_pos_z += tile_position.x
+
+	return Vector3i(
+		floor_pos_x, room_position.y, floor_pos_z
+	)
 
 
 func closest_multiple_of(x: int)-> int:
@@ -49,3 +84,4 @@ func _closest_multiple_of_n(x: int, n: int)-> int:
 func _set_current_buiding():
 	# if there are more than one "buildings" and there's switching this will get complex
 	current_building = get_tree().get_root().get_node("building")
+
