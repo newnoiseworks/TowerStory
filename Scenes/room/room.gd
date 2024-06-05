@@ -19,11 +19,23 @@ func set_opaque():
 		tile.set_opaque()
 
 
-func place_walls_where_needed(enclosing_floor_data_details: FloorDataDetails):
+func place_walls_where_needed(enclosing_floor_data_details: FloorDataDetails, room_rotation: TowerGlobals.ROTATION = TowerGlobals.ROTATION.ZERO):
 	for x in floor_data:
 		for z in floor_data[x]:
 			_room_data_details.adjust_room_walls_on_piece_at(
-				x, z, enclosing_floor_data_details, global_transform.origin
+				x,
+				z,
+				enclosing_floor_data_details,
+				Vector3(
+					TowerGlobals.closest_multiple_of(
+						int(global_transform.origin.x),
+					),
+					global_transform.origin.y,
+					TowerGlobals.closest_multiple_of(
+						int(global_transform.origin.z),
+					),
+				),
+				room_rotation
 			)
 
 

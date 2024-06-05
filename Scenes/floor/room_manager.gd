@@ -54,7 +54,7 @@ func _physics_process(_delta):
 
 		if _hover_item.global_transform.origin != origin + TowerGlobals.get_mouse_target_pos():
 			_hover_item.global_transform.origin = origin + TowerGlobals.get_mouse_target_pos()
-			_hover_item.place_walls_where_needed(floor_obj.floor_data_details)
+			_hover_item.place_walls_where_needed(floor_obj.floor_data_details, _hover_item_rotation)
 
 
 func _on_tool_change_pressed(user_tool):
@@ -104,5 +104,6 @@ func _rotate_hover_item(left: bool = false):
 		_hover_item_rotation = TowerGlobals.ROTATION.TWOSEVENTY
 
 	_hover_item.set_rotation_degrees(Vector3(0, _hover_item_rotation * 90, 0))
+	_hover_item.place_walls_where_needed(floor_data_details, _hover_item_rotation)
 
 
