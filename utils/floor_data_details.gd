@@ -26,20 +26,45 @@ func adjust_room_walls_on_piece_at(
 	x: int,
 	z: int,
 	enclosing_floor_details: FloorDataDetails,
-	position_of_room_in_floor: Vector3 = Vector3.ZERO
+	position_of_room_in_floor: Vector3 = Vector3.ZERO,
+	rotation: TowerGlobals.ROTATION = TowerGlobals.ROTATION.ZERO
 ):
-	var room_pos_x = int(position_of_room_in_floor.x)
-	var room_pos_z = int(position_of_room_in_floor.z)
+	var floor_pos_x = int(position_of_room_in_floor.x)
+	var floor_pos_z = int(position_of_room_in_floor.z)
 
-	var floor_edges = enclosing_floor_details._get_piece_edges(room_pos_x + x, room_pos_z + z)
+	match rotation:
+		TowerGlobals.ROTATION.ZERO:
+			floor_pos_x += x
+			floor_pos_z += z
+		TowerGlobals.ROTATION.NINETY:
+			floor_pos_x -= z
+			floor_pos_z -= x
+		TowerGlobals.ROTATION.ONEEIGHTY:
+			floor_pos_x -= x
+			floor_pos_z += z
+		TowerGlobals.ROTATION.TWOSEVENTY:
+			floor_pos_x += z
+			floor_pos_z += x
+
+	var floor_edges = enclosing_floor_details._get_piece_edges(floor_pos_x, floor_pos_z)
 	var room_edges = _get_piece_edges(x, z)
+
 	var floor_piece = _floor_data[x][z]["object"]
 
 	for i in range(4):
-		floor_piece.call("add_wall_at_edge", i)
+		floor_piece.call("hide_wall_at_edge", i)
 
-		if floor_edges[i] == room_edges[i]:
-			floor_piece.call("hide_wall_at_edge", i)
+	for i in range(4):
+		var room_edge_idx = TowerGlobals.get_rotated_side(
+			i as TowerGlobals.SIDE,
+			rotation
+		)
+
+		var floor_edge = floor_edges[i]
+		var room_edge = room_edges[room_edge_idx]
+
+		if floor_edge == 0 && room_edge == 1:
+			floor_piece.call("add_wall_at_edge", room_edge_idx)
 
 
 func add_edges_to_surrounding_pieces(x: int, z: int):
