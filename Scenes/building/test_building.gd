@@ -618,3 +618,87 @@ class Test_SecondFloorWorkflow:
 		)
 
 
+class Test_AddRoomWorkflow:
+	extends GutTest
+
+	var test_building
+	var input
+	var room_manager
+
+	func before_each():
+		var prototype_script = load("res://scenes/building/building.tscn")
+
+		test_building = prototype_script.instantiate()
+		input = MockInput.new()
+		test_building._set_input(input)
+		add_child_autofree(test_building)
+		TowerGlobals.current_building = test_building
+
+		input._click_and_drag_and_release(
+			test_building,
+			Vector3(
+				0.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				2.076785, 0.100007, 4.179358
+			)
+		)
+		gut.simulate(test_building, 2, 2)
+
+		room_manager = test_building.get_node("floors/floor1/floor/room_manager")
+
+		# NOTE: Below simulates mouse position around area of UI buttons
+		input._move(
+			test_building,
+			Vector3(-99, 0, -88)
+		)
+
+		room_manager._on_tool_change_pressed(TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2)
+
+		gut.simulate(test_building, 2, 2)
+
+
+	func after_each():
+		TowerGlobals.current_building = null
+		room_manager._hover_item.free()
+		test_building.free()
+
+
+	func test_hover_item_hides_when_in_inappropriate_spot():
+		input._move(
+			test_building,
+			Vector3(3, 0, 3)
+		)
+		gut.simulate(test_building, 2, 2)
+
+		assert_false(room_manager._hover_item.is_visible())
+
+
+	func test_hover_item_appears_when_in_appropriate_spot():
+		input._move(
+			test_building,
+			Vector3.ZERO
+		)
+		gut.simulate(test_building, 2, 2)
+
+		assert_true(room_manager._hover_item.is_visible())
+
+
+	func test_hover_item_hides_and_reappears_when_moved_back_to_appropriate_spot():
+		input._move(
+			test_building,
+			Vector3(3, 0, 3)
+		)
+		gut.simulate(test_building, 2, 2)
+
+		assert_false(room_manager._hover_item.is_visible())
+
+		input._move(
+			test_building,
+			Vector3(1, 0, 1)
+		)
+		gut.simulate(test_building, 2, 2)
+
+		assert_true(room_manager._hover_item.is_visible())
+
+
