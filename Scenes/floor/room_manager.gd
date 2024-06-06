@@ -49,7 +49,7 @@ func _input(event):
 
 func _physics_process(_delta):
 	if _hover_item != null:
-		var	origin = floor_container.global_transform.origin
+		var origin = floor_container.global_transform.origin
 
 		origin.y = 0
 
