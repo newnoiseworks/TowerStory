@@ -38,8 +38,8 @@ func _set_input(input):
 func _ready():
 	_create_new_current_floor()
 
-	var _c = TowerGlobals.connect("tool_change", Callable(self, "_on_tool_change_pressed"))
-	_c = TowerGlobals.connect("facade_swap", Callable(self, "_toggle_facade"))
+	TowerGlobals.tool_change.connect(_on_tool_change_pressed)
+	TowerGlobals.facade_swap.connect(_toggle_facade)
 
 
 func _unhandled_input(event):
@@ -99,11 +99,11 @@ func _post_floor_change():
 	current_floor = _get_current_floor()
 	if current_floor == null: _create_new_current_floor()
 
-	if previous_floor.is_connected("input_event", Callable(self, "_on_floor_input_event")):
-		previous_floor.disconnect("input_event", Callable(self, "_on_floor_input_event"))
+	if previous_floor.input_event.is_connected(_on_floor_input_event):
+		previous_floor.input_event.disconnect(_on_floor_input_event)
 
-	if !current_floor.is_connected("input_event", Callable(self, "_on_floor_input_event")):
-		var _c = current_floor.connect("input_event", Callable(self, "_on_floor_input_event"))
+	if !current_floor.input_event.is_connected(_on_floor_input_event):
+		var _c = current_floor.input_event.connect(_on_floor_input_event)
 
 	previous_floor.input_ray_pickable = false
 	current_floor.input_ray_pickable = true
@@ -187,13 +187,7 @@ func _create_new_current_floor():
 	))
 
 	current_floor.draw_floor()
-	var _c = current_floor.connect(
-		"input_event",
-		Callable(
-			self,
-			"_on_floor_input_event"
-		)
-	)
+	var _c = current_floor.input_event.connect(_on_floor_input_event)
 	current_floor.input_ray_pickable = true
 
 	current_floor.building = self
