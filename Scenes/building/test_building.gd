@@ -648,9 +648,8 @@ class Test_AddRoomWorkflow:
 		room_manager = test_building.get_node("floors/floor1/floor/room_manager")
 
 		# NOTE: Below simulates mouse position around area of UI buttons
-		input._test_mouse_input_event(
+		input._move(
 			test_building,
-			InputEventMouseMotion.new(),
 			Vector3(-99, 0, -88)
 		)
 
@@ -666,9 +665,8 @@ class Test_AddRoomWorkflow:
 
 
 	func test_hover_item_hides_when_in_inappropriate_spot():
-		input._test_mouse_input_event(
+		input._move(
 			test_building,
-			InputEventMouseMotion.new(),
 			Vector3(3, 0, 3)
 		)
 		gut.simulate(test_building, 2, 2)
@@ -677,9 +675,8 @@ class Test_AddRoomWorkflow:
 
 
 	func test_hover_item_appears_when_in_appropriate_spot():
-		input._test_mouse_input_event(
+		input._move(
 			test_building,
-			InputEventMouseMotion.new(),
 			Vector3.ZERO
 		)
 		gut.simulate(test_building, 2, 2)
@@ -688,18 +685,16 @@ class Test_AddRoomWorkflow:
 
 
 	func test_hover_item_hides_and_reappears_when_moved_back_to_appropriate_spot():
-		input._test_mouse_input_event(
+		input._move(
 			test_building,
-			InputEventMouseMotion.new(),
 			Vector3(3, 0, 3)
 		)
 		gut.simulate(test_building, 2, 2)
 
 		assert_false(room_manager._hover_item.is_visible())
 
-		input._test_mouse_input_event(
+		input._move(
 			test_building,
-			InputEventMouseMotion.new(),
 			Vector3(1, 0, 1)
 		)
 		gut.simulate(test_building, 2, 2)

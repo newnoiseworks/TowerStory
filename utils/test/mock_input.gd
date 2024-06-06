@@ -11,17 +11,21 @@ func press(key):
 	if _released.has(key):
 		_released.erase(key)
 
+
 func release(key):
 	if _pressed.has(key):
 		_pressed.erase(key)
 
 	_released.append(key)
 
+
 func is_action_pressed(a):
 	return _pressed.has(a)
 
+
 func is_action_released(a):
 	return _released.has(a)
+
 
 func is_action_just_released(a):
 	return is_action_released(a)
@@ -43,11 +47,7 @@ func _test_mouse_input_event(node: Node, input_type, position):
 
 func _click(node, start, move_in_place=true, button="main_button"):
 	if move_in_place:
-		_test_mouse_input_event(
-			node,
-			InputEventMouseMotion.new(),
-			start
-		)
+		_move(node, start)
 
 	press(button)
 
@@ -73,14 +73,17 @@ func _click_and_release(node, start, move_in_place=true, button="main_button"):
 	_release(node, start, button)
 
 
-func _click_and_drag(node, start, finish, move_in_place=true, button="main_button"):
-	_click(node, start, move_in_place, button)
-
+func _move(node, position):
 	_test_mouse_input_event(
 		node,
 		InputEventMouseMotion.new(),
-		finish
+		position
 	)
+
+
+func _click_and_drag(node, start, finish, move_in_place=true, button="main_button"):
+	_click(node, start, move_in_place, button)
+	_move(node, finish)
 
 
 func _click_and_drag_and_release(node, start, finish, move_in_place=true, button="main_button"):
