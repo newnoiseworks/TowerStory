@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/floor/bottom_floor_piece.gd" id="1"]
 [ext_resource type="PackedScene" uid="uid://cjfy5o24tvinx" path="res://from_blender/bottom_floor_piece.glb" id="2"]
-[ext_resource type="PackedScene" uid="uid://dudxxq65o2l16" path="res://scenes/wall.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://dudxxq65o2l16" path="res://Scenes/wall.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ceiling.tscn" id="4"]
 
 [node name="bottomFloorPiece" instance=ExtResource("2")]

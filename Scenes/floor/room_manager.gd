@@ -49,12 +49,18 @@ func _input(event):
 
 func _physics_process(_delta):
 	if _hover_item != null:
-		var origin = floor_container.global_transform.origin
+		var	origin = floor_container.global_transform.origin
+
 		origin.y = 0
 
 		if _hover_item.global_transform.origin != origin + TowerGlobals.get_mouse_target_pos():
 			_hover_item.global_transform.origin = origin + TowerGlobals.get_mouse_target_pos()
-			_hover_item.place_walls_where_needed(floor_obj.floor_data_details, _hover_item_rotation)
+
+			if _can_place_room_at(_hover_item.global_transform.origin):
+				_hover_item.show()
+				_hover_item.place_walls_where_needed(floor_data_details, _hover_item_rotation)
+			else:
+				_hover_item.hide()
 
 
 func _on_tool_change_pressed(user_tool):
@@ -63,10 +69,12 @@ func _on_tool_change_pressed(user_tool):
 			_hover_item = _small_office_1x2.instantiate()
 			floor_container.add_child(_hover_item)
 			_hover_item.set_transparent()
+			_hover_item.hide()
 		TowerGlobals.UI_TOOL.SMALL_OFFICE_2x2:
 			_hover_item = _small_office_2x2.instantiate()
 			floor_container.add_child(_hover_item)
 			_hover_item.set_transparent()
+			_hover_item.hide()
 
 
 func _can_place_room_at(pos: Vector3) -> bool:
