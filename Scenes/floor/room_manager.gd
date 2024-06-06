@@ -36,7 +36,7 @@ func place_hover_item():
 
 
 func _ready():
-	var _c = TowerGlobals.connect("tool_change", Callable(self, "_on_tool_change_pressed"))
+	TowerGlobals.tool_change.connect(_on_tool_change_pressed)
 
 
 func _input(event):
