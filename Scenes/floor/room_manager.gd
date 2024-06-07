@@ -9,6 +9,8 @@ extends Node3D
 
 var room_data = {}
 
+var _room_data_tiles = {}
+
 var _small_office_1x2 = preload("res://scenes/room/office/office_1x2.tscn")
 var _small_office_2x2 = preload("res://scenes/room/office/office_2x2.tscn")
 var _hover_item: Node3D
@@ -17,7 +19,10 @@ var _hover_item_rotation = TowerGlobals.ROTATION.ZERO
 
 func place_hover_item():
 	if _hover_item != null:
-		var origin = floor_container.global_transform.origin + _hover_item.global_transform.origin
+		var origin = Vector3.ZERO # NOTE: allowed for testing
+
+		if floor_container != null:
+			origin = floor_container.global_transform.origin + _hover_item.global_transform.origin
 
 		if !_can_place_room_at(origin): return
 
@@ -25,11 +30,26 @@ func place_hover_item():
 
 		if !room_data.has(origin.x): room_data[origin.x] = {}
 
-		room_data[origin.x][origin.z] = {
+		var room_data_obj = {
 			"type": "room", # TODO: This should map to the "type" of room -- probably an exported string would do well
 			"object": _hover_item,
-			"rotation": _hover_item_rotation
+			"rotation": _hover_item_rotation,
 		}
+
+		for tile in _hover_item.tiles.get_children():
+			var tile_origin = tile.transform.origin
+
+			var floor_pos = TowerGlobals.adjust_position_based_on_room_rotation(
+				tile_origin,
+				origin,
+				_hover_item_rotation
+			)
+
+			if !_room_data_tiles.has(floor_pos.x): _room_data_tiles[floor_pos.x] = {}
+
+			_room_data_tiles[floor_pos.x][floor_pos.z] = true
+
+		room_data[origin.x][origin.z] = room_data_obj
 
 		_hover_item = null
 		_hover_item_rotation = TowerGlobals.ROTATION.ZERO
@@ -88,6 +108,9 @@ func _can_place_room_at(pos: Vector3) -> bool:
 		)
 
 		if !floor_data_details.has_floor_piece_at(floor_pos.x, floor_pos.z):
+			return false
+
+		if _room_data_tiles.has(floor_pos.x) && _room_data_tiles[floor_pos.x].has(floor_pos.z):
 			return false
 
 	return true

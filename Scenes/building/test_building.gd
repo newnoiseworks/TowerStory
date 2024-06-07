@@ -702,3 +702,28 @@ class Test_AddRoomWorkflow:
 		assert_true(room_manager._hover_item.is_visible())
 
 
+	func test_hover_item_hides_when_placed_over_existing_room():
+		input._move(
+			test_building,
+			Vector3(1, 0, 2.2)
+		)
+		gut.simulate(test_building, 2, 2)
+
+		room_manager.place_hover_item()
+
+		input._move(
+			test_building,
+			Vector3(-99, 0, -88)
+		)
+		room_manager._on_tool_change_pressed(TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2)
+		gut.simulate(test_building, 2, 2)
+
+		input._move(
+			test_building,
+			Vector3(1, 0, 2.2)
+		)
+		gut.simulate(test_building, 2, 2)
+
+		assert_false(room_manager._hover_item.is_visible(), "Hover item hides when placed over existing room")
+
+

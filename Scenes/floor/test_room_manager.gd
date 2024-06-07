@@ -41,7 +41,7 @@ class Test__can_place_room_at:
 		room_manager.free()
 
 
-	func test_places_item_in_appropriate_spot():
+	func test_can_place_item_in_appropriate_spot():
 		var result = room_manager._can_place_room_at(Vector3(0, 0, 0))
 
 		assert_true(result, "Can place room in available area")
@@ -75,6 +75,17 @@ class Test__can_place_room_at:
 
 		assert_true(result, "Can place room after rotating four times")
 		assert_true(room_manager.floor_data_details != null)
+
+
+	func test_cannot_place_room_where_another_room_exists():
+		room_manager.place_hover_item()
+
+		room_manager._hover_item = room_manager._small_office_1x2.instantiate()
+		room_manager_node.add_child(room_manager._hover_item)
+
+		var result = room_manager._can_place_room_at(Vector3(0, 0, 0))
+
+		assert_false(result, "Cannot place room where one already exists")
 
 
 class Test__can_place_room_in_larger_floor:
