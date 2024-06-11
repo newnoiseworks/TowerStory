@@ -3,6 +3,7 @@ extends Resource
 class_name FloorDataDetails
 
 var _floor_data = {}
+var room_data_tiles = {}
 var _floor_idx
 
 func _init(floor_data, floor_idx = null):

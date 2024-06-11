@@ -9,8 +9,6 @@ extends Node3D
 
 var room_data = {}
 
-var _room_data_tiles = {}
-
 var _small_office_1x2 = preload("res://scenes/room/office/office_1x2.tscn")
 var _small_office_2x2 = preload("res://scenes/room/office/office_2x2.tscn")
 var _hover_item: Node3D
@@ -45,9 +43,9 @@ func place_hover_item():
 				_hover_item_rotation
 			)
 
-			if !_room_data_tiles.has(floor_pos.x): _room_data_tiles[floor_pos.x] = {}
+			if !floor_data_details.room_data_tiles.has(floor_pos.x): floor_data_details.room_data_tiles[floor_pos.x] = {}
 
-			_room_data_tiles[floor_pos.x][floor_pos.z] = true
+			floor_data_details.room_data_tiles[floor_pos.x][floor_pos.z] = true
 
 		room_data[origin.x][origin.z] = room_data_obj
 
@@ -110,7 +108,7 @@ func _can_place_room_at(pos: Vector3) -> bool:
 		if !floor_data_details.has_floor_piece_at(floor_pos.x, floor_pos.z):
 			return false
 
-		if _room_data_tiles.has(floor_pos.x) && _room_data_tiles[floor_pos.x].has(floor_pos.z):
+		if floor_data_details.room_data_tiles.has(floor_pos.x) && floor_data_details.room_data_tiles[floor_pos.x].has(floor_pos.z):
 			return false
 
 	return true
