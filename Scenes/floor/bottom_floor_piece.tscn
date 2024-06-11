@@ -9,7 +9,7 @@
 script = ExtResource("1")
 
 [node name="wall0" parent="." index="1" instance=ExtResource("3")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 1, 0, 0)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 1.05, 2.08165e-12, 2.08165e-12)
 visible = false
 
 [node name="xup" type="Label3D" parent="wall0" index="1"]
@@ -17,7 +17,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.480541, 0)
 text = "xup"
 
 [node name="wall1" parent="." index="2" instance=ExtResource("3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, 1.05)
 visible = false
 
 [node name="zup" type="Label3D" parent="wall1" index="1"]
@@ -25,7 +25,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.548475, 0)
 text = "zup"
 
 [node name="wall2" parent="." index="3" instance=ExtResource("3")]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.918394, 0, 0)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.95, 2.08165e-12, 2.08165e-12)
 visible = false
 
 [node name="xdown" type="Label3D" parent="wall2" index="1"]
@@ -33,8 +33,7 @@ transform = Transform3D(-1, 3.48787e-16, -8.74228e-08, 3.48787e-16, 1, -3.48787e
 text = "xdown"
 
 [node name="wall3" parent="." index="4" instance=ExtResource("3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 2.08165e-12, -0.95)
 
 [node name="zdown" type="Label3D" parent="wall3" index="1"]
 transform = Transform3D(-1, 3.48787e-16, -8.74228e-08, 3.48787e-16, 1, -3.48787e-16, 8.74228e-08, -3.48787e-16, -1, 0, 0.57101, -0.0902741)

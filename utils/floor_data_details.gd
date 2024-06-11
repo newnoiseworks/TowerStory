@@ -3,6 +3,8 @@ extends Resource
 class_name FloorDataDetails
 
 var _floor_data = {}
+var room_data_tiles = {}
+
 var _floor_idx
 
 func _init(floor_data, floor_idx = null):
@@ -45,8 +47,13 @@ func adjust_room_walls_on_piece_at(
 
 		var floor_edge = floor_edges[i]
 		var room_edge = room_edges[room_edge_idx]
+		var room_adjacent = _is_room_adjacent_to_tile_on_side(
+			enclosing_floor_details,
+			floor_pos,
+			i as TowerGlobals.SIDE
+		)
 
-		if floor_edge == 0 && room_edge == 1:
+		if floor_edge == 0 && room_edge == 1 && !room_adjacent:
 			floor_piece.call("add_wall_at_edge", room_edge_idx)
 
 
@@ -178,5 +185,25 @@ func _is_connected_at(x: int, z: int)-> bool:
 		return true
 
 	return false
+
+
+func _is_room_adjacent_to_tile_on_side(
+	enclosing_floor_details: FloorDataDetails,
+	tile_pos: Vector3i,
+	side: TowerGlobals.SIDE
+)-> bool:
+	var adjusted_tile_pos = tile_pos
+
+	match side:
+		TowerGlobals.SIDE.XUP:
+			adjusted_tile_pos.x += TowerGlobals.TILE_MULTIPLE
+		TowerGlobals.SIDE.ZUP:
+			adjusted_tile_pos.z += TowerGlobals.TILE_MULTIPLE
+		TowerGlobals.SIDE.XDOWN:
+			adjusted_tile_pos.x -= TowerGlobals.TILE_MULTIPLE
+		TowerGlobals.SIDE.ZDOWN:
+			adjusted_tile_pos.z -= TowerGlobals.TILE_MULTIPLE
+
+	return enclosing_floor_details.room_data_tiles.has(adjusted_tile_pos.x) && enclosing_floor_details.room_data_tiles[adjusted_tile_pos.x].has(adjusted_tile_pos.z)
 
 
