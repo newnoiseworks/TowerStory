@@ -653,14 +653,17 @@ class Test_AddRoomWorkflow:
 			Vector3(-99, 0, -88)
 		)
 
-		room_manager._on_tool_change_pressed(TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2)
+		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2)
 
 		gut.simulate(test_building, 2, 2)
 
 
 	func after_each():
 		TowerGlobals.current_building = null
-		room_manager._hover_item.free()
+
+		if room_manager._hover_item != null:
+			room_manager._hover_item.free()
+
 		test_building.free()
 
 
@@ -715,7 +718,7 @@ class Test_AddRoomWorkflow:
 			test_building,
 			Vector3(-99, 0, -88)
 		)
-		room_manager._on_tool_change_pressed(TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2)
+		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2)
 		gut.simulate(test_building, 2, 2)
 
 		input._move(
