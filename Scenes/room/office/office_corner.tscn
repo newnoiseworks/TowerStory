@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://ctbasno5hvrad"]
+[gd_scene load_steps=3 format=3 uid="uid://dnt3i6jkm3rhg"]
 
 [ext_resource type="PackedScene" uid="uid://mgmgxfrkixcr" path="res://Scenes/floor/bottom_floor_piece.tscn" id="1"]
 [ext_resource type="Script" path="res://scenes/room/room.gd" id="2"]
 
-[node name="office_2x2" type="Node3D"]
+[node name="office_corner" type="Node3D"]
 script = ExtResource("2")
 
 [node name="tiles" type="Node3D" parent="."]
@@ -15,6 +15,3 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
 
 [node name="bottomFloorPiece3" parent="tiles" instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
-
-[node name="bottomFloorPiece4" parent="tiles" instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
