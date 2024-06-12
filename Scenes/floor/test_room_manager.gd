@@ -132,6 +132,49 @@ class Test__can_place_room_in_larger_floor:
 		assert_false(result, "Cannot place room after rotating in larger room")
 
 
+class Test__can_place_corner_shaped_room:
+	extends GutTest
+
+	var room_manager
+	var room_manager_node
+
+	func before_each():
+		var prototype_script = load("res://scenes/floor/room_manager.gd")
+		var fdd_script = load("res://utils/floor_data_details.gd")
+
+		room_manager = prototype_script.new()
+		room_manager_node = Node3D.new()
+		# room_manager_node.set_script(room_manager)
+
+		var data = {}
+
+		for x in range(4):
+			data[TowerGlobals.TILE_MULTIPLE * x] = {}
+
+			for z in range(4):
+				data[TowerGlobals.TILE_MULTIPLE * x][TowerGlobals.TILE_MULTIPLE * z] = {
+					"type": "floor"
+				}
+
+		room_manager.floor_data_details = fdd_script.new(data)
+
+		room_manager._hover_item = room_manager._small_office_corner.instantiate()
+		room_manager_node.add_child(room_manager._hover_item)
+
+		add_child_autofree(room_manager_node)
+
+
+	func after_each():
+		room_manager._hover_item.free()
+		room_manager.free()
+
+
+	func test_can_place_corner_room():
+		var result = room_manager._can_place_room_at(Vector3(0, 0, 0))
+
+		assert_true(result, "Can place room in available area")
+
+
 class Test__rotate_hover_item:
 	extends GutTest
 

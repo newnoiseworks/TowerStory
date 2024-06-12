@@ -34,6 +34,7 @@ func is_action_just_released(a):
 func _reset():
 	_pressed = []
 	_released = []
+	input_method = "_on_floor_input_event"
 
 
 func _test_mouse_input_event(node: Node, input_type, position):
@@ -41,6 +42,8 @@ func _test_mouse_input_event(node: Node, input_type, position):
 
 	if input_method == "_on_floor_input_event": # presumably from building.gd
 		args = [null, input_type, position, null, null]
+	elif input_method == "_on_button_click": # presumably from building.gd
+		args = []
 
 	node.callv(input_method, args)
 

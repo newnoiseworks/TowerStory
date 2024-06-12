@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://d4hh4mldy4pjj" path="res://ui_theme.tres" id="1"]
 [ext_resource type="PackedScene" uid="uid://cjv8e2swwmjt1" path="res://Scenes/camera_gimbal/camera_gimbal.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://scenes/mouse_select.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://brbds3ncitv03" path="res://Scenes/mouse_select.tscn" id="3"]
 [ext_resource type="Script" path="res://scenes/building/building.gd" id="4"]
 [ext_resource type="Script" path="res://scenes/building/building_ui.gd" id="5"]
 
@@ -79,6 +79,10 @@ text = "Small Office 1x2"
 layout_mode = 2
 text = "Small Office 2x2"
 
+[node name="small_office_corner" type="Button" parent="building_ui/GridContainer3/GridContainer2"]
+layout_mode = 2
+text = "Small Office Corner"
+
 [node name="floors" type="Node3D" parent="."]
 
 [node name="basement" type="Node3D" parent="."]
@@ -87,3 +91,4 @@ text = "Small Office 2x2"
 [connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/remove_tile_button" to="building_ui" method="_on_tool_change_pressed" binds= ["REMOVE_TILE"]]
 [connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/small_office_1x2" to="building_ui" method="_on_tool_change_pressed" binds= ["SMALL_OFFICE_1x2"]]
 [connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/small_office_2x2" to="building_ui" method="_on_tool_change_pressed" binds= ["SMALL_OFFICE_2x2"]]
+[connection signal="pressed" from="building_ui/GridContainer3/GridContainer2/small_office_corner" to="building_ui" method="_on_tool_change_pressed" binds= ["SMALL_OFFICE_CORNER"]]

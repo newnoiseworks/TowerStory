@@ -14,6 +14,7 @@ enum ROTATION {
 enum UI_TOOL {
 	BASE_TILE,
 	REMOVE_TILE,
+	SMALL_OFFICE_CORNER,
 	SMALL_OFFICE_1x2,
 	SMALL_OFFICE_2x2,
 }
@@ -42,7 +43,7 @@ func adjust_position_based_on_room_rotation(
 	tile_position: Vector3i,
 	room_position: Vector3i,
 	rotation: TowerGlobals.ROTATION = TowerGlobals.ROTATION.ZERO
-) -> Vector3i:
+)-> Vector3i:
 	var floor_pos_x = int(room_position.x)
 	var floor_pos_z = int(room_position.z)
 
@@ -84,4 +85,5 @@ func _closest_multiple_of_n(x: int, n: int)-> int:
 func _set_current_buiding():
 	# if there are more than one "buildings" and there's switching this will get complex
 	current_building = get_tree().get_root().get_node("building")
+
 
