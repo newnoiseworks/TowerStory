@@ -730,3 +730,28 @@ class Test_AddRoomWorkflow:
 		assert_false(room_manager._hover_item.is_visible(), "Hover item hides when placed over existing room")
 
 
+	func test_can_add_corner_shaped_room():
+		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.SMALL_OFFICE_CORNER)
+		gut.simulate(test_building, 2, 2)
+
+		input._move(
+			test_building,
+			Vector3.ZERO
+		)
+		gut.simulate(test_building, 2, 2)
+
+		input.input_method = "_on_button_click"
+
+		input._click_and_release(
+			test_building,
+			Vector3.ZERO
+		)
+		gut.simulate(test_building, 2, 2)
+
+		input._reset()
+
+		var office_corner_piece = test_building.get_node("floors/floor1/office_corner/tiles/bottomFloorPiece")
+
+		assert_false(office_corner_piece.is_transparent)
+
+
