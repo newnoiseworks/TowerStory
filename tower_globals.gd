@@ -33,10 +33,15 @@ func get_rotated_side(side: SIDE, rotation: ROTATION) -> SIDE:
 
 
 func get_mouse_target_pos():
-	if current_building == null:
-		_set_current_buiding()
+	return get_current_building().get_mouse_target_pos()
 
-	return current_building.get_mouse_target_pos()
+
+func get_current_building():
+	if current_building == null:
+		# if there are more than one "buildings" and there's switching this will get complex
+		current_building = get_tree().get_root().get_node("building")
+
+	return current_building
 
 
 func adjust_position_based_on_room_rotation(
@@ -82,8 +87,5 @@ func _closest_multiple_of_n(x: int, n: int)-> int:
 	return val * n
 
 
-func _set_current_buiding():
-	# if there are more than one "buildings" and there's switching this will get complex
-	current_building = get_tree().get_root().get_node("building")
 
 
