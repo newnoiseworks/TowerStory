@@ -52,13 +52,13 @@ func adjust_position_based_on_room_rotation(
 			floor_pos_x += tile_position.x
 			floor_pos_z += tile_position.z
 		TowerGlobals.ROTATION.NINETY:
-			floor_pos_x -= tile_position.z
+			floor_pos_x += tile_position.z
 			floor_pos_z -= tile_position.x
 		TowerGlobals.ROTATION.ONEEIGHTY:
 			floor_pos_x -= tile_position.x
-			floor_pos_z += tile_position.z
+			floor_pos_z -= tile_position.z
 		TowerGlobals.ROTATION.TWOSEVENTY:
-			floor_pos_x += tile_position.z
+			floor_pos_x -= tile_position.z
 			floor_pos_z += tile_position.x
 
 	return Vector3i(
