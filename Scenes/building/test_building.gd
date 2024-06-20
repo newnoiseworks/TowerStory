@@ -443,6 +443,7 @@ class Test_SecondFloorWorkflow:
 	func before_each():
 		var prototype_script = load("res://scenes/building/building.tscn")
 		test_building = prototype_script.instantiate()
+		TowerGlobals.current_building = test_building
 		input = MockInput.new()
 		test_building._set_input(input)
 		add_child_autofree(test_building)
@@ -754,9 +755,12 @@ class Test_AddRoomWorkflow:
 		var office_corner_piece = test_building.get_node("floors/floor1/office_corner/tiles/bottomFloorPiece")
 
 		assert_false(office_corner_piece.is_transparent)
+		assert_null(room_manager._hover_item)
 
 
 	func test_can_add_room_to_second_floor_without_creating_hover_item_on_first_floor():
+		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.BASE_TILE)
+
 		input.press("move_up")
 		test_building._unhandled_input(input)
 		gut.simulate(test_building, 2, 20)
@@ -779,7 +783,7 @@ class Test_AddRoomWorkflow:
 
 		assert_not_null(room_manager_2, "Second floor room manager null when it should exist")
 
-		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.SMALL_OFFICE_CORNER)
+		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2)
 		gut.simulate(test_building, 2, 2)
 
 		input._move(
