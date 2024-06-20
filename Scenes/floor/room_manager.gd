@@ -140,4 +140,10 @@ func _rotate_hover_item(left: bool = false):
 	_hover_item.set_rotation_degrees(Vector3(0, _hover_item_rotation * 90, 0))
 	_hover_item.place_walls_where_needed(floor_data_details, _hover_item_rotation)
 
+	if _can_place_room_at(_hover_item.global_transform.origin):
+		_hover_item.show()
+		_hover_item.place_walls_where_needed(floor_data_details, _hover_item_rotation)
+	else:
+		_hover_item.hide()
+
 

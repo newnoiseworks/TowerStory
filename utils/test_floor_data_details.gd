@@ -346,7 +346,7 @@ class Test_adjust_room_walls_on_piece_at:
 	# TODO: Write tests for each rotation
 
 
-class Test_adjust_room_wals_on_pieces_adjacent_to_existing_rooms:
+class Test_adjust_room_wals_on_pieces_adjacent_to_existing_rooms_1x2:
 	extends GutTest
 	var floor_data_script
 	var room_data_script
@@ -433,5 +433,76 @@ class Test_adjust_room_wals_on_pieces_adjacent_to_existing_rooms:
 		var first_object = room_data_script._floor_data[0][0]["object"]
 
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
+
+
+class Test_adjust_room_wals_on_pieces_adjacent_to_existing_rooms_2x2:
+	extends GutTest
+	var floor_data_script
+	var room_data_script
+	var prototype_script
+	var floor_pieces = []
+
+
+	func before_each():
+		prototype_script = load("res://utils/floor_data_details.gd")
+
+		var data = {}
+
+		for x in range(5):
+			data[x * TowerGlobals.TILE_MULTIPLE] = {}
+
+			for z in range(5):
+				data[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+
+		floor_data_script = prototype_script.new(data)
+
+		for x in range(1, 3):
+			floor_data_script.room_data_tiles[x * TowerGlobals.TILE_MULTIPLE] = {}
+
+			for z in range(2):
+				floor_data_script.room_data_tiles[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = true
+
+		var room_data_tiles = {}
+
+		for x in range(2):
+			room_data_tiles[x * TowerGlobals.TILE_MULTIPLE] = {}
+
+			for z in range(2):
+				room_data_tiles[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+
+		room_data_script = prototype_script.new(room_data_tiles)
+
+
+	func after_each():
+		for fp in floor_pieces:
+			fp["object"].free()
+
+		floor_pieces = []
+
+
+	func _create_floor_piece():
+		var floor_piece = load("res://scenes/floor/bottom_floor_piece.tscn")
+
+		var obj = {
+			"type": "floor",
+			"object": floor_piece.instantiate()
+		}
+
+		floor_pieces.append(obj)
+
+		return obj
+
+
+	func test_2x2_rooms_hide_walls_properly_when_rotated_and_adjacent():
+		room_data_script.adjust_room_walls_on_piece_at(
+			Vector3(0, 0, 1 * TowerGlobals.TILE_MULTIPLE),
+			floor_data_script,
+			Vector3(1 * TowerGlobals.TILE_MULTIPLE, 0, 2 * TowerGlobals.TILE_MULTIPLE),
+			TowerGlobals.ROTATION.TWOSEVENTY
+		)
+
+		var obj = room_data_script._floor_data[0][1 * TowerGlobals.TILE_MULTIPLE]["object"]
+
+		assert_true(obj.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible(), "Wall should be visible")
 
 
