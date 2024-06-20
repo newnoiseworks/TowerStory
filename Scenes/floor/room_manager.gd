@@ -87,22 +87,27 @@ func _physics_process(_delta):
 
 
 func _on_tool_change_pressed(user_tool):
-	match user_tool:
-		TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2:
-			_hover_item = _small_office_1x2.instantiate()
-			floor_container.add_child(_hover_item)
-			_hover_item.set_transparent()
-			_hover_item.hide()
-		TowerGlobals.UI_TOOL.SMALL_OFFICE_2x2:
-			_hover_item = _small_office_2x2.instantiate()
-			floor_container.add_child(_hover_item)
-			_hover_item.set_transparent()
-			_hover_item.hide()
-		TowerGlobals.UI_TOOL.SMALL_OFFICE_CORNER:
-			_hover_item = _small_office_corner.instantiate()
-			floor_container.add_child(_hover_item)
-			_hover_item.set_transparent()
-			_hover_item.hide()
+	if _hover_item != null:
+		_hover_item.queue_free()
+		_hover_item = null
+
+	if TowerGlobals.get_current_building().current_floor_idx == floor_obj.floor_idx:
+		match user_tool:
+			TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2:
+				_hover_item = _small_office_1x2.instantiate()
+				floor_container.add_child(_hover_item)
+				_hover_item.set_transparent()
+				_hover_item.hide()
+			TowerGlobals.UI_TOOL.SMALL_OFFICE_2x2:
+				_hover_item = _small_office_2x2.instantiate()
+				floor_container.add_child(_hover_item)
+				_hover_item.set_transparent()
+				_hover_item.hide()
+			TowerGlobals.UI_TOOL.SMALL_OFFICE_CORNER:
+				_hover_item = _small_office_corner.instantiate()
+				floor_container.add_child(_hover_item)
+				_hover_item.set_transparent()
+				_hover_item.hide()
 
 
 func _can_place_room_at(pos: Vector3) -> bool:

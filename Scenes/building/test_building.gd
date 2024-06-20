@@ -443,9 +443,11 @@ class Test_SecondFloorWorkflow:
 	func before_each():
 		var prototype_script = load("res://scenes/building/building.tscn")
 		test_building = prototype_script.instantiate()
+		TowerGlobals.current_building = test_building
 		input = MockInput.new()
 		test_building._set_input(input)
 		add_child_autofree(test_building)
+
 
 	func test_add_piece_where_one_exists():
 		# first, make a piece on the first floor
@@ -753,5 +755,106 @@ class Test_AddRoomWorkflow:
 		var office_corner_piece = test_building.get_node("floors/floor1/office_corner/tiles/bottomFloorPiece")
 
 		assert_false(office_corner_piece.is_transparent)
+		assert_null(room_manager._hover_item)
+
+
+	func test_can_add_room_to_second_floor_without_creating_hover_item_on_first_floor():
+		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.BASE_TILE)
+
+		input.press("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input._reset()
+
+		input._click_and_drag_and_release(
+			test_building,
+			Vector3(
+				0.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				2.076785, 0.100007, 4.179358
+			)
+		)
+		gut.simulate(test_building, 20, 200)
+
+		var room_manager_2 = test_building.get_node_or_null("floors/floor2/floor/room_manager")
+
+		assert_not_null(room_manager_2, "Second floor room manager null when it should exist")
+
+		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2)
+		gut.simulate(test_building, 2, 2)
+
+		input._move(
+			test_building,
+			Vector3.ZERO
+		)
+		gut.simulate(test_building, 2, 2)
+
+		input.input_method = "_on_button_click"
+
+		input._click_and_release(
+			test_building,
+			Vector3.ZERO
+		)
+		gut.simulate(test_building, 2, 2)
+
+		input._reset()
+
+		assert_null(room_manager_2._hover_item, "Second floor still has hover item when it shouldn't")
+
+		input.press("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input._reset()
+
+		assert_null(room_manager._hover_item, "First floor still has hover item when it shouldn't have in the first place")
+
+
+	func test_can_move_hover_items_between_floors():
+		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.BASE_TILE)
+
+		input.press("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 2)
+		input.release("move_up")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 2)
+		input._reset()
+
+		input._click_and_drag_and_release(
+			test_building,
+			Vector3(
+				0.076785, 0.100007, 0.179358
+			),
+			Vector3(
+				2.076785, 0.100007, 4.179358
+			)
+		)
+		gut.simulate(test_building, 20, 200)
+
+		var room_manager_2 = test_building.get_node_or_null("floors/floor2/floor/room_manager")
+
+		assert_not_null(room_manager_2, "Second floor room manager null when it should exist")
+
+		TowerGlobals.tool_change.emit(TowerGlobals.UI_TOOL.SMALL_OFFICE_1x2)
+		gut.simulate(test_building, 2, 2)
+
+		input.press("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input.release("move_down")
+		test_building._unhandled_input(input)
+		gut.simulate(test_building, 2, 20)
+		input._reset()
+
+		assert_not_null(room_manager._hover_item, "First floor doesn't have hover item when it should")
+
+		assert_null(room_manager_2._hover_item, "Second floor still has hover item when it shouldn't")
 
 

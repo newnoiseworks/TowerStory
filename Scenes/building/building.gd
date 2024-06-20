@@ -108,6 +108,10 @@ func _post_floor_change():
 	previous_floor.input_ray_pickable = false
 	current_floor.input_ray_pickable = true
 
+	if previous_floor.room_manager._hover_item != null:
+		current_floor.room_manager._hover_item = previous_floor.room_manager._hover_item
+		previous_floor.room_manager._hover_item = null
+
 	previous_floor.set_transparent()
 	current_floor.set_opaque()
 
