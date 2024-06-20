@@ -767,6 +767,7 @@ class Test_AddRoomWorkflow:
 		input.release("move_up")
 		test_building._unhandled_input(input)
 		gut.simulate(test_building, 2, 20)
+		input._reset()
 
 		input._click_and_drag_and_release(
 			test_building,
@@ -810,6 +811,7 @@ class Test_AddRoomWorkflow:
 		input.release("move_down")
 		test_building._unhandled_input(input)
 		gut.simulate(test_building, 2, 20)
+		input._reset()
 
 		assert_null(room_manager._hover_item, "First floor still has hover item when it shouldn't have in the first place")
 
