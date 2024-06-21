@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://utv8v6jfifie"]
+
+[ext_resource type="Script" path="res://scenes/room/room.gd" id="1_erhaw"]
+[ext_resource type="PackedScene" uid="uid://mgmgxfrkixcr" path="res://Scenes/floor/bottom_floor_piece.tscn" id="2_vx21e"]
+
+[node name="office_2x2x2" type="Node3D"]
+script = ExtResource("1_erhaw")
+
+[node name="tiles" type="Node3D" parent="."]
+
+[node name="bottomFloorPiece" parent="tiles" instance=ExtResource("2_vx21e")]
+
+[node name="bottomFloorPiece2" parent="tiles" instance=ExtResource("2_vx21e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0)
+
+[node name="bottomFloorPiece3" parent="tiles" instance=ExtResource("2_vx21e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+
+[node name="bottomFloorPiece4" parent="tiles" instance=ExtResource("2_vx21e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+
+[node name="bottomFloorPiece5" parent="tiles" instance=ExtResource("2_vx21e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="bottomFloorPiece6" parent="tiles" instance=ExtResource("2_vx21e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 0)
+
+[node name="bottomFloorPiece7" parent="tiles" instance=ExtResource("2_vx21e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2)
+
+[node name="bottomFloorPiece8" parent="tiles" instance=ExtResource("2_vx21e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1, 2)

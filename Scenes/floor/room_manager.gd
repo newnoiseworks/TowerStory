@@ -11,6 +11,7 @@ var room_data = {}
 
 var _small_office_1x2 = preload("res://scenes/room/office/office_1x2.tscn")
 var _small_office_2x2 = preload("res://scenes/room/office/office_2x2.tscn")
+var _small_office_2x2x2 = preload("res://scenes/room/office/office_2x2x2.tscn")
 var _small_office_corner = preload("res://scenes/room/office/office_corner.tscn")
 var _hover_item: Node3D
 var _hover_item_rotation = TowerGlobals.ROTATION.ZERO
@@ -100,6 +101,11 @@ func _on_tool_change_pressed(user_tool):
 				_hover_item.hide()
 			TowerGlobals.UI_TOOL.SMALL_OFFICE_2x2:
 				_hover_item = _small_office_2x2.instantiate()
+				floor_container.add_child(_hover_item)
+				_hover_item.set_transparent()
+				_hover_item.hide()
+			TowerGlobals.UI_TOOL.SMALL_OFFICE_2x2x2:
+				_hover_item = _small_office_2x2x2.instantiate()
 				floor_container.add_child(_hover_item)
 				_hover_item.set_transparent()
 				_hover_item.hide()
