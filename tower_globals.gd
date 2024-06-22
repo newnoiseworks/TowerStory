@@ -50,8 +50,8 @@ func adjust_position_based_on_room_rotation(
 	room_position: Vector3i,
 	rotation: TowerGlobals.ROTATION = TowerGlobals.ROTATION.ZERO
 )-> Vector3i:
-	var floor_pos_x = int(room_position.x)
-	var floor_pos_z = int(room_position.z)
+	var floor_pos_x = room_position.x
+	var floor_pos_z = room_position.z
 
 	match rotation:
 		TowerGlobals.ROTATION.ZERO:
@@ -68,7 +68,7 @@ func adjust_position_based_on_room_rotation(
 			floor_pos_z += tile_position.x
 
 	return Vector3i(
-		floor_pos_x, room_position.y, floor_pos_z
+		floor_pos_x, tile_position.y, floor_pos_z
 	)
 
 

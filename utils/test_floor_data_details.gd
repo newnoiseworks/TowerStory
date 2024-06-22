@@ -15,12 +15,14 @@ class Test_is_floor_contiguous:
 		var data = {
 			0: {
 				0: {
-					"type": "floor",
-				},
+					0: {
+						"type": "floor",
+					},
+				}
 			}
 		}
 
-		data[0][1 * TowerGlobals.TILE_MULTIPLE] = {
+		data[0][0][1 * TowerGlobals.TILE_MULTIPLE] = {
 			"type": "floor",
 		}
 
@@ -40,7 +42,9 @@ class Test__get_piece_edges:
 			{
 				0: {
 					0: {
-						"type": "base_tile",
+						0: {
+							"type": "base_tile",
+						}
 					}
 				}
 			}
@@ -48,7 +52,9 @@ class Test__get_piece_edges:
 
 
 	func test_is_center_an_edge():
-		var edges = script_double._get_piece_edges(0, 0)
+		var edges = script_double._get_piece_edges(
+			Vector3i(0, 0, 0)
+		)
 
 		assert_eq(
 			edges,
@@ -66,8 +72,10 @@ class Test_can_add_floor_piece_at:
 		var data = {
 			0: {
 				0: {
-					"type": "floor",
-				},
+					0: {
+						"type": "floor",
+					},
+				}
 			}
 		}
 
@@ -75,20 +83,32 @@ class Test_can_add_floor_piece_at:
 
 
 	func test_no_overlaps():
-		var val: bool = script_double.can_add_floor_piece_at(0, 0)
+		var val: bool = script_double.can_add_floor_piece_at(
+			Vector3i(0, 0, 0)
+		)
 
 		assert_eq(val, false, "Should not be able to add piece at 0, 0")
 
 
 	func test_no_unattached_pieces():
 		assert_eq(
-			script_double.can_add_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 1 * TowerGlobals.TILE_MULTIPLE),
+			script_double.can_add_floor_piece_at(
+				Vector3i(
+					1 * TowerGlobals.TILE_MULTIPLE, 0, 1 * TowerGlobals.TILE_MULTIPLE,
+				)
+			),
 			false,
 			"Should not be able to add piece at (1, 1) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			script_double.can_add_floor_piece_at(-1 * TowerGlobals.TILE_MULTIPLE, -1 * TowerGlobals.TILE_MULTIPLE),
+			script_double.can_add_floor_piece_at(
+				Vector3i(
+					-1 * TowerGlobals.TILE_MULTIPLE,
+					0,
+					-1 * TowerGlobals.TILE_MULTIPLE
+				),
+			),
 			false,
 			"Should not be able to add piece at (-1, -1) * TowerGlobals.TILE_MULTIPLE"
 		)
@@ -96,25 +116,27 @@ class Test_can_add_floor_piece_at:
 
 	func test_can_attach_pieces():
 		assert_eq(
-			script_double.can_add_floor_piece_at(-1 * TowerGlobals.TILE_MULTIPLE, 0),
+			script_double.can_add_floor_piece_at(
+				Vector3i(-1 * TowerGlobals.TILE_MULTIPLE, 0, 0),
+			),
 			true,
 			"Should be able to add piece at (-1, 0) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			script_double.can_add_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 0),
+			script_double.can_add_floor_piece_at(Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 0)),
 			true,
 			"Should be able to add piece at (1, 0) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			script_double.can_add_floor_piece_at(0, 1 * TowerGlobals.TILE_MULTIPLE),
+			script_double.can_add_floor_piece_at(Vector3i(0, 0, 1 * TowerGlobals.TILE_MULTIPLE)),
 			true,
 			"Should be able to add piece at (0, 1) * TowerGlobals.TILE_MULTIPLE"
 		)
 
 		assert_eq(
-			script_double.can_add_floor_piece_at(0, -1 * TowerGlobals.TILE_MULTIPLE),
+			script_double.can_add_floor_piece_at(Vector3i(0, 0, -1 * TowerGlobals.TILE_MULTIPLE)),
 			true,
 			"Should be able to add piece at (0, -1) * TowerGlobals.TILE_MULTIPLE"
 		)
@@ -124,7 +146,7 @@ class Test_can_add_floor_piece_at:
 		script_double._floor_data = {}
 
 		assert_eq(
-			script_double.can_add_floor_piece_at(0, 0),
+			script_double.can_add_floor_piece_at(Vector3i(0, 0, 0)),
 			true,
 			"Should be able to add piece at (0, 0) when none exists"
 		)
@@ -139,12 +161,14 @@ class Test_can_remove_floor_piece_at:
 		var data = {
 			0: {
 				0: {
-					"type": "floor",
-				},
+					0: {
+						"type": "floor",
+					},
+				}
 			}
 		}
 
-		data[0][1 * TowerGlobals.TILE_MULTIPLE] = {
+		data[0][0][1 * TowerGlobals.TILE_MULTIPLE] = {
 			"type": "floor",
 		}
 
@@ -152,30 +176,30 @@ class Test_can_remove_floor_piece_at:
 
 
 	func test_can_remove_end_in_simple_row():
-		script_double._floor_data = SpecHelper.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
+		script_double._floor_data = SpecHelper.get_simple_tower_floor(TowerGlobals.TILE_MULTIPLE)
 
 		assert_eq(
-			script_double.can_remove_floor_piece_at(0, 0),
+			script_double.can_remove_floor_piece_at(Vector3i.ZERO),
 			true,
 			"Can remove piece at end of simple three piece row, no islands"
 		)
 
 
 	func test_cannot_remove_center_in_simple_row():
-		script_double._floor_data = SpecHelper.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
+		script_double._floor_data = SpecHelper.get_simple_tower_floor(TowerGlobals.TILE_MULTIPLE)
 
 		assert_eq(
-			script_double.can_remove_floor_piece_at(0, 1 * TowerGlobals.TILE_MULTIPLE),
+			script_double.can_remove_floor_piece_at(Vector3i(0, 0, 1 * TowerGlobals.TILE_MULTIPLE)),
 			false,
 			"Cannot remove piece in center of simple three piece row, no islands"
 		)
 
 
 	func test_can_remove_center_in_square():
-		script_double._floor_data = SpecHelper.get_simple_square_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
+		script_double._floor_data = SpecHelper.get_simple_square_tower_floor(TowerGlobals.TILE_MULTIPLE)
 
 		assert_eq(
-			script_double.can_remove_floor_piece_at(1 * TowerGlobals.TILE_MULTIPLE, 1 * TowerGlobals.TILE_MULTIPLE),
+			script_double.can_remove_floor_piece_at(Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 1 * TowerGlobals.TILE_MULTIPLE)),
 			true,
 			"Can remove piece in center of 9 piece square"
 		)
@@ -193,9 +217,10 @@ class Test_adjust_room_walls_on_piece_at:
 
 		var data = {}
 		data[0] = {}
-		data[1 * TowerGlobals.TILE_MULTIPLE] = {}
-		data[0][0] = _create_floor_piece()
-		data[1 * TowerGlobals.TILE_MULTIPLE][0] = _create_floor_piece()
+		data[0][0] = {}
+		data[0][1 * TowerGlobals.TILE_MULTIPLE] = {}
+		data[0][0][0] = _create_floor_piece()
+		data[0][1 * TowerGlobals.TILE_MULTIPLE][0] = _create_floor_piece()
 
 		room_data_script = prototype_script.new(data)
 
@@ -224,14 +249,15 @@ class Test_adjust_room_walls_on_piece_at:
 		var data = {}
 
 		data[0] = {}
-		data[1 * TowerGlobals.TILE_MULTIPLE] = {}
-		data[0][0] = _create_floor_piece()
-		data[1 * TowerGlobals.TILE_MULTIPLE][0] = _create_floor_piece()
+		data[0][0] = {}
+		data[0][1 * TowerGlobals.TILE_MULTIPLE] = {}
+		data[0][0][0] = _create_floor_piece()
+		data[0][1 * TowerGlobals.TILE_MULTIPLE][0] = _create_floor_piece()
 
 		var floor_data_script = prototype_script.new(data)
 
 		room_data_script.adjust_room_walls_on_piece_at(Vector3i.ZERO, floor_data_script)
-		var first_object = room_data_script._floor_data[0][0]["object"]
+		var first_object = room_data_script._floor_data[0][0][0]["object"]
 
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
@@ -239,7 +265,7 @@ class Test_adjust_room_walls_on_piece_at:
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
 		room_data_script.adjust_room_walls_on_piece_at(Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 0), floor_data_script)
-		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
+		var second_object = room_data_script._floor_data[0][1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
 		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
 		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
@@ -250,17 +276,18 @@ class Test_adjust_room_walls_on_piece_at:
 
 	func test_hides_wall_in_middle_of_room_and_appropriate_edges_in_bigger_floor_at_edge():
 		var data = {}
+		data[0] = {}
 
 		for x in range(2):
-			data[x * TowerGlobals.TILE_MULTIPLE] = {}
+			data[0][x * TowerGlobals.TILE_MULTIPLE] = {}
 
 			for z in range(3):
-				data[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+				data[0][x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
 
 		var floor_data_script = prototype_script.new(data)
 
 		room_data_script.adjust_room_walls_on_piece_at(Vector3i.ZERO, floor_data_script)
-		var first_object = room_data_script._floor_data[0][0]["object"]
+		var first_object = room_data_script._floor_data[0][0][0]["object"]
 
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
@@ -268,7 +295,7 @@ class Test_adjust_room_walls_on_piece_at:
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
 
 		room_data_script.adjust_room_walls_on_piece_at(Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 0), floor_data_script)
-		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
+		var second_object = room_data_script._floor_data[0][1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
 		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
 		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
@@ -278,12 +305,13 @@ class Test_adjust_room_walls_on_piece_at:
 
 	func test_hides_wall_in_middle_of_room_and_appropriate_edges_in_bigger_floor_at_center():
 		var data = {}
+		data[0] = {}
 
 		for x in range(4):
-			data[x * TowerGlobals.TILE_MULTIPLE] = {}
+			data[0][x * TowerGlobals.TILE_MULTIPLE] = {}
 
 			for z in range(4):
-				data[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+				data[0][x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
 
 		var floor_data_script = prototype_script.new(data)
 
@@ -292,7 +320,7 @@ class Test_adjust_room_walls_on_piece_at:
 		room_data_script.adjust_room_walls_on_piece_at(
 			Vector3i.ZERO, floor_data_script, room_pos
 		)
-		var first_object = room_data_script._floor_data[0][0]["object"]
+		var first_object = room_data_script._floor_data[0][0][0]["object"]
 
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
 		assert_true(first_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
@@ -302,7 +330,7 @@ class Test_adjust_room_walls_on_piece_at:
 		room_data_script.adjust_room_walls_on_piece_at(
 			Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 0), floor_data_script, room_pos
 		)
-		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
+		var second_object = room_data_script._floor_data[0][1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
 		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
 		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
@@ -312,19 +340,20 @@ class Test_adjust_room_walls_on_piece_at:
 
 	func test_hides_walls_correctly_given_270_rotation():
 		var data = {}
+		data[0] = {}
 
 		for x in range(3):
-			data[x * TowerGlobals.TILE_MULTIPLE] = {}
+			data[0][x * TowerGlobals.TILE_MULTIPLE] = {}
 
 			for z in range(3):
-				data[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+				data[0][x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
 
 		var floor_data_script = prototype_script.new(data)
 
 		room_data_script.adjust_room_walls_on_piece_at(
 			Vector3i.ZERO, floor_data_script, Vector3.ZERO, TowerGlobals.ROTATION.TWOSEVENTY
 		)
-		var first_object = room_data_script._floor_data[0][0]["object"]
+		var first_object = room_data_script._floor_data[0][0][0]["object"]
 
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible())
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
@@ -334,7 +363,7 @@ class Test_adjust_room_walls_on_piece_at:
 		room_data_script.adjust_room_walls_on_piece_at(
 			Vector3i(1 * TowerGlobals.TILE_MULTIPLE, 0, 0), floor_data_script, Vector3.ZERO, TowerGlobals.ROTATION.TWOSEVENTY
 		)
-		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
+		var second_object = room_data_script._floor_data[0][1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
 		assert_true(second_object.find_child("wall%s" % TowerGlobals.SIDE.XUP).is_visible()) #F
 		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZUP).is_visible())
@@ -358,26 +387,29 @@ class Test_adjust_room_wals_on_pieces_adjacent_to_existing_rooms_1x2:
 		prototype_script = load("res://utils/floor_data_details.gd")
 
 		var data = {}
+		data[0] = {}
 
 		for x in range(4):
-			data[x * TowerGlobals.TILE_MULTIPLE] = {}
+			data[0][x * TowerGlobals.TILE_MULTIPLE] = {}
 
 			for z in range(4):
-				data[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+				data[0][x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
 
 		floor_data_script = prototype_script.new(data)
 
 		floor_data_script.room_data_tiles[0] = {}
-		floor_data_script.room_data_tiles[0][0] = true
-		floor_data_script.room_data_tiles[1 * TowerGlobals.TILE_MULTIPLE] = {}
-		floor_data_script.room_data_tiles[1 * TowerGlobals.TILE_MULTIPLE][0] = true
+		floor_data_script.room_data_tiles[0][0] = {}
+		floor_data_script.room_data_tiles[0][0][0] = true
+		floor_data_script.room_data_tiles[0][1 * TowerGlobals.TILE_MULTIPLE] = {}
+		floor_data_script.room_data_tiles[0][1 * TowerGlobals.TILE_MULTIPLE][0] = true
 
 		var room_data_tiles = {}
 
 		room_data_tiles[0] = {}
-		room_data_tiles[0][0] = _create_floor_piece()
-		room_data_tiles[1 * TowerGlobals.TILE_MULTIPLE] = {}
-		room_data_tiles[1 * TowerGlobals.TILE_MULTIPLE][0] = _create_floor_piece()
+		room_data_tiles[0][0] = {}
+		room_data_tiles[0][0][0] = _create_floor_piece()
+		room_data_tiles[0][1 * TowerGlobals.TILE_MULTIPLE] = {}
+		room_data_tiles[0][1 * TowerGlobals.TILE_MULTIPLE][0] = _create_floor_piece()
 
 		room_data_script = prototype_script.new(room_data_tiles)
 
@@ -415,11 +447,11 @@ class Test_adjust_room_wals_on_pieces_adjacent_to_existing_rooms_1x2:
 			Vector3(0, 0, 1 * TowerGlobals.TILE_MULTIPLE)
 		)
 
-		var first_object = room_data_script._floor_data[0][0]["object"]
-		var second_object = room_data_script._floor_data[1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
+		var first_object = room_data_script._floor_data[0][0][0]["object"]
+		var second_object = room_data_script._floor_data[0][1 * TowerGlobals.TILE_MULTIPLE][0]["object"]
 
-		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
-		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible())
+		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible(), "Wall should be visible")
+		assert_false(second_object.find_child("wall%s" % TowerGlobals.SIDE.ZDOWN).is_visible(), "Wall should be visible")
 
 
 	func test_room_walls_hidden_when_adjacent_to_other_rooms_with_rotation():
@@ -430,7 +462,7 @@ class Test_adjust_room_wals_on_pieces_adjacent_to_existing_rooms_1x2:
 			TowerGlobals.ROTATION.TWOSEVENTY
 		)
 
-		var first_object = room_data_script._floor_data[0][0]["object"]
+		var first_object = room_data_script._floor_data[0][0][0]["object"]
 
 		assert_false(first_object.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible())
 
@@ -447,28 +479,32 @@ class Test_adjust_room_wals_on_pieces_adjacent_to_existing_rooms_2x2:
 		prototype_script = load("res://utils/floor_data_details.gd")
 
 		var data = {}
+		data[0] = {}
 
 		for x in range(5):
-			data[x * TowerGlobals.TILE_MULTIPLE] = {}
+			data[0][x * TowerGlobals.TILE_MULTIPLE] = {}
 
 			for z in range(5):
-				data[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+				data[0][x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
 
 		floor_data_script = prototype_script.new(data)
 
+		floor_data_script.room_data_tiles[0] = {}
+
 		for x in range(1, 3):
-			floor_data_script.room_data_tiles[x * TowerGlobals.TILE_MULTIPLE] = {}
+			floor_data_script.room_data_tiles[0][x * TowerGlobals.TILE_MULTIPLE] = {}
 
 			for z in range(2):
-				floor_data_script.room_data_tiles[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = true
+				floor_data_script.room_data_tiles[0][x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = true
 
 		var room_data_tiles = {}
+		room_data_tiles[0] = {}
 
 		for x in range(2):
-			room_data_tiles[x * TowerGlobals.TILE_MULTIPLE] = {}
+			room_data_tiles[0][x * TowerGlobals.TILE_MULTIPLE] = {}
 
 			for z in range(2):
-				room_data_tiles[x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
+				room_data_tiles[0][x * TowerGlobals.TILE_MULTIPLE][z * TowerGlobals.TILE_MULTIPLE] = _create_floor_piece()
 
 		room_data_script = prototype_script.new(room_data_tiles)
 
@@ -501,7 +537,7 @@ class Test_adjust_room_wals_on_pieces_adjacent_to_existing_rooms_2x2:
 			TowerGlobals.ROTATION.TWOSEVENTY
 		)
 
-		var obj = room_data_script._floor_data[0][1 * TowerGlobals.TILE_MULTIPLE]["object"]
+		var obj = room_data_script._floor_data[0][0][1 * TowerGlobals.TILE_MULTIPLE]["object"]
 
 		assert_true(obj.find_child("wall%s" % TowerGlobals.SIDE.XDOWN).is_visible(), "Wall should be visible")
 

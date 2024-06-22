@@ -16,7 +16,7 @@ class Test_get_piece_count:
 
 
 	func test_count_simple():
-		script_double.floor_data = SpecHelper.get_simple_tower_data(TowerGlobals.TILE_MULTIPLE)[0]
+		script_double.floor_data = SpecHelper.get_simple_tower_floor(TowerGlobals.TILE_MULTIPLE)
 
 		assert_eq(
 			script_double.get_piece_count(),
